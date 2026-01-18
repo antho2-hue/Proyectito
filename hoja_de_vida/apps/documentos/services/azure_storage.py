@@ -75,3 +75,58 @@ def upload_profile_image(file_obj, filename=None):
 
     # Return internal blob URL (container is private; this URL is not a public SAS)
     return blob_client.url
+
+
+def upload_template_image(file_obj, filename=None):
+    """Upload a template/background image to Azure and return the blob URL.
+
+    Accepts common image types (png, jpg, jpeg, gif, webp). Returns the blob URL.
+    """
+    container = getattr(settings, 'AZURE_STORAGE_CONTAINER', None)
+    if not container:
+        raise RuntimeError('AZURE_STORAGE_CONTAINER setting not found. Please set AZURE_STORAGE_CONTAINER in Django settings.')
+
+    blob_service_client = _get_blob_service_client()
+    container_client = blob_service_client.get_container_client(container)
+
+    try:
+        container_client.create_container()
+    except ResourceExistsError:
+        pass
+    except Exception as exc:
+        raise RuntimeError(f'Error ensuring Azure container exists: {exc}')
+
+    try:
+        container_client.set_container_access_policy(public_access=None)
+    except Exception:
+        pass
+
+    name = filename or getattr(file_obj, 'name', '') or ''
+    _, ext = os.path.splitext(name)
+    ext = ext.lower()
+    content_type = getattr(file_obj, 'content_type', '') or ''
+
+    allowed = {'.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.gif': 'image/gif', '.webp': 'image/webp'}
+    if ext not in allowed and content_type not in allowed.values():
+        raise RuntimeError('Only image types PNG/JPG/JPEG/GIF/WEBP are allowed for template backgrounds.')
+
+    mime = allowed.get(ext) or content_type or 'application/octet-stream'
+    ext_suffix = ext if ext in allowed else '.png'
+
+    blob_name = f"{uuid.uuid4().hex}{ext_suffix}"
+    blob_client = container_client.get_blob_client(blob_name)
+
+    try:
+        if hasattr(file_obj, 'chunks'):
+            data = b''.join(chunk for chunk in file_obj.chunks())
+        else:
+            data = file_obj.read()
+    except Exception as exc:
+        raise RuntimeError(f'Error reading uploaded image: {exc}')
+
+    try:
+        blob_client.upload_blob(data, overwrite=True, content_type=mime)
+    except Exception as exc:
+        raise RuntimeError(f'Failed to upload image blob to Azure: {exc}')
+
+    return blob_client.url

@@ -34,5 +34,20 @@ class DatosPersonales(models.Model):
         help_text='URL segura de la foto de perfil almacenada en Azure (PNG)'
     )
 
+    # Optional background images for CV templates (stored as blob URLs)
+    fondo_professional_url = models.URLField(
+        blank=True,
+        null=True,
+        db_column='fondo_professional_url',
+        help_text='URL del fondo para la plantilla Professional (imagen en blob)'
+    )
+
+    fondo_modern_url = models.URLField(
+        blank=True,
+        null=True,
+        db_column='fondo_modern_url',
+        help_text='URL del fondo para la plantilla Modern (imagen en blob)'
+    )
+
     class Meta:
         db_table = 'DATOSPERSONALES'

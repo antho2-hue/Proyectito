@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from apps.perfil.views import hoja_vida_publica, cv_hacker_neon, descargar_cv_pdf, descargar_cv_completo_pdf, ver_foto_perfil, seleccionar_plantilla
+from apps.perfil.views import hoja_vida_publica, cv_hacker_neon, descargar_cv_pdf, descargar_cv_completo_pdf, ver_foto_perfil, seleccionar_plantilla, fondo_professional, fondo_modern
 from apps.trayectoria.views import ver_certificado_curso, ver_certificado_reconocimiento, ver_certificado_experiencia
 
 urlpatterns = [
@@ -32,6 +32,8 @@ urlpatterns = [
 
     # Secure profile photo endpoint
     path('foto-perfil/', ver_foto_perfil, name='ver_foto_perfil'),
+    path('fondo-professional/', fondo_professional, name='fondo_professional'),
+    path('fondo-modern/', fondo_modern, name='fondo_modern'),
     path('seleccionar-plantilla/', seleccionar_plantilla, name='seleccionar_plantilla'),
     path('admin/', admin.site.urls),
 ]

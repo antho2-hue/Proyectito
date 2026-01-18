@@ -167,7 +167,7 @@
         <div class="templates-grid">
             <!-- Plantilla 1: Professional Elegant -->
             <div class="template-card">
-                <div class="template-preview" style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);">
+                <div class="template-preview" style="{% if perfil and perfil.fondo_professional_url %}background-image: url('{% url 'fondo_professional' %}'); background-size: cover; background-position: center;{% else %}background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);{% endif %}">
                     <span class="template-badge">Profesional</span>
                 </div>
                 <div class="template-info">
@@ -189,7 +189,7 @@
 
             <!-- Plantilla 2: Modern Clean -->
             <div class="template-card">
-                <div class="template-preview" style="background: linear-gradient(135deg, #e6f2ff 0%, #fff5e6 100%);">
+                <div class="template-preview" style="{% if perfil and perfil.fondo_modern_url %}background-image: url('{% url 'fondo_modern' %}'); background-size: cover; background-position: center;{% else %}background: linear-gradient(135deg, #e6f2ff 0%, #fff5e6 100%);{% endif %}">
                     <span class="template-badge">Moderno</span>
                 </div>
                 <div class="template-info">

@@ -290,7 +290,8 @@ def cv_hacker_neon(request):
 
 def seleccionar_plantilla(request):
     """Vista para seleccionar plantilla de CV."""
-    return render(request, 'perfil/seleccionar_plantilla.html')
+    perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
+    return render(request, 'perfil/seleccionar_plantilla.html', {'perfil': perfil})
 
 
 def descargar_cv_pdf(request):
@@ -434,9 +435,120 @@ def descargar_cv_pdf(request):
     except Exception as e:
         return HttpResponse(f'Error generating PDF: {str(e)}', status=500)
 
-    response = HttpResponse(pdf_bytes, content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="cv_{plantilla}.pdf"'
-    return response
+    # After generating the CV PDF, append any uploaded certificates (courses, experiences, recognitions)
+    try:
+        from pypdf import PdfMerger
+
+        merger = PdfMerger()
+        merger.append(BytesIO(pdf_bytes))
+
+        cursos_with_cert = CursoRealizado.objects.filter(idperfilconqueestaactivo=perfil).exclude(rutacertificado__isnull=True).exclude(rutacertificado__exact='').order_by('pk')
+        experiencias_with_cert = ExperienciaLaboral.objects.filter(idperfilconqueestaactivo=perfil).exclude(rutacertificado__isnull=True).exclude(rutacertificado__exact='').order_by('pk')
+        reconocimientos_with_cert = Reconocimiento.objects.filter(idperfilconqueestaactivo=perfil).exclude(rutacertificado__isnull=True).exclude(rutacertificado__exact='').order_by('pk')
+
+        def append_certificate(cert_bytes, filename='', titulo=''):
+            lower = (filename or '').lower()
+            try:
+                # If the certificate is an image, render it inside the wrapper with the title
+                if lower.endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp')):
+                    b64 = base64.b64encode(cert_bytes).decode('ascii')
+                    mime, _ = mimetypes.guess_type(filename)
+                    if not mime:
+                        mime = 'image/png'
+                    data_uri = f"data:{mime};base64,{b64}"
+                    cert_html = render_to_string('perfil/pdf/certificado_wrapper.html', {
+                        'titulo': titulo or '',
+                        'image_data_uri': data_uri,
+                    })
+                    cert_html = _prepare_html_for_pdf(cert_html, request)
+                    cert_pdf = HTML(string=cert_html, base_url=request.build_absolute_uri('/')).write_pdf(
+                        stylesheets=[CSS(string='@page { size: A4; margin: 15mm }')]
+                    )
+                    merger.append(BytesIO(cert_pdf))
+                else:
+                    # For PDFs, create a title page and try to overlay it onto the first page.
+                    try:
+                        title_html = render_to_string('perfil/pdf/certificado_wrapper.html', {
+                            'titulo': titulo or '',
+                            'image_data_uri': '__title_only__',
+                        })
+                        title_html = _prepare_html_for_pdf(title_html, request)
+                        title_pdf_bytes = HTML(string=title_html, base_url=request.build_absolute_uri('/')).write_pdf(
+                            stylesheets=[CSS(string='@page { size: A4; margin: 15mm }')]
+                        )
+
+                        # Try merging title onto first page of the certificate
+                        cert_reader = PdfReader(BytesIO(cert_bytes))
+                        title_reader = PdfReader(BytesIO(title_pdf_bytes))
+                        if len(cert_reader.pages) == 0:
+                            return
+
+                        writer = PdfWriter()
+                        try:
+                            first = cert_reader.pages[0]
+                            if len(title_reader.pages) > 0:
+                                first.merge_page(title_reader.pages[0])
+                            writer.add_page(first)
+                        except Exception:
+                            # If merge fails, prepend title page separately
+                            for p in title_reader.pages:
+                                writer.add_page(p)
+
+                        for p in cert_reader.pages[1:]:
+                            writer.add_page(p)
+
+                        buf = BytesIO()
+                        writer.write(buf)
+                        merger.append(BytesIO(buf.getvalue()))
+                    except Exception:
+                        # fallback: append original bytes
+                        merger.append(BytesIO(cert_bytes))
+            except Exception:
+                return
+
+        for curso in cursos_with_cert:
+            try:
+                cert_url = getattr(curso, 'rutacertificado', None)
+                if cert_url:
+                    cert_bytes, filename = _download_blob_from_url(cert_url)
+                    title = f"Cursos realizados - {getattr(curso, 'nombrecurso', '')}"
+                    append_certificate(cert_bytes, filename or '', title)
+            except Exception:
+                continue
+
+        for exp in experiencias_with_cert:
+            try:
+                cert_url = getattr(exp, 'rutacertificado', None)
+                if cert_url:
+                    cert_bytes, filename = _download_blob_from_url(cert_url)
+                    title = f"Experiencia laboral - {getattr(exp, 'cargodesempenado', '')} en {getattr(exp, 'nombrempresa', '')}"
+                    append_certificate(cert_bytes, filename or '', title)
+            except Exception:
+                continue
+
+        for recon in reconocimientos_with_cert:
+            try:
+                cert_url = getattr(recon, 'rutacertificado', None)
+                if cert_url:
+                    cert_bytes, filename = _download_blob_from_url(cert_url)
+                    title = f"Reconocimiento - {getattr(recon, 'descripcionreconocimiento', '')}"
+                    append_certificate(cert_bytes, filename or '', title)
+            except Exception:
+                continue
+
+        out = BytesIO()
+        merger.write(out)
+        merger.close()
+        out.seek(0)
+        merged_bytes = out.getvalue()
+        response = HttpResponse(merged_bytes, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="cv_{plantilla}_completo.pdf"'
+        return response
+    except Exception:
+        # If merging fails for any reason, return the original CV PDF
+        response = HttpResponse(pdf_bytes, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="cv_{plantilla}.pdf"'
+        return response
 
 
 def descargar_cv_completo_pdf(request):
@@ -513,6 +625,50 @@ def descargar_cv_completo_pdf(request):
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True,
     ).order_by('nombreproducto')
+    
+    # ===============================
+# 1. Generar PDF base del CV
+# ===============================
+
+    # Generar HTML del CV base
+    context = {
+        'perfil': perfil,
+        'experiencias': experiencias,
+        'experiencias_qs': experiencias_qs,
+        'cursos': cursos,
+        'reconocimientos': reconocimientos,
+        'productos_academicos': productos_academicos,
+        'productos_laborales': productos_laborales,
+        'ventas_garage': ventas_garage,
+    }
+
+    html = render_to_string(
+        'perfil/pdf/cv_template_web.html',
+        context,
+        request=request
+    )
+
+    html = _prepare_html_for_pdf(html, request)
+
+    css_path = os.path.join(
+        os.path.dirname(__file__),
+        'static',
+        'perfil',
+        'css',
+        'pdf',
+        'cv_template_web.css'
+    )
+
+    with open(css_path, 'r', encoding='utf-8') as f:
+        css_text = f.read()
+
+    pdf_bytes = HTML(
+        string=html,
+        base_url=request.build_absolute_uri('/')
+    ).write_pdf(
+        stylesheets=[CSS(string=css_text)]
+    )
+
 
     # Collect all available certificates for selection
     certificados_meta = []
@@ -731,6 +887,64 @@ def ver_foto_perfil(request):
     if not mime:
         mime = 'image/png'
 
+    resp = HttpResponse(data, content_type=mime)
+    resp['Content-Disposition'] = f'inline; filename="{filename}"'
+    return resp
+
+
+def fondo_professional(request):
+    """Proxy to serve the professional template background image stored in Azure."""
+    perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
+    if not perfil:
+        return HttpResponse('No profile found.', status=404)
+    blob_url = getattr(perfil, 'fondo_professional_url', None)
+    if not blob_url:
+        return HttpResponse('No background uploaded.', status=404)
+
+    try:
+        data, filename = _download_blob_from_url(blob_url)
+    except Exception:
+        try:
+            from urllib.request import urlopen
+            from urllib.parse import urlparse
+            resp_fetch = urlopen(blob_url)
+            data = resp_fetch.read()
+            filename = os.path.basename(urlparse(blob_url).path) or 'background.png'
+        except Exception as exc:
+            return HttpResponse(f'Error fetching background: {exc}', status=500)
+
+    mime, _ = mimetypes.guess_type(filename)
+    if not mime:
+        mime = 'image/png'
+    resp = HttpResponse(data, content_type=mime)
+    resp['Content-Disposition'] = f'inline; filename="{filename}"'
+    return resp
+
+
+def fondo_modern(request):
+    """Proxy to serve the modern template background image stored in Azure."""
+    perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
+    if not perfil:
+        return HttpResponse('No profile found.', status=404)
+    blob_url = getattr(perfil, 'fondo_modern_url', None)
+    if not blob_url:
+        return HttpResponse('No background uploaded.', status=404)
+
+    try:
+        data, filename = _download_blob_from_url(blob_url)
+    except Exception:
+        try:
+            from urllib.request import urlopen
+            from urllib.parse import urlparse
+            resp_fetch = urlopen(blob_url)
+            data = resp_fetch.read()
+            filename = os.path.basename(urlparse(blob_url).path) or 'background.png'
+        except Exception as exc:
+            return HttpResponse(f'Error fetching background: {exc}', status=500)
+
+    mime, _ = mimetypes.guess_type(filename)
+    if not mime:
+        mime = 'image/png'
     resp = HttpResponse(data, content_type=mime)
     resp['Content-Disposition'] = f'inline; filename="{filename}"'
     return resp
