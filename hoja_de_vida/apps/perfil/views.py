@@ -466,7 +466,7 @@ def descargar_cv_pdf(request):
                     )
                     merger.append(BytesIO(cert_pdf))
                 else:
-                    # For PDFs, create a title page and try to overlay it onto the first page.
+                    # For PDFs, create a title page and prepend it before the certificate pages.
                     try:
                         title_html = render_to_string('perfil/pdf/certificado_wrapper.html', {
                             'titulo': titulo or '',
@@ -477,24 +477,16 @@ def descargar_cv_pdf(request):
                             stylesheets=[CSS(string='@page { size: A4; margin: 15mm }')]
                         )
 
-                        # Try merging title onto first page of the certificate
                         cert_reader = PdfReader(BytesIO(cert_bytes))
                         title_reader = PdfReader(BytesIO(title_pdf_bytes))
                         if len(cert_reader.pages) == 0:
                             return
 
+                        # Build a new PDF where the title pages come first, then the certificate pages
                         writer = PdfWriter()
-                        try:
-                            first = cert_reader.pages[0]
-                            if len(title_reader.pages) > 0:
-                                first.merge_page(title_reader.pages[0])
-                            writer.add_page(first)
-                        except Exception:
-                            # If merge fails, prepend title page separately
-                            for p in title_reader.pages:
-                                writer.add_page(p)
-
-                        for p in cert_reader.pages[1:]:
+                        for p in title_reader.pages:
+                            writer.add_page(p)
+                        for p in cert_reader.pages:
                             writer.add_page(p)
 
                         buf = BytesIO()
@@ -795,26 +787,13 @@ def descargar_cv_completo_pdf(request):
                             if len(cert_reader.pages) == 0:
                                 continue
 
-                            # If we have a title overlay page, merge it on top of the first certificate page
+                            # Prepend title pages (if available) before certificate pages for reliable rendering
                             if title_reader and len(title_reader.pages) > 0:
-                                try:
-                                    cert_first = cert_reader.pages[0]
-                                    overlay = title_reader.pages[0]
-                                    cert_first.merge_page(overlay)
-                                    writer.add_page(cert_first)
-                                    # Add remaining certificate pages
-                                    for p in cert_reader.pages[1:]:
-                                        writer.add_page(p)
-                                except Exception:
-                                    # Fallback: append title page then certificate pages
-                                    for p in title_reader.pages:
-                                        writer.add_page(p)
-                                    for p in cert_reader.pages:
-                                        writer.add_page(p)
-                            else:
-                                # No title overlay available — just append certificate pages
-                                for p in cert_reader.pages:
+                                for p in title_reader.pages:
                                     writer.add_page(p)
+
+                            for p in cert_reader.pages:
+                                writer.add_page(p)
                         except Exception:
                             pass
             except Exception:
