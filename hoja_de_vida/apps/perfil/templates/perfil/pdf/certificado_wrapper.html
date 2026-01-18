@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  {% load static %}
+  <meta charset="utf-8">
+  <title>Certificado - {{ titulo }}</title>
+  <style>
+    @page { size: A4; margin: 2cm }
+    :root{ --dark:#0f172a; --primary:#2563eb; --accent:#38bdf8; --card:#ffffff; --text:#1e293b; }
+    body{ margin:0; font-family: Helvetica, Arial, sans-serif; color:var(--text); -webkit-print-color-adjust: exact; background: transparent; }
+    .page{ box-sizing:border-box; display:flex; flex-direction:column; justify-content:flex-start; width:100%; min-height:calc(297mm - 40mm); padding:0; background: transparent; page-break-after: always; }
+    /* Image previews get a white page so the image looks full-bleed */
+    .page.image-page { background: #fff; }
+    /* Overlay-only pages must be transparent so the underlying PDF stays visible */
+    .page.overlay { background: transparent; }
+    .header{ background:linear-gradient(90deg,var(--primary),var(--accent)); color:#fff; padding:18px 24px; border-radius:8px; font-weight:700; font-size:18px; }
+    .title{ margin:16px 24px; font-size:18pt; font-weight:700; color:var(--dark); }
+    .preview{ margin:18px 24px; border:1px solid #e5e7eb; padding:12px; border-radius:8px; display:flex; justify-content:center; align-items:center; flex:1; }
+    .preview img{ max-width:100%; max-height:calc(297mm - 80mm); object-fit:contain; display:block; }
+    .preview-empty{ width:100%; height:auto; display:block; }
+    .footer-note{ margin:16px 24px; font-size:10pt; color:#64748b; }
+  </style>
+</head>
+<body>
+  <div class="page {% if image_data_uri == "__title_only__" %}overlay{% elif image_data_uri %}image-page{% endif %}">
+    <div class="header">Certificado</div>
+    <div class="title">{{ titulo }}</div>
+    <div class="preview">
+      {% if image_data_uri == "__title_only__" %}
+        <!-- Render title-only overlay (no preview image) -->
+        <div class="preview-empty" aria-hidden="true"></div>
+      {% elif image_data_uri %}
+        <img src="{{ image_data_uri }}" alt="{{ titulo }}">
+      {% else %}
+        <!-- PDF certificate will be merged into the final document; keep preview empty -->
+        <div class="preview-empty" aria-hidden="true"></div>
+      {% endif %}
+    </div>
+
+  </div>
+</body>
+</html>

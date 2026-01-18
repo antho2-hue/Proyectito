@@ -1,0 +1,252 @@
+/* hoja_vida.css — Diseño profesional, juvenil y compatible con PDF (refinado) */
+
+/* 1. Estilos generales */
+body {
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: #f6f7fb; /* gris muy suave */
+  color: #263238;
+  line-height: 1.5;
+  margin: 0;
+  padding: 24px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.cv-container {
+  max-width: 960px;
+  margin: 0 auto;
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 8px; /* esquinas suaves */
+  border: 1px solid #e6e9ef;
+  /* Sombra para navegador (xhtml2pdf la ignora) */
+  box-shadow: 0 2px 6px rgba(10,30,60,0.06);
+} 
+
+/* Header refinado */
+.cv-header {
+  background: #0a66c2; /* azul principal */
+  color: #fff;
+  padding: 22px 24px;
+  border-radius: 6px; /* borde suave */
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.cv-header h1 {
+  margin: 0 0 6px 0;
+  font-size: 34px; /* aumentado a 32-36px */
+  font-weight: 700;
+  line-height: 1.05;
+}
+.cv-header p {
+  margin: 0;
+  opacity: 0.9; /* subtítulo con opacidad */
+  font-size: 14px;
+}
+.cv-header .btn-admin {
+  float: right;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+/* Header layout helpers */
+.header-left { overflow: hidden; }
+.header-photo, .cv-photo img { float: left; width: 120px; height: 120px; object-fit: cover; margin-right: 16px; border-radius: 6px; }
+.header-info { overflow: hidden; }
+.header-info h1 { color: #fff; margin: 0; }
+.subtitle { color: rgba(255,255,255,0.95); font-size: 14px; margin-top: 6px; }
+
+/* Nuevo: estilos del header editorial */
+.header {
+  background: linear-gradient(90deg,#0a66c2 0%, #1370d7 100%);
+  color: #fff;
+  padding: 18px;
+  border-radius: 8px;
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+.profile-photo {
+  float: left;
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border: 6px solid #fff;
+  border-radius: 6px;
+  margin-right: 18px;
+}
+.profile-photo.placeholder {
+  float: left;
+  width: 200px;
+  height: 200px;
+  border-radius: 6px;
+  background: #eaf4ff;
+  border: 6px solid #fff;
+  margin-right: 18px;
+}
+.header-right { overflow: hidden; }
+.header-right .name {
+  font-size: 30px;
+  font-weight: 700;
+  margin: 6px 0 8px;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+.header-right .job-title {
+  font-size: 14px;
+  color: rgba(255,255,255,0.95);
+  margin-bottom: 6px;
+}
+
+
+/* Footer / actions */
+.footer-actions { clear: both; text-align: center; padding: 18px 10px; }
+.footer-actions .actions { margin-top: 8px; }
+.btn { display: inline-block; padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #fff; font-weight: 700; }
+.btn.primary { background: #2e7d32; }
+.btn { background: #0a66c2; }
+
+/* Certificate row */
+.cert-row { margin-top: 8px; }
+.cert-row label { margin-right: 10px; font-size: 13px; }
+.cert-row a { margin-left: 6px; font-size: 13px; }
+
+/* Role and date */
+.role { display: block; font-size: 15px; color: #0a3d6b; }
+
+/* Footer form button styles */
+.cv-footer button.btn-download {
+  padding: 10px 18px;
+  background: #2e7d32;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Small visual tweaks */
+.item { margin-bottom: 12px; }
+
+/* Cuerpo */
+.cv-body {
+  overflow: hidden; /* clearfix simple */
+  padding: 8px 4px;
+}
+
+/* Sidebar */
+.cv-sidebar {
+  float: left;
+  width: 28%;
+  background: #f6fbff;
+  padding: 20px;
+  box-sizing: border-box;
+  border-left: 6px solid #0a66c2;
+  border-radius: 6px;
+  font-size: 13.2px;
+}
+
+.cv-sidebar h3 {
+  margin: 0 0 10px 0;
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  color: #0a3d6b;
+}
+
+.cv-sidebar .section { margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid rgba(0,0,0,0.04); }
+.cv-sidebar .cv-photo img { max-width: 100%; height: auto; display: block; border-radius: 6px; }
+.cv-sidebar ul { padding-left: 14px; margin: 6px 0; }
+
+/* Cert row */
+.cert-row { margin-top: 8px; }
+.cert-row label { margin-right: 8px; font-size: 13px; }
+.cert-row a { margin-left: 6px; color: #0a66c2; text-decoration: none; }
+
+/* Contenido principal */
+.cv-content {
+  float: right;
+  width: 70%;
+  padding: 0 22px;
+  box-sizing: border-box;
+  background: transparent;
+} 
+
+.cv-content section { margin-bottom: 20px; }
+.cv-content h2 {
+  font-size: 18px;
+  margin: 0 0 12px 0;
+  color: #0a3d6b;
+  font-weight: 700;
+  padding-bottom: 6px;
+}
+.cv-content h2:after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: #0a66c2;
+  margin-top: 8px;
+  border-radius: 2px;
+}
+
+.cv-content article {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(10,102,194,0.06);
+  background: #ffffff;
+}
+
+.cv-content strong { color: #0a0a0a; }
+.cv-content .date { color: #8b8b8b; font-size: 12px; }
+.cv-content p { margin: 6px 0; }
+
+/* Footer / actions refinadas */
+.footer-actions {
+  clear: both;
+  text-align: center;
+  padding: 20px 10px;
+}
+.footer-actions .actions { margin-top: 10px; }
+.btn {
+  display: inline-block;
+  padding: 10px 22px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 700;
+  background: #0a66c2;
+  border: none;
+}
+.btn.primary { background: #2e7d32; }
+.btn + .btn { margin-left: 10px; }
+
+/* Reglas de impresión para conservar legibilidad y ahorrar tinta */
+@media print {
+  .profile-photo, .profile-photo.placeholder { float: none; display: block; margin: 0 auto 12px; width: 180px; height: 180px; border: none; }
+  .cv-sidebar, .cv-content { float: none; width: 100%; padding: 6px 0; }
+  .cv-container { border: none; box-shadow: none; padding: 12px; }
+  .header { border-radius: 0; padding: 12px; }
+  .btn { padding: 8px 12px; font-size: 12px; }
+  /* evitar fondos pesados en impresión */
+  .header, .cv-sidebar { background: none !important; }
+}
+
+/* Enlaces y botones */
+a { color: #0a66c2; }
+
+/* Responsive: stack columns for small screens and ensure print friendliness */
+@media print, (max-width: 720px) {
+  .cv-sidebar, .cv-content { float: none; width: 100%; }
+  .cv-header .btn-admin { float: none; display: inline-block; margin-top: 8px; }
+  .cv-container { padding: 12px; border-radius: 0; box-shadow: none; }
+  .cv-sidebar { border-left: none; border-top: 4px solid #0a66c2; }
+}
+
+/* Mantener compatibilidad con xhtml2pdf: evitar reglas complejas */

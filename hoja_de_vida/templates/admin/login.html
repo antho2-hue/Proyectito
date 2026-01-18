@@ -1,0 +1,101 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="/static/admin/css/cyber_login.css" />{% endblock %}
+
+{% block bodyclass %}{{ block.super }}{% endblock %}
+
+{% block usertools %}{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  <div class="cyber-login-container">
+    <div class="cyber-header">
+      <div class="terminal-header">
+        <span class="terminal-title">SYSTEM ACCESS TERMINAL</span>
+        <span class="terminal-status">[SECURE CONNECTION ESTABLISHED]</span>
+      </div>
+      <div class="glitch-line"></div>
+    </div>
+
+    <div class="login-form-wrapper">
+      <form action="{{ app_path }}" method="post" id="login-form">{% csrf_token %}
+
+        {% if form.errors and not form.non_field_errors %}
+        <div class="error-container">
+          <div class="error-message">
+            <span class="error-icon">⚠</span>
+            {% if form.errors.items|length == 1 %}{% trans "Please correct the error below." %}{% else %}{% trans "Please correct the errors below." %}{% endif %}
+          </div>
+        </div>
+        {% endif %}
+
+        {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}
+        <div class="error-container">
+          <div class="error-message">
+            <span class="error-icon">⚠</span>
+            {{ error }}
+          </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="form-group">
+          <label for="id_username" class="cyber-label">
+            <span class="label-text">USER ID:</span>
+          </label>
+          <div class="input-container">
+            <span class="input-prefix">></span>
+            {{ form.username }}
+          </div>
+          {% if form.username.errors %}
+          <div class="field-error">
+            {% for error in form.username.errors %}
+            <span class="error-icon">✗</span> {{ error }}
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="id_password" class="cyber-label">
+            <span class="label-text">ACCESS CODE:</span>
+          </label>
+          <div class="input-container">
+            <span class="input-prefix">></span>
+            {{ form.password }}
+          </div>
+          {% if form.password.errors %}
+          <div class="field-error">
+            {% for error in form.password.errors %}
+            <span class="error-icon">✗</span> {{ error }}
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="cyber-button">
+            <span class="button-text">INITIALIZE ACCESS</span>
+            <span class="button-glow"></span>
+          </button>
+        </div>
+
+        <input type="hidden" name="next" value="{{ next }}" />
+      </form>
+    </div>
+
+    <div class="cyber-footer">
+      <div class="system-info">
+        <span class="info-line">[ADMIN PANEL v2.0.7]</span>
+        <span class="info-line">[ENCRYPTION: AES-256]</span>
+        <span class="info-line">[SECURITY LEVEL: MAXIMUM]</span>
+      </div>
+      <div class="scan-line"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

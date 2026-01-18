@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  {% load static %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CV - {{ perfil.nombres }} {{ perfil.apellidos }}</title>
+  <link rel="stylesheet" href="{% static 'perfil/css/cv_pdf.css' %}">
+  <style>
+    /* Estilos inline adicionales para garantizar compatibilidad con xhtml2pdf */
+    @page {
+      size: A4;
+      margin: 15mm 20mm;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Portada profesional -->
+  <div class="cover-page">
+    <div class="cover-header">
+      <h1 class="cover-title">Hoja de Vida Profesional</h1>
+      <p class="cover-subtitle">CV Ejecutivo</p>
+    </div>
+
+    {% if perfil.foto %}
+      <img src="{{ foto_perfil_proxy_url }}" alt="Foto de perfil" class="profile-photo-cover">
+    {% else %}
+      <div class="profile-photo-cover" style="background: linear-gradient(135deg, #38bdf8, #2563eb); display: flex; align-items: center; justify-content: center; color: white; font-size: 48pt; font-weight: bold;">
+        {{ perfil.nombres|first }}{{ perfil.apellidos|first }}
+      </div>
+    {% endif %}
+
+    <h2 class="cover-name">{{ perfil.nombres }} {{ perfil.apellidos }}</h2>
+
+    {% if perfil.descripcionperfil %}
+      <p class="cover-profession">{{ perfil.descripcionperfil }}</p>
+    {% endif %}
+
+    <div class="cover-contact">
+      {% if perfil.telefonoconvencional %}
+        <p><strong>Teléfono:</strong> {{ perfil.telefonoconvencional }}</p>
+      {% endif %}
+      {% if perfil.telefonofijo %}
+        <p><strong>Teléfono fijo:</strong> {{ perfil.telefonofijo }}</p>
+      {% endif %}
+      {% if perfil.direcciondomiciliaria %}
+        <p><strong>Dirección:</strong> {{ perfil.direcciondomiciliaria }}</p>
+      {% endif %}
+      {% if perfil.sitioweb %}
+        <p><strong>Web:</strong> {{ perfil.sitioweb }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Contenido del CV -->
+  <div class="cv-content">
+    <!-- Header del CV -->
+    <div class="cv-header">
+      <div class="cv-photo">
+        {% if perfil.foto %}
+          <img src="{{ foto_perfil_proxy_url }}" alt="Foto de perfil">
+        {% else %}
+          <div style="width: 120pt; height: 120pt; border-radius: 50%; background: linear-gradient(135deg, #38bdf8, #2563eb); display: flex; align-items: center; justify-content: center; color: white; font-size: 36pt; font-weight: bold;">
+            {{ perfil.nombres|first }}{{ perfil.apellidos|first }}
+          </div>
+        {% endif %}
+      </div>
+      <div class="cv-header-info">
+        <h1>{{ perfil.nombres }} {{ perfil.apellidos }}</h1>
+        {% if perfil.descripcionperfil %}
+          <div class="profession">{{ perfil.descripcionperfil }}</div>
+        {% endif %}
+        <div class="description">
+          Profesional con amplia experiencia en el sector, comprometido con la excelencia y el desarrollo continuo.
+        </div>
+      </div>
+    </div>
+
+    <!-- Información de contacto y datos personales -->
+    <div class="two-column-layout">
+      <div class="column">
+        <div class="contact-info">
+          <h3>Información de Contacto</h3>
+          <ul class="contact-list">
+            {% if perfil.telefonoconvencional %}
+              <li><strong>Teléfono:</strong> {{ perfil.telefonoconvencional }}</li>
+            {% endif %}
+            {% if perfil.telefonofijo %}
+              <li><strong>Teléfono fijo:</strong> {{ perfil.telefonofijo }}</li>
+            {% endif %}
+            {% if perfil.direcciondomiciliaria %}
+              <li><strong>Dirección:</strong> {{ perfil.direcciondomiciliaria }}</li>
+            {% endif %}
+            {% if perfil.direcciontrabajo %}
+              <li><strong>Dirección laboral:</strong> {{ perfil.direcciontrabajo }}</li>
+            {% endif %}
+            {% if perfil.sitioweb %}
+              <li><strong>Sitio web:</strong> {{ perfil.sitioweb }}</li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="contact-info">
+          <h3>Datos Personales</h3>
+          <table class="personal-data-table">
+            {% if perfil.nacionalidad %}
+              <tr><th>Nacionalidad:</th><td>{{ perfil.nacionalidad }}</td></tr>
+            {% endif %}
+            {% if perfil.lugarnacimiento %}
+              <tr><th>Lugar de nacimiento:</th><td>{{ perfil.lugarnacimiento }}</td></tr>
+            {% endif %}
+            {% if perfil.fechanacimiento %}
+              <tr><th>Fecha de nacimiento:</th><td>{{ perfil.fechanacimiento|date:"d/m/Y" }}</td></tr>
+            {% endif %}
+            {% if perfil.numerocedula %}
+              <tr><th>Cédula:</th><td>{{ perfil.numerocedula }}</td></tr>
+            {% endif %}
+            {% if perfil.sexo %}
+              <tr><th>Sexo:</th><td>{{ perfil.sexo }}</td></tr>
+            {% endif %}
+            {% if perfil.estadocivil %}
+              <tr><th>Estado civil:</th><td>{{ perfil.estadocivil }}</td></tr>
+            {% endif %}
+            {% if perfil.licenciaconducir %}
+              <tr><th>Licencia de conducir:</th><td>{{ perfil.licenciaconducir }}</td></tr>
+            {% endif %}
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Habilidades e Idiomas -->
+    {% if habilidades or idiomas %}
+      <div class="two-column-layout">
+        {% if habilidades %}
+          <div class="column">
+            <h3 class="section-title">Habilidades Técnicas</h3>
+            <div class="skills-languages">
+              {% for habilidad in habilidades %}
+                <span class="skill-item">{{ habilidad }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        {% if idiomas %}
+          <div class="column">
+            <h3 class="section-title">Idiomas</h3>
+            <div class="skills-languages">
+              {% for idioma in idiomas %}
+                <span class="language-item">{{ idioma }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <!-- Experiencia Laboral -->
+    <div class="section experience-section">
+      <h2 class="section-title">Experiencia Profesional</h2>
+      {% if experiencias %}
+        {% for empresa in experiencias %}
+          {% for e in empresa.experiencias %}
+            <div class="item">
+              <div class="item-title">{{ e.cargodesempenado }}</div>
+              <div class="item-subtitle">{{ e.nombrempresa|default:empresa.empresa|default:"Empresa sin nombre" }}</div>
+              <div class="item-date">
+                {% if e.fechainiciogestion %}{{ e.fechainiciogestion|date:"M Y" }}{% endif %}
+                {% if e.fechafingestion %} - {{ e.fechafingestion|date:"M Y" }}{% endif %}
+              </div>
+              {% if e.descripcionfunciones %}
+                <p>{{ e.descripcionfunciones }}</p>
+              {% endif %}
+
+              <div class="item-meta">
+                <div class="item-meta-row">
+                  {% if e.lugarempresa %}
+                    <div class="item-meta-item">
+                      <strong>Ubicación:</strong> {{ e.lugarempresa }}
+                    </div>
+                  {% endif %}
+                  {% if e.nombrecontactoempresarial %}
+                    <div class="item-meta-item">
+                      <strong>Contacto:</strong> {{ e.nombrecontactoempresarial }}
+                    </div>
+                  {% endif %}
+                </div>
+                <div class="item-meta-row">
+                  {% if e.telefonocontactoempresarial %}
+                    <div class="item-meta-item">
+                      <strong>Teléfono:</strong> {{ e.telefonocontactoempresarial }}
+                    </div>
+                  {% endif %}
+                  {% if e.emailempresa %}
+                    <div class="item-meta-item">
+                      <strong>Email:</strong> {{ e.emailempresa }}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% endfor %}
+      {% else %}
+        <p style="font-style: italic; color: #64748b;">No hay experiencia laboral registrada.</p>
+      {% endif %}
+    </div>
+
+    <!-- Educación y Formación -->
+    <div class="section education-section">
+      <h2 class="section-title">Educación & Formación</h2>
+
+      <!-- Educación formal -->
+      {% if educaciones %}
+        {% for edu in educaciones %}
+          <div class="item">
+            <div class="item-title">{{ edu.titulo }}</div>
+            <div class="item-subtitle">{{ edu.institucion }}</div>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <!-- Cursos realizados -->
+      {% if cursos %}
+        {% for c in cursos %}
+          <div class="item">
+            <div class="item-title">{{ c.nombrecurso }}</div>
+            <div class="item-subtitle">{{ c.entidadpatrocinadora|default:"Institución sin nombre" }}</div>
+            <div class="item-date">
+              {% if c.fechainicio %}{{ c.fechainicio|date:"M Y" }}{% endif %}
+              {% if c.fechafin %} - {{ c.fechafin|date:"M Y" }}{% endif %}
+              {% if c.totalhoras %} ({{ c.totalhoras }} horas){% endif %}
+            </div>
+            {% if c.descripcioncurso %}
+              <p>{{ c.descripcioncurso }}</p>
+            {% endif %}
+
+            <div class="item-meta">
+              <div class="item-meta-row">
+                {% if c.nombrecontactoauspicia %}
+                  <div class="item-meta-item">
+                    <strong>Contacto:</strong> {{ c.nombrecontactoauspicia }}
+                  </div>
+                {% endif %}
+                {% if c.telefonocontactoauspicia %}
+                  <div class="item-meta-item">
+                    <strong>Teléfono:</strong> {{ c.telefonocontactoauspicia }}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% if not educaciones and not cursos %}
+        <p style="font-style: italic; color: #64748b;">No hay registros educativos.</p>
+      {% endif %}
+    </div>
+
+    <!-- Reconocimientos -->
+    {% if reconocimientos %}
+      <div class="section certificates-section">
+        <h2 class="section-title">Reconocimientos</h2>
+        {% for r in reconocimientos %}
+          <div class="item">
+            <div class="item-title">{{ r.tiporeconocimiento }}</div>
+            <div class="item-subtitle">{{ r.entidadpatrocinadora|default:"Institución sin nombre" }}</div>
+            {% if r.fechareconocimiento %}
+              <div class="item-date">{{ r.fechareconocimiento|date:"M Y" }}</div>
+            {% endif %}
+            {% if r.descripcionreconocimiento %}
+              <p>{{ r.descripcionreconocimiento }}</p>
+            {% endif %}
+
+            <div class="item-meta">
+              <div class="item-meta-row">
+                {% if r.nombrecontactoauspicia %}
+                  <div class="item-meta-item">
+                    <strong>Contacto:</strong> {{ r.nombrecontactoauspicia }}
+                  </div>
+                {% endif %}
+                {% if r.telefonocontactoauspicia %}
+                  <div class="item-meta-item">
+                    <strong>Teléfono:</strong> {{ r.telefonocontactoauspicia }}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- Productos Académicos -->
+    {% if productos_academicos %}
+      <div class="section">
+        <h2 class="section-title">Productos Académicos</h2>
+        {% for pr in productos_academicos %}
+          <div class="item">
+            <div class="item-title">{{ pr.nombrerecurso }}</div>
+            {% if pr.clasificador %}
+              <div class="item-subtitle">{{ pr.clasificador }}</div>
+            {% endif %}
+            {% if pr.descripcion %}
+              <p>{{ pr.descripcion }}</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- Productos Laborales -->
+    {% if productos_laborales %}
+      <div class="section">
+        <h2 class="section-title">Productos Laborales</h2>
+        {% for producto in productos_laborales %}
+          <div class="item">
+            <div class="item-title">{{ producto.nombreproducto }}</div>
+            {% if producto.fechaproducto %}
+              <div class="item-date">{{ producto.fechaproducto|date:"M Y" }}</div>
+            {% endif %}
+            {% if producto.descripcion %}
+              <p>{{ producto.descripcion }}</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- Venta Garage -->
+    {% if ventas_garage %}
+      <div class="section">
+        <h2 class="section-title">Proyectos Personales</h2>
+        {% for venta in ventas_garage %}
+          <div class="item">
+            <div class="item-title">{{ venta.nombreproducto }}</div>
+            <div class="item-subtitle">Estado: {{ venta.estadoproducto|default:"Sin especificar" }}</div>
+            {% if venta.descripcion %}
+              <p>{{ venta.descripcion }}</p>
+            {% endif %}
+            {% if venta.valordelbien %}
+              <div class="item-meta">
+                <div class="item-meta-row">
+                  <div class="item-meta-item">
+                    <strong>Valor estimado:</strong> ${{ venta.valordelbien }}
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    {% load static %}
+    <meta charset="utf-8">
+    <title>{{ perfil.nombres }} {{ perfil.apellidos }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'perfil/css/cv_clean.css' %}">
+</head>
+<body>
+    <!-- Script de interacciones al final del body para mejor rendimiento -->
+    <script src="{% static 'perfil/js/gridsby_interactions.js' %}"></script>
+
+    <div class="cv-page">
+        <!-- ==========================================
+             HEADER CON EFECTO DIAGONAL
+             ========================================== -->
+        <header class="cv-header">
+            <div class="header-content">
+                <h1 class="full-name">{{ perfil.nombres }} {{ perfil.apellidos }}</h1>
+                {% if perfil.descripcionperfil %}
+                    <p class="profession">{{ perfil.descripcionperfil|upper }}</p>
+                {% endif %}
+            </div>
+            
+            <!-- FOTO DE PERFIL SUPERPUESTA - TEMPORALMENTE OCULTA PARA FUTURAS TAREAS -->
+            
+            {% if perfil.foto_perfil_url %}
+            <div class="photo-container">
+                <img src="{{ foto_perfil_proxy_url|default:perfil.foto_perfil_url }}" alt="{{ perfil.nombres }}" class="profile-photo">
+            </div>
+            {% else %}
+            <div class="photo-container">
+                <div class="profile-photo placeholder">
+                    {{ perfil.nombres|first }}{{ perfil.apellidos|first }}
+                </div>
+            </div>
+            {% endif %}
+            
+        </header>
+
+        <!-- ==========================================
+             MENÚ DE NAVEGACIÓN CON BOTONES FUNCIONALES
+             ========================================== -->
+        <nav class="nav-menu">
+            <a href="#home" class="nav-item nav-home">HOME</a>
+            <a href="#resume" class="nav-item nav-resume">RESUME</a>
+            <a href="#" onclick="window.print(); return false;" class="nav-item nav-portfolio">
+                <span class="nav-icon">📄</span>
+                IMPRIMIR PDF
+            </a>
+            <a href="{% url 'seleccionar_plantilla' %}" class="nav-item nav-feedback download-btn">
+                <span class="nav-icon">✓</span>
+                DESCARGAR
+            </a>
+            <a href="{% url 'admin:index' %}" class="nav-item nav-blog">
+                <span class="nav-icon">⚙️</span>
+                ADMIN
+            </a>
+        </nav>
+
+        <!-- ==========================================
+             LAYOUT DE DOS COLUMNAS
+             ========================================== -->
+        <div class="cv-body" id="home">
+            <!-- ==========================================
+                 SIDEBAR IZQUIERDO - INFORMACIÓN PERSONAL
+                 ========================================== -->
+            <aside class="cv-sidebar">
+                <section class="sidebar-section">
+                    <h2 class="sidebar-title">Datos Personales</h2>
+                    
+                    {% if perfil.nacionalidad %}
+                    <div class="info-item">
+                        <span class="info-label">Nacionalidad:</span>
+                        <span class="info-value">{{ perfil.nacionalidad }}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if perfil.lugarnacimiento %}
+                    <div class="info-item">
+                        <span class="info-label">Lugar de nacimiento:</span>
+                        <span class="info-value">{{ perfil.lugarnacimiento }}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if perfil.fechanacimiento %}
+                    <div class="info-item">
+                        <span class="info-label">Fecha de nacimiento:</span>
+                        <span class="info-value">{{ perfil.fechanacimiento|date:"Y-m-d" }}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if perfil.numerocedula %}
+                    <div class="info-item">
+                        <span class="info-label">Cédula:</span>
+                        <span class="info-value">{{ perfil.numerocedula }}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if perfil.sexo %}
+                    <div class="info-item">
+                        <span class="info-label">Sexo:</span>
+                        <span class="info-value">{{ perfil.sexo }}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if perfil.estadocivil %}
+                    <div class="info-item">
+                        <span class="info-label">Estado civil:</span>
+                        <span class="info-value">{{ perfil.estadocivil }}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if perfil.licenciaconducir %}
+                    <div class="info-item">
+                        <span class="info-label">Licencia:</span>
+                        <span class="info-value">{{ perfil.licenciaconducir }}</span>
+                    </div>
+                    {% endif %}
+                </section>
+
+                <section class="sidebar-section">
+                    <h2 class="sidebar-title">Contacto</h2>
+                    
+                    <div class="contact-grid">
+                        {% if perfil.telefonoconvencional %}
+                        <div class="contact-item">
+                            <span class="info-label">Teléfono convencional:</span>
+                            <span class="info-value">{{ perfil.telefonoconvencional }}</span>
+                        </div>
+                        {% endif %}
+
+                        {% if perfil.telefonofijo %}
+                        <div class="contact-item">
+                            <span class="info-label">Teléfono fijo:</span>
+                            <span class="info-value">{{ perfil.telefonofijo }}</span>
+                        </div>
+                        {% endif %}
+
+                        {% if perfil.direcciontrabajo %}
+                        <div class="contact-item">
+                            <span class="info-label">Dirección trabajo:</span>
+                            <span class="info-value">{{ perfil.direcciontrabajo }}</span>
+                        </div>
+                        {% endif %}
+
+                        {% if perfil.direcciondomiciliaria %}
+                        <div class="contact-item">
+                            <span class="info-label">Dirección domicilio:</span>
+                            <span class="info-value">{{ perfil.direcciondomiciliaria }}</span>
+                        </div>
+                        {% endif %}
+
+                        {% if perfil.sitioweb %}
+                        <div class="contact-item">
+                            <span class="info-label">Sitio web:</span>
+                            <a href="{{ perfil.sitioweb }}" target="_blank" class="info-value">{{ perfil.sitioweb }}</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </section>
+
+                <!-- RESUME OVERVIEW - Solo emojis -->
+                <section class="sidebar-section" id="resume">
+                    <h2 class="sidebar-title">Resume Overview</h2>
+                    <div class="resume-overview-grid sidebar-overview">
+                        <div class="overview-card-mini">
+                            <div class="overview-icon-mini">💼</div>
+                            <p class="overview-number-mini" data-count="{{ experiencias_qs.count }}">0</p>
+                        </div>
+                        <div class="overview-card-mini">
+                            <div class="overview-icon-mini">🎓</div>
+                            <p class="overview-number-mini" data-count="{{ cursos.count }}">0</p>
+                        </div>
+                        <div class="overview-card-mini">
+                            <div class="overview-icon-mini">🏆</div>
+                            <p class="overview-number-mini" data-count="{{ reconocimientos.count }}">0</p>
+                        </div>
+                        <div class="overview-card-mini">
+                            <div class="overview-icon-mini">📚</div>
+                            <p class="overview-number-mini" data-count="{{ productos_academicos.count }}">0</p>
+                        </div>
+                    </div>
+                </section>
+            </aside>
+
+            <!-- ==========================================
+                 CONTENIDO PRINCIPAL - COLUMNA DERECHA
+                 ========================================== -->
+            <main class="cv-main">
+                <!-- EXPERIENCIA LABORAL -->
+                <section class="main-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Experiencia Laboral</h2>
+                    </div>
+                    <div class="section-content">
+                        {% if experiencias_qs.exists %}
+                            {% for exp_group in experiencias %}
+                                {% for exp in exp_group.experiencias %}
+                                    <div class="experience-card">
+                                        {% if exp.cargodesempenado %}
+                                            <strong>{{ exp.cargodesempenado }}</strong>
+                                        {% endif %}
+                                        {% if exp.nombrempresa %}
+                                            <div>Empresa: {{ exp.nombrempresa }}</div>
+                                        {% endif %}
+                                        <div>
+                                            {% if exp.fechainiciogestion %}Desde: {{ exp.fechainiciogestion|date:"Y-m-d" }}{% endif %}
+                                            {% if exp.fechafingestion %} - Hasta: {{ exp.fechafingestion|date:"Y-m-d" }}{% else %}{% if exp.fechainiciogestion %} - Presente{% endif %}{% endif %}
+                                        </div>
+                                        {% if exp.descripcionfunciones %}
+                                            <p>{{ exp.descripcionfunciones }}</p>
+                                        {% endif %}
+
+                                        <!-- Información adicional de la empresa -->
+                                        {% if exp.lugarempresa %}
+                                            <div><strong>Ubicación:</strong> {{ exp.lugarempresa }}</div>
+                                        {% endif %}
+
+                                        {% if exp.emailempresa or exp.sitiowebempresa or exp.nombrecontactoempresarial or exp.telefonocontactoempresarial %}
+                                            <div class="company-contact-info" style="margin-top: 8px; padding: 8px; background: #f8f9fa; border-radius: 4px;">
+                                                <strong>Información de Contacto:</strong><br>
+                                                {% if exp.emailempresa %}
+                                                    <span style="color: #0066cc;">📧 {{ exp.emailempresa }}</span><br>
+                                                {% endif %}
+                                                {% if exp.sitiowebempresa %}
+                                                    <span style="color: #0066cc;">🌐 <a href="{{ exp.sitiowebempresa }}" target="_blank">{{ exp.sitiowebempresa }}</a></span><br>
+                                                {% endif %}
+                                                {% if exp.nombrecontactoempresarial %}
+                                                    <span>👤 {{ exp.nombrecontactoempresarial }}</span><br>
+                                                {% endif %}
+                                                {% if exp.telefonocontactoempresarial %}
+                                                    <span>📞 {{ exp.telefonocontactoempresarial }}</span>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+
+                                        {% if exp.rutacertificado %}
+                                            <div class="cert-actions-inline">
+                                                <a class="btn-cert-link" href="{% url 'ver_certificado_experiencia' exp.pk %}" target="_blank">Ver certificado</a>
+                                                <a class="btn-cert-link" href="{% url 'ver_certificado_experiencia' exp.pk %}?download=1">Descargar</a>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                        {% else %}
+                            <p class="empty-message">No hay experiencia laboral visible.</p>
+                        {% endif %}
+                    </div>
+                </section>
+
+                <!-- CURSOS REALIZADOS -->
+                <section class="main-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Cursos Realizados</h2>
+                    </div>
+                    <div class="section-content">
+                        {% if cursos.exists %}
+                            {% for c in cursos %}
+                                <div class="education-card">
+                                    <strong>{{ c.nombrecurso }}</strong>
+                                    {% if c.entidadpatrocinadora %}
+                                        <div>Entidad: {{ c.entidadpatrocinadora }}</div>
+                                    {% endif %}
+                                    <div>
+                                        {% if c.fechainicio %}Inicio: {{ c.fechainicio|date:"Y-m-d" }}{% endif %}
+                                        {% if c.fechafin %} - Fin: {{ c.fechafin|date:"Y-m-d" }}{% endif %}
+                                    </div>
+                                    {% if c.totalhoras %}
+                                        <div>⏱ {{ c.totalhoras }} horas</div>
+                                    {% endif %}
+                                    {% if c.descripcioncurso %}
+                                        <p>{{ c.descripcioncurso }}</p>
+                                    {% endif %}
+
+                                    <!-- Información de contacto del curso -->
+                                    {% if c.nombrecontactoauspicia or c.telefonocontactoauspicia or c.emailempresapatrocinadora %}
+                                        <div class="course-contact-info" style="margin-top: 8px; padding: 8px; background: #f8f9fa; border-radius: 4px;">
+                                            <strong>Información de Contacto:</strong><br>
+                                            {% if c.nombrecontactoauspicia %}
+                                                <span>👤 {{ c.nombrecontactoauspicia }}</span><br>
+                                            {% endif %}
+                                            {% if c.telefonocontactoauspicia %}
+                                                <span>📞 {{ c.telefonocontactoauspicia }}</span><br>
+                                            {% endif %}
+                                            {% if c.emailempresapatrocinadora %}
+                                                <span style="color: #0066cc;">📧 {{ c.emailempresapatrocinadora }}</span>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+
+                                    {% if c.rutacertificado %}
+                                        <div class="cert-actions-inline">
+                                            <a class="btn-cert-link" href="{% url 'ver_certificado_curso' c.pk %}" target="_blank">Ver certificado</a>
+                                            <a class="btn-cert-link" href="{% url 'ver_certificado_curso' c.pk %}?download=1">Descargar</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="empty-message">No hay cursos visibles.</p>
+                        {% endif %}
+                    </div>
+                </section>
+
+                <!-- RECONOCIMIENTOS -->
+                <section class="main-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Reconocimientos</h2>
+                    </div>
+                    <div class="section-content">
+                        {% if reconocimientos.exists %}
+                            {% for r in reconocimientos %}
+                                <div class="award-card">
+                                    <strong>{{ r.tiporeconocimiento }}{% if r.descripcionreconocimiento %} - {{ r.descripcionreconocimiento }}{% endif %}</strong>
+                                    {% if r.entidadpatrocinadora %}
+                                        <div>Entidad: {{ r.entidadpatrocinadora }}</div>
+                                    {% endif %}
+                                    {% if r.fechareconocimiento %}
+                                        <div>Fecha: {{ r.fechareconocimiento|date:"Y-m-d" }}</div>
+                                    {% endif %}
+                                    {% if r.rutacertificado %}
+                                        <div class="cert-actions-inline">
+                                            <a class="btn-cert-link" href="{% url 'ver_certificado_reconocimiento' r.pk %}" target="_blank">Ver certificado</a>
+                                            <a class="btn-cert-link" href="{% url 'ver_certificado_reconocimiento' r.pk %}?download=1">Descargar</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="empty-message">No hay reconocimientos visibles.</p>
+                        {% endif %}
+                    </div>
+                </section>
+
+                <!-- PRODUCTOS ACADÉMICOS -->
+                <section class="main-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Productos Académicos</h2>
+                    </div>
+                    <div class="section-content">
+                        {% if productos_academicos.exists %}
+                            {% for p in productos_academicos %}
+                                <div class="product-card">
+                                    <strong>{{ p.nombrerecurso }}</strong>
+                                    {% if p.clasificador %}
+                                        <div>Clasificador: {{ p.clasificador }}</div>
+                                    {% endif %}
+                                    {% if p.descripcion %}
+                                        <p>{{ p.descripcion }}</p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="empty-message">No hay productos académicos visibles.</p>
+                        {% endif %}
+                    </div>
+                </section>
+
+                <!-- PRODUCTOS LABORALES -->
+                <section class="main-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Productos Laborales</h2>
+                    </div>
+                    <div class="section-content">
+                        {% if productos_laborales.exists %}
+                            {% for pl in productos_laborales %}
+                                <div class="product-card">
+                                    <strong>{{ pl.nombreproducto }}</strong>
+                                    {% if pl.fechaproducto %}
+                                        <div>Fecha: {{ pl.fechaproducto|date:"Y-m-d" }}</div>
+                                    {% endif %}
+                                    {% if pl.descripcion %}
+                                        <p>{{ pl.descripcion }}</p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="empty-message">No hay productos laborales visibles.</p>
+                        {% endif %}
+                    </div>
+                </section>
+
+                <!-- VENTAS GARAGE -->
+                <section class="main-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Ventas Garage</h2>
+                    </div>
+                    <div class="section-content">
+                        {% if ventas_garage.exists %}
+                            {% for v in ventas_garage %}
+                                <div class="garage-card">
+                                    <strong>{{ v.nombreproducto }}</strong>
+                                    {% if v.estadoproducto %}
+                                        <div>Estado: {{ v.estadoproducto }}</div>
+                                    {% endif %}
+                                    {% if v.valordelbien %}
+                                        <div>Valor: ${{ v.valordelbien }}</div>
+                                    {% endif %}
+                                    {% if v.descripcion %}
+                                        <p>{{ v.descripcion }}</p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="empty-message">No hay ventas visibles.</p>
+                        {% endif %}
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- JavaScript con todas las interacciones -->
+    <script src="{% static 'perfil/js/gridsby_interactions.js' %}"></script>
+</body>
+</html>

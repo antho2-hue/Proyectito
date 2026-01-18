@@ -1,0 +1,635 @@
+/* PDF-only stylesheet - Estilo PROFESIONAL OSCURO para PDFs de Ingeniería
+   - A4 with 15mm margins
+   - Paleta oscura profesional: Gris carbón + Cyan tecnológico + Acentos verdes
+   - No JS, no external fonts (usa fuentes del sistema monospace)
+   - Fixed sidebar (repeats on each page via position: fixed)
+   - Avoid breaking sections and cards across pages
+   - Hide interactive elements
+   - Compatible con WeasyPrint
+*/
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+@page {
+    size: A4;
+    margin: 15mm;
+    background: var(--dark-bg);
+}
+
+/* Variables PROFESIONALES OSCURAS - Tema Ingeniería de Sistemas */
+:root {
+    /* Colores base oscuros */
+    --dark-bg: #1a1d23;           /* Fondo principal oscuro */
+    --dark-card: #22262e;         /* Fondo de tarjetas */
+    --dark-sidebar: #1e2229;      /* Fondo sidebar */
+    
+    /* Acentos tecnológicos */
+    --cyan-primary: #06b6d4;      /* Cyan principal */
+    --cyan-dark: #0891b2;         /* Cyan oscuro */
+    --cyan-light: #22d3ee;        /* Cyan claro */
+    
+    --teal-accent: #14b8a6;       /* Verde azulado */
+    --teal-dark: #0d9488;         /* Verde azulado oscuro */
+    
+    /* Grises profesionales */
+    --gray-text: #e5e7eb;         /* Texto principal */
+    --gray-secondary: #9ca3af;    /* Texto secundario */
+    --gray-tertiary: #6b7280;     /* Texto terciario */
+    --gray-border: #374151;       /* Bordes */
+    --gray-divider: #4b5563;      /* Divisores */
+    
+    /* Acentos complementarios */
+    --accent-green: #10b981;      /* Verde éxito */
+    --accent-blue: #3b82f6;       /* Azul info */
+    --accent-purple: #8b5cf6;     /* Púrpura destacado */
+}
+
+html, body {
+    font-family: 'Courier New', 'Courier', 'Monaco', monospace;
+    font-size: 10pt;
+    line-height: 1.5;
+    color: var(--gray-text);
+    background: var(--dark-bg) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+/* Page container */
+.cv-page {
+    width: 100%;
+    min-height: calc(297mm - 30mm);
+    height: calc(297mm - 30mm);
+    background: var(--dark-bg) !important;
+    padding: 0;
+    margin: 0 !important;
+    border: none;
+    box-shadow: none;
+}
+
+/* Header - Estilo Tecnológico Oscuro */
+.cv-header { 
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    border: none;
+    border-radius: 0;
+    padding: 20px 25px;
+    color: var(--gray-text); 
+    -webkit-print-color-adjust: exact; 
+    print-color-adjust: exact; 
+    box-shadow: 0 3px 8px rgba(6, 182, 212, 0.15);
+    width: 100%; 
+    margin: 0 0 2px 0;
+    position: relative; 
+    z-index: 10; 
+    border-bottom: 2px solid var(--cyan-primary);
+}
+
+.header-content { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+}
+
+.full-name { 
+    font-family: 'Courier New', 'Courier', monospace;
+    font-size: 28pt; 
+    font-weight: 900; 
+    color: var(--cyan-light); 
+    margin-bottom: 4px; 
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 4px rgba(6, 182, 212, 0.3);
+}
+
+.profession { 
+    font-family: 'Courier New', 'Courier', monospace;
+    font-size: 12pt; 
+    color: var(--gray-text); 
+    border-left: 3px solid var(--teal-accent);
+    padding-left: 10px;
+}
+
+.profession::before {
+    content: '>>> ';
+    color: var(--teal-accent);
+}
+
+/* Layout: sidebar background fixed on right */
+.cv-body {
+    position: relative;
+    min-height: calc(297mm - 60px);
+    background: var(--dark-bg) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.cv-sidebar-bg {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 30%;
+    height: 100%;
+    background: linear-gradient(180deg, #1e2229 0%, #1a1d23 50%, #16181d 100%);
+    border: none;
+    border-left: 1px solid var(--gray-border);
+    border-radius: 0;
+    z-index: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    box-shadow: inset 2px 0 8px rgba(6, 182, 212, 0.05);
+}
+
+.cv-sidebar {
+    position: relative;
+    float: right;
+    width: 30%;
+    background: transparent;
+    padding: 20px 18px;
+    color: var(--gray-text);
+    page-break-inside: avoid;
+    max-height: calc(297mm - 40mm);
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* Main content */
+.cv-main { 
+    margin-right: 31%; 
+    padding: 20px 25px; 
+    background: var(--dark-bg); 
+    min-height: calc(297mm - 40mm); 
+    border-right: none;
+    box-shadow: none;
+}
+
+/* Visual content cards and sections */
+.main-section { 
+    margin-bottom: 25px; 
+    position: relative; 
+}
+
+/* Línea separadora entre secciones */
+.main-section:not(:first-of-type)::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--gray-border) 5%, 
+        var(--cyan-primary) 50%, 
+        var(--gray-border) 95%, 
+        transparent 100%
+    );
+    opacity: 0.4;
+}
+
+.main-section .section-content {
+    position: relative;
+    padding-left: 0;
+}
+
+.main-section .section-content::before {
+    display: none;
+}
+
+.section-header { 
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--cyan-primary);
+}
+
+.section-title { 
+    font-family: 'Courier New', 'Courier', monospace;
+    font-size: 14pt; 
+    font-weight: 900; 
+    color: var(--cyan-light); 
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.section-title::before {
+    content: '$ ';
+    color: var(--teal-accent);
+    font-weight: 900;
+}
+
+.section-icon {
+    display: inline-block;
+    margin-right: 8px;
+}
+
+/* Cards */
+.experience-card, 
+.education-card, 
+.award-card, 
+.product-card, 
+.garage-card { 
+    page-break-inside: avoid; 
+    -webkit-column-break-inside: avoid; 
+    break-inside: avoid; 
+    background: var(--dark-card);
+    border: 1px solid var(--gray-border);
+    border-left: 3px solid var(--cyan-primary);
+    border-radius: 6px;
+    padding: 16px; 
+    margin-bottom: 14px; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    -webkit-print-color-adjust: exact; 
+    print-color-adjust: exact;
+    color: var(--gray-text);
+}
+
+/* Timeline markers */
+.timeline-block {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 10px;
+    height: 10px;
+    background: var(--teal-accent);
+    border-radius: 50%;
+    border: 2px solid var(--dark-bg);
+    box-shadow: 0 0 0 2px var(--cyan-primary);
+}
+
+.company-name {
+    font-family: 'Courier New', 'Courier', monospace;
+    font-size: 12pt;
+    font-weight: 900;
+    color: var(--cyan-light);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.company-name::before {
+    content: '> ';
+    color: var(--teal-accent);
+    font-weight: 900;
+}
+
+.card-header {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.position-title,
+.course-title,
+.product-title {
+    font-family: 'Courier New', 'Courier', monospace;
+    font-size: 11pt;
+    font-weight: 900;
+    color: var(--cyan-primary);
+    display: block;
+    margin-bottom: 6px;
+}
+
+.position-title::before,
+.course-title::before {
+    content: '[+] ';
+    color: var(--teal-accent);
+    font-weight: 700;
+}
+
+.date-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(6, 182, 212, 0.15);
+    color: var(--cyan-light);
+    font-family: 'Courier New', monospace;
+    font-size: 8pt;
+    font-weight: 600;
+    border-radius: 12px;
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    margin-bottom: 6px;
+}
+
+.location-tag {
+    font-size: 9pt;
+    color: var(--gray-secondary);
+    margin-bottom: 6px;
+    font-family: 'Courier New', monospace;
+}
+
+.description-text { 
+    font-size: 10pt; 
+    line-height: 1.4; 
+    color: var(--gray-text);
+    font-family: 'Courier New', monospace;
+    margin-top: 8px;
+}
+
+.institution-name {
+    font-size: 10pt;
+    color: var(--gray-secondary);
+    margin-bottom: 6px;
+    font-family: 'Courier New', monospace;
+}
+
+.hours-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--accent-green);
+    font-size: 8pt;
+    border-radius: 12px;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    font-family: 'Courier New', monospace;
+}
+
+.award-type {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(139, 92, 246, 0.15);
+    color: var(--accent-purple);
+    font-size: 8pt;
+    font-weight: 700;
+    border-radius: 4px;
+    margin-bottom: 6px;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+}
+
+.award-title {
+    font-size: 11pt;
+    font-weight: 900;
+    color: var(--cyan-primary);
+    margin-bottom: 6px;
+    font-family: 'Courier New', monospace;
+}
+
+.award-meta {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.award-entity {
+    font-size: 9pt;
+    color: var(--gray-secondary);
+    font-family: 'Courier New', monospace;
+}
+
+.award-date {
+    font-size: 9pt;
+    color: var(--gray-tertiary);
+    font-style: italic;
+}
+
+.product-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--accent-blue);
+    font-size: 8pt;
+    border-radius: 12px;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    margin-bottom: 6px;
+    font-family: 'Courier New', monospace;
+}
+
+.product-date {
+    font-size: 9pt;
+    color: var(--gray-tertiary);
+}
+
+.garage-meta {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(6, 182, 212, 0.15);
+    color: var(--cyan-light);
+    font-size: 8pt;
+    border-radius: 12px;
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    margin-right: 8px;
+    font-family: 'Courier New', monospace;
+}
+
+.price-tag {
+    display: inline-block;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, var(--teal-accent), var(--teal-dark));
+    color: var(--gray-text);
+    font-size: 11pt;
+    font-weight: 900;
+    border-radius: 12px;
+    font-family: 'Courier New', monospace;
+}
+
+/* Remove interactive visuals and heavy shadows for PDF */
+.btn, .btn-admin, .btn-cert, .btn-action, .action-buttons, .cert-actions, .no-print { display: none !important; }
+
+/* Contact grid */
+.contact-grid {
+    display: block;
+    margin-top: 8px;
+    background: var(--dark-card);
+    border-radius: 6px;
+    padding: 10px; /* reducir padding */
+    border: 1px solid var(--gray-border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    page-break-inside: avoid;
+}
+
+.contact-item {
+    display: block;
+    margin-bottom: 4px;
+    font-family: 'Courier New', monospace;
+}
+
+.contact-icon {
+    margin-right: 6px;
+}
+
+.contact-text,
+.contact-link {
+    color: var(--gray-secondary);
+    font-size: 8pt;
+}
+
+.contact-grid.compact {
+    display: block;
+}
+
+/* Sidebar content */
+.first-page-only { page-break-inside: avoid; page-break-after: avoid; }
+
+.photo-container { 
+    text-align: center; 
+    margin-bottom: 18px; 
+    position: relative; 
+}
+
+.profile-photo { 
+    width: 140px; 
+    height: 140px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+    border: 3px solid var(--cyan-primary);
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+}
+
+.profile-photo.placeholder {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--cyan-primary), var(--teal-accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36pt;
+    font-weight: 900;
+    color: var(--dark-bg);
+    border: 3px solid var(--cyan-light);
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+}
+
+.sidebar-section { margin-bottom: 18px; }
+
+/* Sidebar titles */
+.sidebar-title { 
+    font-family: 'Courier New', 'Courier', monospace;
+    font-size: 11pt; 
+    font-weight: 900; 
+    color: var(--cyan-light); 
+    margin-bottom: 12px; 
+    border-bottom: 2px solid var(--cyan-primary);
+    padding-bottom: 8px; 
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.sidebar-title::before {
+    content: '// ';
+    color: var(--teal-accent);
+}
+
+.sidebar-title::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: var(--teal-accent);
+}
+
+.info-item { 
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--gray-border);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label { 
+    font-family: 'Courier New', monospace;
+    font-size: 8pt; 
+    color: var(--cyan-primary); 
+    display: block; 
+    margin-bottom: 4px; 
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.9;
+}
+
+.info-value { 
+    font-family: 'Courier New', monospace;
+    font-size: 9pt; 
+    font-weight: 600; 
+    color: var(--gray-text); 
+}
+
+.info-link {
+    color: var(--teal-accent);
+    text-decoration: none;
+}
+
+.info-item.icon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.icon-label {
+    font-size: 12pt;
+}
+
+/* Certificate page styles */
+.certificate-page { 
+    page-break-before: always; 
+    page-break-after: always; 
+    width: 100%; 
+    height: calc(297mm - 30mm); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 15mm; 
+    background: var(--dark-bg);
+}
+
+.certificate-wrapper { width: 100%; text-align: center; }
+
+.certificate-title { 
+    font-family: 'Courier New', monospace;
+    font-size: 20pt; 
+    font-weight: 900; 
+    color: var(--cyan-light); 
+    margin-bottom: 22px; 
+    text-transform: uppercase;
+}
+
+.certificate-frame { 
+    width: 100%; 
+    max-width: 180mm; 
+    margin: 0 auto; 
+    border: 2px solid var(--cyan-primary);
+    border-radius: 8px;
+    overflow: hidden; 
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+}
+
+.certificate-image { width: 100%; height: auto; display: block; }
+
+/* Marco general */
+.cv-page {
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  background: var(--dark-bg);
+  box-shadow: none;
+  margin: 0;
+}
+
+/* Ensure headings do not become widows/orphans */
+h1, h2, h3, h4 { widows: 2; orphans: 2; }
+.section-title { page-break-after: avoid; }
+
+/* Print-specific adjustments */
+@media print {
+    body { background: var(--dark-bg); padding: 0; }
+    .cv-page { margin: 0; page-break-after: always; box-shadow: none; border-radius: 0; }
+    .cv-sidebar-bg { position: fixed; }
+}
+
+/* Safety: force small font sizes not to overflow */
+.hidden-for-pdf { display: none !important; }
+
+/* End of PDF stylesheet */

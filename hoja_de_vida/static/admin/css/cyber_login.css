@@ -1,0 +1,361 @@
+/* ===========================================
+   CYBERPUNK HACKER ADMIN LOGIN THEME
+   =========================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/* ===== BASE STYLES ===== */
+.cyber-login-container {
+  position: relative;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 40px 30px;
+  background: linear-gradient(135deg, #0a0e14 0%, #0f1419 100%);
+  border: 1px solid #00ffff;
+  border-radius: 8px;
+  box-shadow:
+    0 0 20px rgba(0, 255, 255, 0.3),
+    inset 0 0 20px rgba(0, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.cyber-login-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===== TERMINAL HEADER ===== */
+.cyber-header {
+  position: relative;
+  text-align: center;
+  margin-bottom: 30px;
+  z-index: 1;
+}
+
+.terminal-header {
+  background: #000;
+  border: 1px solid #00ff00;
+  border-radius: 4px;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: #00ff00;
+  text-shadow: 0 0 5px #00ff00;
+}
+
+.terminal-title {
+  display: block;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 5px;
+  letter-spacing: 2px;
+}
+
+.terminal-status {
+  display: block;
+  font-size: 10px;
+  opacity: 0.8;
+  animation: blink 2s infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 0.8; }
+  51%, 100% { opacity: 1; }
+}
+
+.glitch-line {
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    #ff00ff 20%,
+    #00ffff 40%,
+    #00ff00 60%,
+    #ff00ff 80%,
+    transparent 100%);
+  box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+  animation: glitch 3s infinite linear;
+}
+
+@keyframes glitch {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ===== FORM STYLES ===== */
+.login-form-wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+.cyber-label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: #00ffff;
+  text-shadow: 0 0 5px #00ffff;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.label-text {
+  background: rgba(0, 255, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+.input-container {
+  position: relative;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid #00ff00;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.input-container:focus-within {
+  border-color: #00ffff;
+  box-shadow:
+    0 0 15px rgba(0, 255, 255, 0.4),
+    inset 0 0 15px rgba(0, 255, 255, 0.1);
+}
+
+.input-prefix {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #00ff00;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: bold;
+  z-index: 2;
+}
+
+#id_username, #id_password {
+  width: 100%;
+  padding: 12px 12px 12px 35px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #00ff00;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+#id_username::placeholder, #id_password::placeholder {
+  color: rgba(0, 255, 0, 0.5);
+}
+
+/* ===== ERROR STYLES ===== */
+.error-container {
+  margin-bottom: 20px;
+  animation: errorFlash 0.5s ease-in-out;
+}
+
+@keyframes errorFlash {
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.error-message {
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid #ff0000;
+  border-radius: 4px;
+  padding: 10px 15px;
+  color: #ff4444;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  text-shadow: 0 0 5px #ff0000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.error-icon {
+  color: #ff4444;
+  font-size: 14px;
+}
+
+.field-error {
+  margin-top: 5px;
+  color: #ff6666;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ===== BUTTON STYLES ===== */
+.form-actions {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.cyber-button {
+  position: relative;
+  background: linear-gradient(45deg, #000, #111);
+  border: 2px solid #00ffff;
+  border-radius: 6px;
+  padding: 15px 30px;
+  color: #00ffff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.cyber-button:hover {
+  border-color: #00ff00;
+  color: #00ff00;
+  box-shadow:
+    0 0 20px rgba(0, 255, 0, 0.6),
+    inset 0 0 20px rgba(0, 255, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.cyber-button:active {
+  transform: translateY(0);
+  box-shadow:
+    0 0 10px rgba(0, 255, 0, 0.3),
+    inset 0 0 10px rgba(0, 255, 0, 0.2);
+}
+
+.button-text {
+  position: relative;
+  z-index: 2;
+}
+
+.button-glow {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(0, 255, 0, 0.4),
+    transparent);
+  transition: left 0.5s ease;
+}
+
+.cyber-button:hover .button-glow {
+  left: 100%;
+}
+
+/* ===== FOOTER ===== */
+.cyber-footer {
+  position: relative;
+  margin-top: 30px;
+  text-align: center;
+  z-index: 1;
+}
+
+.system-info {
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  border-radius: 4px;
+  padding: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: rgba(0, 255, 255, 0.7);
+}
+
+.info-line {
+  display: block;
+  margin-bottom: 2px;
+}
+
+.info-line:last-child {
+  margin-bottom: 0;
+}
+
+.scan-line {
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    #00ffff 50%,
+    transparent 100%);
+  margin-top: 15px;
+  animation: scan 4s infinite linear;
+}
+
+@keyframes scan {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 600px) {
+  .cyber-login-container {
+    margin: 20px;
+    padding: 30px 20px;
+  }
+
+  .cyber-button {
+    padding: 12px 25px;
+    font-size: 12px;
+  }
+
+  .terminal-title {
+    font-size: 12px;
+  }
+
+  .terminal-status {
+    font-size: 9px;
+  }
+}
+
+/* ===== ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+  .glitch-line,
+  .scan-line,
+  .terminal-status,
+  .button-glow {
+    animation: none;
+  }
+
+  .cyber-button,
+  .input-container {
+    transition: none;
+  }
+}
+
+/* ===== FOCUS STYLES ===== */
+#id_username:focus, #id_password:focus {
+  outline: 2px solid #00ffff;
+  outline-offset: 2px;
+}
+
+.cyber-button:focus {
+  outline: 2px solid #00ffff;
+  outline-offset: 2px;
+}
+
+
+
+

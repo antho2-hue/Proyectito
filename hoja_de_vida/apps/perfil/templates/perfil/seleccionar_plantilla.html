@@ -1,0 +1,218 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleccionar Plantilla de CV</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .template-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .template-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .template-preview {
+            width: 100%;
+            height: 500px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .template-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .template-info {
+            padding: 30px;
+        }
+
+        .template-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #1a202c;
+            margin-bottom: 10px;
+        }
+
+        .template-description {
+            color: #718096;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .template-features {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .template-features li {
+            padding: 8px 0;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .template-features li::before {
+            content: "✓";
+            color: #48bb78;
+            font-weight: 900;
+            font-size: 1.2rem;
+        }
+
+        .btn-download {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-download:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 30px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #f7fafc;
+            transform: translateX(-5px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✨ Selecciona tu Plantilla de CV</h1>
+            <p>Elige el diseño que mejor represente tu estilo profesional</p>
+        </div>
+
+        <div class="templates-grid">
+            <!-- Plantilla 1: Professional Elegant -->
+            <div class="template-card">
+                <div class="template-preview" style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);">
+                    <span class="template-badge">Profesional</span>
+                </div>
+                <div class="template-info">
+                    <h2 class="template-title">Professional Elegant</h2>
+                    <p class="template-description">
+                        Diseño elegante con colores corporativos azul marino y dorado. 
+                        Perfecto para puestos ejecutivos y corporativos.
+                    </p>
+                    <ul class="template-features">
+                        <li>Colores profesionales (Azul + Dorado)</li>
+                        <li>Diseño limpio y moderno</li>
+                        <li>Ideal para empresas corporativas</li>
+                    </ul>
+                    <a href="{% url 'descargar_cv_pdf' %}?plantilla=professional" class="btn-download">
+                        Descargar PDF
+                    </a>
+                </div>
+            </div>
+
+            <!-- Plantilla 2: Modern Clean -->
+            <div class="template-card">
+                <div class="template-preview" style="background: linear-gradient(135deg, #e6f2ff 0%, #fff5e6 100%);">
+                    <span class="template-badge">Moderno</span>
+                </div>
+                <div class="template-info">
+                    <h2 class="template-title">Modern Clean</h2>
+                    <p class="template-description">
+                        Estilo minimalista con sidebar oscuro y diseño limpio. 
+                        Perfecto para diseñadores y desarrolladores.
+                    </p>
+                    <ul class="template-features">
+                        <li>Diseño minimalista y moderno</li>
+                        <li>Sidebar con foto destacada</li>
+                        <li>Ideal para creativos y tech</li>
+                    </ul>
+                    <a href="{% url 'descargar_cv_pdf' %}?plantilla=modern" class="btn-download">
+                        Descargar PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="{% url 'hoja_vida_publica' %}" class="back-button">← Volver al CV</a>
+        </div>
+    </div>
+</body>
+</html>

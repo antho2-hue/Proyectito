@@ -1,0 +1,25 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}⚡ CYBERADMIN — {{ site_title|default:_("Django site admin") }}{% endblock %}
+
+{% block extrahead %}
+  <link rel="stylesheet" href="{% static 'perfil/css/cyberadmin.css' %}">
+  <script defer src="{% static 'perfil/js/cyberadmin.js' %}"></script>
+  {{ block.super }}
+{% endblock %}
+
+{% block branding %}
+  <div class="cyber-brand">
+    <span class="brand-logo">▦</span>
+    <h1 class="site-title">CYBERADMIN</h1>
+    <p class="site-tag">Secure · Fast · Futuristic</p>
+  </div>
+{% endblock %}
+
+{% block nav-global %}
+  {{ block.super }}
+  <div class="cyber-search">
+    <input class="cyber-search-input" placeholder="Search admin..." aria-label="Search admin" />
+  </div>
+{% endblock %}

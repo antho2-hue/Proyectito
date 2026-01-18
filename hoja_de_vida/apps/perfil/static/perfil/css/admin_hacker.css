@@ -1,0 +1,120 @@
+/* admin_hacker.css — Cyberpunk / Hacker theme for Django Admin */
+:root{
+  --bg-900: #010510;
+  --bg-800: #071028;
+  --neon-green: #00ff9c;
+  --neon-cyan: #00eaff;
+  --neon-purple: #7c3aed;
+  --muted: #94a3b8;
+  --glass: rgba(255,255,255,0.04);
+}
+
+/* Global admin background */
+html, body, .dashboard, #content-main, #container { background: linear-gradient(180deg, var(--bg-900) 0%, rgba(6,12,28,1) 100%); color: #cbd5e1; }
+
+/* Branding */
+.cyber-brand { display:flex; align-items:center; gap:12px; padding:6px 0; }
+.brand-logo { color: var(--neon-cyan); font-weight:900; font-size:20px; text-shadow: 0 0 8px rgba(0,234,255,0.25); }
+.site-title { color: var(--neon-green); margin:0; font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Courier New', monospace; letter-spacing:1px; font-size:18px; }
+.site-tag { color: var(--muted); margin:0; font-size:10px; }
+
+/* Sidebar */
+#nav-sidebar { background: linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.25)); border-right: 1px solid rgba(255,255,255,0.03); width:220px; }
+#nav-sidebar .module { padding: 12px 10px; }
+#nav-sidebar a { color: var(--muted); display:flex; align-items:center; gap:8px; padding:8px; border-radius:8px; }
+#nav-sidebar a:hover { color: white; background: linear-gradient(90deg, rgba(124,58,237,0.06), rgba(0,234,255,0.04)); box-shadow: 0 6px 24px rgba(0,234,255,0.03); transform: translateY(-1px); }
+#nav-sidebar .chosen { background: linear-gradient(90deg, rgba(0,255,156,0.06), rgba(124,58,237,0.04)); border-left: 4px solid var(--neon-green); color: var(--neon-green); box-shadow: 0 6px 30px rgba(0,255,156,0.06); }
+
+/* Cards */
+.module, .app-list, .module h2, .dashboard-module { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; padding:14px; box-shadow: 0 6px 28px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.03); transition: transform .15s ease, box-shadow .15s ease; }
+.module:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(124,58,237,0.06); }
+
+/* Headings */
+h1, h2, h3 { font-family: 'JetBrains Mono', monospace; color: var(--neon-cyan); text-shadow: 0 0 8px rgba(0,234,255,0.06); }
+
+/* Buttons */
+.button, .addlink, .grp, input[type=submit] { background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan)); color: #021; border: none; padding: 8px 12px; border-radius: 8px; box-shadow: 0 6px 18px rgba(124,58,237,0.08); transition: transform .12s ease, box-shadow .12s ease; }
+.button:hover, .addlink:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,234,255,0.12); }
+
+/* Inputs */
+input, select, textarea { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); color: #e6eef8; padding:8px 10px; border-radius:6px; transition: box-shadow .12s ease, border-color .12s ease; font-family: 'Fira Code', ui-monospace, monospace; }
+input:focus, select:focus, textarea:focus { outline: none; box-shadow: 0 0 12px rgba(0,255,156,0.12); border-color: var(--neon-green); }
+
+/* Table styling */
+#result_list { border-collapse: collapse; width:100%; }
+#result_list tr:nth-child(odd) { background: rgba(255,255,255,0.01); }
+#result_list tr:hover { background: linear-gradient(90deg, rgba(0,234,255,0.03), rgba(124,58,237,0.02)); }
+#result_list th { background: rgba(255,255,255,0.02); color: var(--neon-cyan); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width:12px; height:12px; }
+::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+::-webkit-scrollbar-thumb { background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan)); border-radius: 10px; box-shadow: 0 0 6px rgba(0,234,255,0.08); }
+
+/* Loader */
+.cyber-loader { width:36px; height:36px; border-radius:50%; border:4px solid rgba(255,255,255,0.06); border-top-color: var(--neon-green); animation: spin 1s linear infinite; box-shadow: 0 6px 18px rgba(0,255,156,0.08); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* === Login page styles === */
+.cyber-login-page { min-height: 70vh; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+.cyber-grid { position:absolute; inset:0; background-image: radial-gradient(rgba(0,234,255,0.02) 1px, transparent 1px); background-size: 20px 20px; opacity:0.9; filter: blur(6px) saturate(1.2); }
+.login-card { width:420px; max-width:92%; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; padding:22px; box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 40px rgba(124,58,237,0.04); border: 1px solid rgba(255,255,255,0.03); position:relative; z-index:2; }
+.login-brand{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+.login-brand .brand-logo{ color:var(--neon-cyan); font-size:28px; text-shadow: 0 0 12px rgba(0,234,255,0.18); }
+.login-brand h1{ margin:0; color:var(--neon-green); font-family: 'JetBrains Mono', monospace; font-size:20px; }
+.login-brand .brand-sub{ color:var(--muted); font-size:11px; }
+
+.login-card label { display:block; font-size:11px; color:var(--muted); margin-bottom:6px; }
+.login-card input { width:100%; padding:10px 12px; background: rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.04); color:#e6eef8; border-radius:6px; font-family: 'Fira Code', monospace; }
+.login-card input::placeholder{ color: rgba(255,255,255,0.25); }
+.login-card input:focus{ outline:none; box-shadow: 0 0 18px rgba(0,255,156,0.12); border-color:var(--neon-green); }
+
+.cyber-btn { background: linear-gradient(90deg,var(--neon-purple),var(--neon-cyan)); color:#021; padding:10px 16px; border-radius:8px; border:none; font-weight:700; cursor:pointer; box-shadow: 0 8px 30px rgba(124,58,237,0.07); transition: transform .12s ease, box-shadow .12s ease; }
+.cyber-btn:hover{ transform: translateY(-2px); box-shadow: 0 14px 40px rgba(0,234,255,0.12); }
+.cyber-btn:active{ transform: translateY(0); }
+
+.form-errors{ color: #ffb4b4; background: rgba(255,0,0,0.03); padding:8px; border-radius:6px; margin-top:10px; }
+.login-footer{ color:var(--muted); font-size:11px; margin-top:12px; text-align:center; }
+
+
+/* small utilities */
+.glow { text-shadow: 0 0 8px rgba(0,234,255,0.12); }
+.card-title { color: var(--neon-green); font-weight:700; }
+
+/* Make admin forms wider */
+.form-row .field-box { max-width: 900px; }
+
+/* Mobile / responsive mild tweaks */
+@media (max-width: 900px) { #nav-sidebar { width: 64px; } .site-title{ display:none; } }
+
+/* === Sidebar floating panel === */
+.cyber-sidebar { position:fixed; left:12px; top:70px; width:72px; height: calc(100vh - 140px); background: linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.22)); border-radius:12px; padding:8px; display:flex; flex-direction:column; gap:8px; z-index:1200; box-shadow: 0 10px 40px rgba(2,6,23,0.6); border:1px solid rgba(255,255,255,0.03); }
+.cyber-sidebar .cyber-item { width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:8px; color:var(--muted); font-family: monospace; cursor:pointer; transition: all .12s ease; }
+.cyber-sidebar .cyber-item:hover { color: white; box-shadow: 0 10px 30px rgba(0,234,255,0.06); transform: translateY(-3px); }
+.cyber-sidebar .cyber-item.active { background: linear-gradient(90deg, rgba(0,255,156,0.06), rgba(124,58,237,0.04)); color: var(--neon-green); box-shadow: 0 10px 40px rgba(0,255,156,0.06); border:1px solid rgba(0,255,156,0.06); }
+.cyber-sidebar .cyber-toggle { margin-top:auto; width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:8px; color:var(--muted); border:1px dashed rgba(255,255,255,0.03); }
+body.cyber-sidebar-collapsed .cyber-sidebar { transform: translateX(-86px); opacity:0.9; }
+body.cyber-sidebar-collapsed #content { margin-left: 0 !important; }
+body:not(.cyber-sidebar-collapsed) #content { transition: margin-left .18s ease; margin-left: 92px; }
+
+/* Sidebar mini labels (when expanded) */
+.cyber-item .label { display:none; font-size:11px; color:var(--muted); margin-top:4px; text-align:center; }
+
+/* === Forms & inputs refinement === */
+fieldset.module { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius: 10px; padding: 12px 14px; border: 1px solid rgba(255,255,255,0.03); box-shadow: inset 0 1px 0 rgba(255,255,255,0.01); }
+.form-row { margin-bottom: 12px; }
+.help, .help-inline { color: var(--muted); font-size:12px; }
+.errorlist { background: rgba(255,0,0,0.04); padding:8px; border-radius:6px; color:#ffb4b4; }
+
+/* Styling submit rows to match cyber look */
+.submit-row input[type=submit], .submit-row .deletelink { box-shadow: 0 10px 30px rgba(124,58,237,0.06); border-radius:8px; }
+
+/* === Tables polish === */
+#result_list thead th { background: linear-gradient(90deg, rgba(0,234,255,0.02), rgba(124,58,237,0.02)); border-bottom: 1px solid rgba(255,255,255,0.03); }
+#result_list tbody tr.selected { background: linear-gradient(90deg, rgba(0,255,156,0.04), rgba(0,234,255,0.02)); }
+#result_list tbody tr:hover td { background: linear-gradient(90deg, rgba(0,234,255,0.03), rgba(124,58,237,0.02)); }
+#result_list td, #result_list th { padding:10px 12px; border-bottom: 1px solid rgba(255,255,255,0.02); }
+.paginator { color: var(--muted); }
+
+/* small responsive: ensure sidebar doesn't overlap actions */
+@media (max-width: 900px) { .cyber-sidebar{ display:none; } body:not(.cyber-sidebar-collapsed) #content { margin-left: 0; } }

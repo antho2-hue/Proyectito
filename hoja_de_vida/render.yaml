@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: cv-django-app
+    runtime: python
+    runtimeVersion: "3.12"
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
+    startCommand: "gunicorn config.wsgi:application"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "false"

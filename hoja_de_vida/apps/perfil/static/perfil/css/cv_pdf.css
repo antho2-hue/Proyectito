@@ -1,0 +1,880 @@
+/* ====================================
+   CV PREMIUM - DISEÑO PROFESIONAL WOW
+   VERSIÓN FORZADA EXTREMA PARA WEASYPRINT
+   ==================================== */
+
+   * {
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+
+@page {
+    size: A4;
+    margin: 0mm !important;
+}
+
+html {
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+}
+
+body {
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    font-size: 11pt;
+    line-height: 1.5;
+    color: #1a1a2e;
+    background: white !important;
+    overflow: visible !important;
+}
+
+.cv-page {
+    width: 210mm !important;
+    height: 297mm !important;
+    min-height: 297mm !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    page-break-after: always;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+    position: relative;
+    display: block !important;
+}
+
+.cv-page:last-child {
+    page-break-after: avoid;
+}
+
+/* ====================================
+   HEADER PREMIUM - FORZADO
+   ==================================== */
+.cv-header {
+    background: linear-gradient(135deg, #1e3a5f 0%, #0f2940 100%);
+    padding: 30px 40px !important;
+    margin: 0 !important;
+    position: relative;
+    overflow: hidden;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    width: 100% !important;
+}
+
+.header-content {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.header-left {
+    float: left;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.full-name {
+    font-size: 36pt;
+    font-weight: 900;
+    color: white;
+    margin: 0 0 8px 0 !important;
+    padding: 0 !important;
+    letter-spacing: -0.5px;
+}
+
+.profession {
+    font-size: 16pt;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.95);
+    letter-spacing: 0.5px;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.header-right {
+    display: none !important;
+}
+
+/* ====================================
+   LAYOUT PRINCIPAL - ULTRA FORZADO
+   ==================================== */
+.cv-body {
+    display: table !important;
+    width: 210mm !important;
+    height: calc(297mm - 96px) !important;
+    min-height: calc(297mm - 96px) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+}
+
+.cv-main {
+    display: table-cell !important;
+    width: 68% !important;
+    vertical-align: top;
+    padding: 35px 40px 35px 40px !important;
+    margin: 0 !important;
+    background: white !important;
+    height: 100% !important;
+}
+
+.cv-sidebar {
+    display: table-cell !important;
+    width: 32% !important;
+    vertical-align: top;
+    background: linear-gradient(180deg, #065f46 0%, #047857 100%) !important;
+    padding: 35px 25px 35px 25px !important;
+    margin: 0 !important;
+    color: white;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    height: 100% !important;
+}
+
+/* ====================================
+   SECCIONES PRINCIPALES
+   ==================================== */
+.main-section {
+    margin-bottom: 35px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+    page-break-inside: avoid;
+}
+
+.section-header {
+    margin-bottom: 20px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+}
+
+.section-icon {
+    display: inline-block;
+    font-size: 24pt;
+    line-height: 1;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.section-title {
+    display: inline-block;
+    margin: 0 0 0 12px !important;
+    padding: 0 0 8px 0 !important;
+    font-size: 18pt;
+    font-weight: 800;
+    color: #1e293b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #1e3a5f, #2c5f8d);
+    border-radius: 2px;
+}
+
+/* ====================================
+   TIMELINE DESIGN
+   ==================================== */
+.timeline-block {
+    position: relative;
+    padding-left: 30px !important;
+    padding-top: 0 !important;
+    padding-right: 0 !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 25px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.timeline-block::before {
+    content: '';
+    position: absolute;
+    left: 9px;
+    top: 20px;
+    bottom: -10px;
+    width: 2px;
+    background: #1e3a5f;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 20px;
+    height: 20px;
+    background: #1e3a5f;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 0 0 4px rgba(30, 58, 95, 0.1);
+    z-index: 1;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.timeline-content {
+    margin-left: 10px !important;
+    margin-top: 0 !important;
+    margin-right: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+}
+
+/* ====================================
+   CARDS
+   ==================================== */
+.experience-card,
+.education-card,
+.award-card,
+.product-card,
+.garage-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px !important;
+    margin-bottom: 20px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    page-break-inside: avoid;
+}
+
+.experience-card:hover,
+.education-card:hover,
+.award-card:hover,
+.product-card:hover,
+.garage-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.company-name {
+    font-size: 13pt;
+    font-weight: 800;
+    color: #1e3a5f;
+    margin-bottom: 15px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 15px !important;
+    padding-top: 0 !important;
+    padding-right: 0 !important;
+    padding-bottom: 0 !important;
+    display: inline-block;
+    position: relative;
+}
+
+.company-name::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #1e3a5f, #2c5f8d);
+    border-radius: 2px;
+}
+
+.card-header {
+    overflow: hidden;
+    margin-bottom: 12px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+}
+
+.position-title,
+.course-title,
+.product-title {
+    float: left;
+    width: 70%;
+    font-size: 12pt;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.4;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.date-badge {
+    float: right;
+    width: 25%;
+    padding: 6px 14px !important;
+    margin: 0 !important;
+    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+    color: #334155;
+    font-size: 9pt;
+    font-weight: 600;
+    border-radius: 20px;
+    white-space: nowrap;
+    border: 1px solid #cbd5e1;
+}
+
+.location-tag {
+    font-size: 9pt;
+    color: #64748b;
+    margin-bottom: 10px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+    font-weight: 500;
+}
+
+.description-text {
+    font-size: 10pt;
+    line-height: 1.5;
+    color: #475569;
+    margin-bottom: 12px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+    text-align: left;
+}
+
+/* ====================================
+   CONTACT GRID
+   ==================================== */
+.contact-grid {
+    display: block;
+    margin-top: 12px !important;
+    margin-bottom: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 12px !important;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px dashed #cbd5e1;
+}
+
+.contact-grid.compact .contact-item {
+    width: 100%;
+    margin-right: 0 !important;
+}
+
+.contact-item {
+    display: inline-block;
+    width: 48%;
+    margin-right: 2% !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    margin-left: 0 !important;
+    padding: 0 !important;
+    vertical-align: top;
+    font-size: 9pt;
+}
+
+.contact-icon {
+    display: inline-block;
+    font-size: 11pt;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.contact-text {
+    display: inline-block;
+    margin-left: 8px !important;
+    margin-top: 0 !important;
+    margin-right: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+    color: #475569;
+    word-break: break-word;
+}
+
+.contact-link {
+    display: inline-block;
+    margin-left: 8px !important;
+    margin-top: 0 !important;
+    margin-right: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+    color: #1e3a5f;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* ====================================
+   CERTIFICADOS
+   ==================================== */
+.cert-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px !important;
+    margin-bottom: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-top: 15px !important;
+    padding-bottom: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn-cert {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px !important;
+    margin: 0 !important;
+    font-size: 8.5pt;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-cert.primary {
+    background: linear-gradient(135deg, #1e3a5f, #2c5f8d);
+    color: white;
+    border: none;
+}
+
+.btn-cert.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30, 58, 95, 0.4);
+}
+
+.btn-cert.secondary {
+    background: white;
+    color: #1e3a5f;
+    border: 2px solid #1e3a5f;
+}
+
+.btn-cert.secondary:hover {
+    background: #1e3a5f;
+    color: white;
+}
+
+.btn-icon {
+    font-size: 10pt;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* ====================================
+   EDUCATION ESPECÍFICO
+   ==================================== */
+.institution-name {
+    font-size: 9pt;
+    font-weight: 600;
+    color: #047857;
+    margin-bottom: 6px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+}
+
+.hours-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px !important;
+    margin-bottom: 10px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    background: #fef3c7;
+    color: #78350f;
+    font-size: 8pt;
+    font-weight: 600;
+    border-radius: 12px;
+}
+
+/* ====================================
+   AWARDS ESPECÍFICO
+   ==================================== */
+.award-type {
+    display: inline-block;
+    padding: 6px 12px !important;
+    margin-bottom: 10px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    background: linear-gradient(135deg, #dc2626, #991b1b);
+    color: white;
+    font-size: 8pt;
+    font-weight: 700;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.award-title {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 8px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+}
+
+.award-meta {
+    display: block;
+    margin-bottom: 10px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+}
+
+.award-entity {
+    display: inline-block;
+    font-size: 9pt;
+    font-weight: 600;
+    color: #047857;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.award-date {
+    display: inline-block;
+    margin-left: 15px !important;
+    margin-top: 0 !important;
+    margin-right: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+    font-size: 8.5pt;
+    color: #64748b;
+    font-style: italic;
+}
+
+/* ====================================
+   PRODUCTS ESPECÍFICO
+   ==================================== */
+.product-tag {
+    display: inline-block;
+    padding: 4px 10px !important;
+    margin-bottom: 8px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    background: #e0e7ff;
+    color: #3730a3;
+    font-size: 8pt;
+    font-weight: 600;
+    border-radius: 12px;
+}
+
+.product-date {
+    display: inline-block;
+    font-size: 8.5pt;
+    color: #64748b;
+    margin-bottom: 8px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+}
+
+/* ====================================
+   GARAGE ESPECÍFICO
+   ==================================== */
+.garage-meta {
+    display: block;
+    margin-bottom: 10px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 12px !important;
+    margin: 0 !important;
+    background: #d1fae5;
+    color: #065f46;
+    font-size: 8pt;
+    font-weight: 700;
+    border-radius: 12px;
+    text-transform: uppercase;
+}
+
+.price-tag {
+    display: inline-block;
+    margin-left: 12px !important;
+    margin-top: 0 !important;
+    margin-right: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 6px 12px !important;
+    background: linear-gradient(135deg, #1e3a5f, #2c5f8d);
+    color: white;
+    font-size: 10pt;
+    font-weight: 800;
+    border-radius: 12px;
+}
+
+/* ====================================
+   SIDEBAR VERDE
+   ==================================== */
+.photo-container {
+    text-align: center;
+    margin-bottom: 30px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+}
+
+.profile-photo {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 6px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.profile-photo.placeholder {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #047857, #065f46);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42pt;
+    font-weight: 900;
+    color: white;
+    border: 6px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.sidebar-section {
+    margin-bottom: 30px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+}
+
+.sidebar-title {
+    font-size: 12pt;
+    font-weight: 800;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-bottom: 8px !important;
+    padding-top: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.sidebar-content {
+    font-size: 10pt;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.info-item {
+    margin-bottom: 12px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-bottom: 12px !important;
+    padding-top: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-item.icon {
+    display: block;
+}
+
+.icon-label {
+    display: inline-block;
+    font-size: 14pt;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.info-label {
+    display: block;
+    font-size: 7.5pt;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+}
+
+.info-value {
+    display: inline-block;
+    margin-left: 10px !important;
+    margin-top: 0 !important;
+    margin-right: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+    font-size: 9pt;
+    font-weight: 600;
+    color: white;
+    word-break: break-word;
+}
+
+.info-link {
+    display: block;
+    font-size: 8.5pt;
+    font-weight: 600;
+    color: white;
+    text-decoration: underline;
+    word-break: break-all;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* ====================================
+   PÁGINA DE CERTIFICADOS
+   ==================================== */
+.certificate-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px !important;
+    margin: 0 !important;
+}
+
+.certificate-wrapper {
+    width: 100%;
+    text-align: center;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.certificate-title {
+    font-size: 20pt;
+    font-weight: 800;
+    background: linear-gradient(135deg, #1e3a5f, #2c5f8d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 30px !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.certificate-frame {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    border: 3px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.certificate-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* ====================================
+   IMPRESIÓN - ULTRA FORZADO
+   ==================================== */
+.btn, .btn-admin, .btn-cert, .btn-action, .action-buttons, .cert-actions, .no-print, .header-right {
+    display: none !important;
+}
+
+@media print {
+    @page {
+        size: A4;
+        margin: 0mm !important;
+    }
+    
+    * {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    html {
+        width: 210mm !important;
+        height: 297mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    body {
+        width: 210mm !important;
+        height: 297mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .cv-page {
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+        page-break-after: always;
+        width: 210mm !important;
+        height: 297mm !important;
+    }
+
+    .cv-sidebar {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .cv-header {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    
+    .cv-body {
+        width: 210mm !important;
+        height: calc(297mm - 96px) !important;
+    }
+}

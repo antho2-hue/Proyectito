@@ -1,0 +1,133 @@
+/* hoja_vida.css — Diseño profesional, juvenil y compatible con PDF */
+
+/* 1. Estilos generales */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f4f6f8; /* gris claro */
+  color: #222;
+  line-height: 1.4;
+  margin: 0;
+  padding: 20px 10px;
+}
+
+.cv-container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #ffffff;
+  padding: 18px;
+  /* Sombra suave (visual en navegador, no crítica para PDF) */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* Header */
+.cv-header {
+  background: #0a66c2; /* azul principal */
+  color: #fff;
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.cv-header h1 {
+  margin: 0 0 4px 0;
+  font-size: 28px;
+  font-weight: bold;
+}
+.cv-header p {
+  margin: 0;
+  opacity: 0.95;
+}
+.cv-header .btn-admin {
+  float: right;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+/* Cuerpo */
+.cv-body {
+  overflow: hidden; /* clearfix simple */
+  padding: 18px 10px;
+}
+
+.cv-sidebar {
+  float: left;
+  width: 30%;
+  background: #eaf6ff; /* azul claro */
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.cv-content {
+  float: right;
+  width: 70%;
+  padding: 0 12px;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+/* Sidebar sections */
+.cv-sidebar h3,
+.cv-content h2 {
+  margin: 6px 0 10px 0;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.cv-sidebar ul { padding-left: 16px; margin: 6px 0; }
+.cv-sidebar .cv-photo img { max-width: 100%; height: auto; display: block; }
+.cv-sidebar .cv-personal-data, .cv-contact, .cv-skills, .cv-languages {
+  border-top: 1px solid rgba(0,0,0,0.06);
+  padding-top: 10px;
+  margin-top: 10px;
+}
+
+/* Contenido principal */
+.cv-content section { margin-bottom: 18px; }
+.cv-content h2 {
+  font-size: 16px;
+  margin: 0 0 8px 0;
+  padding-bottom: 6px;
+  border-bottom: 3px solid #0a66c2; /* línea inferior azul */
+}
+.cv-content article { margin-bottom: 12px; }
+.cv-content strong { color: #0a0a0a; }
+.cv-content .date { color: #7a7a7a; font-size: 12px; }
+
+/* Footer */
+.cv-footer {
+  clear: both;
+  text-align: center;
+  padding: 14px 10px 6px 10px;
+}
+.cv-footer a {
+  display: inline-block;
+  margin: 6px 8px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+}
+.cv-footer .btn-check { background: #0a66c2; }
+.cv-footer .btn-check-all { background: #1565c0; }
+.cv-footer .btn-download { background: #2e7d32; }
+
+/* Botón hover (visual, no obligatorio para PDF) */
+.cv-footer a:hover { opacity: 0.92; }
+.cv-header .btn-admin:hover { opacity: 0.9; }
+
+/* Botones y enlaces en contenido */
+a { color: #0a66c2; }
+
+/* Simple responsive: stack columns on narrow screens */
+@media print, (max-width: 720px) {
+  .cv-sidebar, .cv-content { float: none; width: 100%; }
+  .cv-header .btn-admin { float: none; display: inline-block; margin-top: 8px; }
+  .cv-container { padding: 12px; }
+}
+
+/* Keep CSS conservative to maintain xhtml2pdf compatibility */

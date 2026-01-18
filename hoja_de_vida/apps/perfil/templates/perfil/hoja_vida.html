@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curriculum Vitae</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'perfil/css/cv_pdf.css' %}">
+</head>
+<body>
+    <div class="cv-container">
+        <div class="pdf-header">
+            <img class="pdf-header-photo" src="{{ profile_picture_url }}" alt="Profile Picture">
+            <div class="pdf-header-content">
+                <h1 class="pdf-header-name">{{ full_name }}</h1>
+                <h2 class="pdf-header-title">{{ professional_title }}</h2>
+            </div>
+        </div>
+        <div class="pdf-body">
+            <div class="pdf-sidebar">
+                <div class="pdf-section">
+                    <h3 class="pdf-section-title">Personal Information</h3>
+                    <p>{{ personal_info }}</p>
+                </div>
+                <div class="pdf-section">
+                    <h3 class="pdf-section-title">Contact</h3>
+                    <p>{{ contact_info }}</p>
+                </div>
+                <div class="pdf-section">
+                    <h3 class="pdf-section-title">Skills</h3>
+                    <p>{{ skills }}</p>
+                </div>
+            </div>
+            <div class="pdf-main">
+                <div class="pdf-section">
+                    <h3 class="pdf-section-title">Professional Profile</h3>
+                    <p>{{ professional_profile }}</p>
+                </div>
+                <div class="pdf-section">
+                    <h3 class="pdf-section-title">Work Experience</h3>
+                    <p>{{ work_experience }}</p>
+                </div>
+                <div class="pdf-section">
+                    <h3 class="pdf-section-title">Education</h3>
+                    <p>{{ education }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="certificates">
+            {% for certificate in certificates %}
+            <div class="pdf-section">
+                <h3 class="pdf-section-title">{{ certificate.title }}</h3>
+                <img src="{{ certificate.image_url }}" alt="Certificate">
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

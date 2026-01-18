@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>{{ perfil.nombres }} {{ perfil.apellidos }}</title>
+</head>
+<body>
+    <header>
+        <h1>{{ perfil.nombres }} {{ perfil.apellidos }}</h1>
+        {% if perfil.descripcionperfil %}
+            <p>{{ perfil.descripcionperfil }}</p>
+        {% endif %}
+    </header>
+
+    <section>
+        <h2>Datos personales</h2>
+        <ul>
+            {% if perfil.nacionalidad %}<li>Nacionalidad: {{ perfil.nacionalidad }}</li>{% endif %}
+            {% if perfil.lugarnacimiento %}<li>Lugar de nacimiento: {{ perfil.lugarnacimiento }}</li>{% endif %}
+            {% if perfil.fechanacimiento %}<li>Fecha de nacimiento: {{ perfil.fechanacimiento|date:"Y-m-d" }}</li>{% endif %}
+            {% if perfil.numerocedula %}<li>Cédula: {{ perfil.numerocedula }}</li>{% endif %}
+            {% if perfil.sexo %}<li>Sexo: {{ perfil.sexo }}</li>{% endif %}
+            {% if perfil.estadocivil %}<li>Estado civil: {{ perfil.estadocivil }}</li>{% endif %}
+            {% if perfil.licenciaconducir %}<li>Licencia: {{ perfil.licenciaconducir }}</li>{% endif %}
+            {% if perfil.telefonoconvencional %}<li>Teléfono convencional: {{ perfil.telefonoconvencional }}</li>{% endif %}
+            {% if perfil.telefonofijo %}<li>Teléfono fijo: {{ perfil.telefonofijo }}</li>{% endif %}
+            {% if perfil.direcciontrabajo %}<li>Dirección trabajo: {{ perfil.direcciontrabajo }}</li>{% endif %}
+            {% if perfil.direcciondomiciliaria %}<li>Dirección domicilio: {{ perfil.direcciondomiciliaria }}</li>{% endif %}
+            {% if perfil.sitioweb %}<li>Sitio web: {{ perfil.sitioweb }}</li>{% endif %}
+        </ul>
+    </section>
+
+    <section>
+        <h2>Experiencia laboral</h2>
+        {% if experiencias.exists %}
+            <ul>
+                {% for e in experiencias %}
+                    <li>
+                        <strong>{% if e.cargodesempenado %}{{ e.cargodesempenado }}{% endif %}</strong>
+                        {% if e.nombrempresa %}<div>Empresa: {{ e.nombrempresa }}</div>{% endif %}
+                        <div>
+                            {% if e.fechainiciogestion %}Desde: {{ e.fechainiciogestion|date:"Y-m-d" }}{% endif %}
+                            {% if e.fechafingestion %} - Hasta: {{ e.fechafingestion|date:"Y-m-d" }}{% endif %}
+                        </div>
+                        {% if e.descripcionfunciones %}<p>{{ e.descripcionfunciones }}</p>{% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No hay experiencia laboral visible.</p>
+        {% endif %}
+    </section>
+
+    <section>
+        <h2>Cursos realizados</h2>
+        {% if cursos.exists %}
+            <ul>
+                {% for c in cursos %}
+                    <li>
+                        <strong>{{ c.nombrecurso }}</strong>
+                        {% if c.entidadpatrocinadora %}<div>Ent.: {{ c.entidadpatrocinadora }}</div>{% endif %}
+                        <div>
+                            {% if c.fechainicio %}Inicio: {{ c.fechainicio|date:"Y-m-d" }}{% endif %}
+                            {% if c.fechafin %} - Fin: {{ c.fechafin|date:"Y-m-d" }}{% endif %}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No hay cursos visibles.</p>
+        {% endif %}
+    </section>
+
+    <section>
+        <h2>Reconocimientos</h2>
+        {% if reconocimientos.exists %}
+            <ul>
+                {% for r in reconocimientos %}
+                    <li>
+                        <strong>{{ r.tiporeconocimiento }}{% if r.descripcionreconocimiento %} - {{ r.descripcionreconocimiento }}{% endif %}</strong>
+                        {% if r.entidadpatrocinadora %}<div>Entidad: {{ r.entidadpatrocinadora }}</div>{% endif %}
+                        {% if r.fechareconocimiento %}<div>Fecha: {{ r.fechareconocimiento|date:"Y-m-d" }}</div>{% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No hay reconocimientos visibles.</p>
+        {% endif %}
+    </section>
+
+    <section>
+        <h2>Productos académicos</h2>
+        {% if productos_acad.exists %}
+            <ul>
+                {% for p in productos_acad %}
+                    <li>
+                        <strong>{{ p.nombrerecurso }}</strong>
+                        {% if p.clasificador %}<div>Clasificador: {{ p.clasificador }}</div>{% endif %}
+                        {% if p.descripcion %}<p>{{ p.descripcion }}</p>{% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No hay productos académicos visibles.</p>
+        {% endif %}
+    </section>
+
+    <section>
+        <h2>Productos laborales</h2>
+        {% if productos_lab.exists %}
+            <ul>
+                {% for pl in productos_lab %}
+                    <li>
+                        <strong>{{ pl.nombreproducto }}</strong>
+                        {% if pl.fechaproducto %}<div>Fecha: {{ pl.fechaproducto|date:"Y-m-d" }}</div>{% endif %}
+                        {% if pl.descripcion %}<p>{{ pl.descripcion }}</p>{% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No hay productos laborales visibles.</p>
+        {% endif %}
+    </section>
+
+    <section>
+        <h2>Ventas garage</h2>
+        {% if ventas.exists %}
+            <ul>
+                {% for v in ventas %}
+                    <li>
+                        <strong>{{ v.nombreproducto }}</strong>
+                        {% if v.estadoproducto %}<div>Estado: {{ v.estadoproducto }}</div>{% endif %}
+                        {% if v.valordelbien %}<div>Valor: {{ v.valordelbien }}</div>{% endif %}
+                        {% if v.descripcion %}<p>{{ v.descripcion }}</p>{% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No hay ventas visibles.</p>
+        {% endif %}
+    </section>
+
+</body>
+</html>

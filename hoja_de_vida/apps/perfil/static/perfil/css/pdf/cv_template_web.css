@@ -1,0 +1,623 @@
+/* PDF-only stylesheet - Estilo PROFESIONAL ELEGANTE para PDFs
+   - A4 with 15mm margins
+   - No JS, no external fonts (usa fuentes del sistema monospace)
+   - Fixed sidebar (repeats on each page via position: fixed)
+   - Avoid breaking sections and cards across pages
+   - Hide interactive elements
+   - Compatible con WeasyPrint
+*/
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+@page { size: A4; margin: 0mm; }
+
+/* Variables PROFESIONALES - Azul marino + Dorado elegante + Grises */
+:root {
+    /* Colores profesionales elegantes */
+    --navy-blue: #1e3a8a;      /* Azul marino principal */
+    --navy-dark: #1e40af;      /* Azul marino oscuro */
+    --navy-light: #3b82f6;     /* Azul claro */
+    
+    --gold-elegant: #b8860b;   /* Dorado elegante */
+    --gold-dark: #8b6914;      /* Dorado oscuro */
+    --gold-light: #daa520;     /* Dorado claro */
+    
+    --gray-dark: #374151;      /* Gris oscuro para texto */
+    --gray-medium: #6b7280;    /* Gris medio */
+    --gray-light: #9ca3af;     /* Gris claro */
+    
+    --rich-black: #1f2937;     /* Negro elegante */
+    --bg-terminal: #f9fafb;    /* Fondo claro */
+    --bg-wealth: #ffffff;      /* Blanco */
+}
+
+html, body {
+    font-family: 'Courier New', 'Courier', 'Monaco', monospace;
+    font-size: 10pt;
+    line-height: 1.5;
+    color: var(--gray-dark);
+    background: var(--bg-wealth);
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+/* Page container - MARCO MEJORADO */
+.cv-page {
+    width: 100%;
+    min-height: calc(297mm - 0mm);
+    height: calc(297mm - 0mm);
+    background: var(--bg-wealth);
+    padding: 0;
+    margin: 0 !important;
+    border: none; /* REMOVIDO - marco externo ahora más sutil */
+    box-shadow: none;
+}
+
+/* Header - Estilo Profesional Elegante */
+.cv-header { 
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-blue) 50%, var(--navy-light) 100%);
+    border: none; /* REMOVIDO */
+    border-radius: 0; /* REMOVIDO - ahora limpio */
+    padding: 20px 25px;
+    color: #ffffff; 
+    -webkit-print-color-adjust: exact; 
+    print-color-adjust: exact; 
+    box-shadow: 0 3px 8px rgba(30, 58, 138, 0.15); /* Sombra más sutil */
+    width: 100%; 
+    margin: 0 0 2px 0; /* Pequeño margen inferior */
+    position: relative; 
+    z-index: 10; 
+    border-bottom: 2px solid var(--gold-elegant); /* Línea inferior más delgada */
+}
+
+.header-content { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+}
+
+.full-name { 
+    font-family: 'Courier New', 'Courier', monospace;
+    font-size: 28pt; 
+    font-weight: 900; 
+    color: var(--gold-elegant); 
+    margin-bottom: 4px; 
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.profession { 
+    font-family: 'Courier New', 'Courier', monospace;
+    font-size: 12pt; 
+    color: white; 
+    border-left: 3px solid var(--gold-light);
+    padding-left: 10px;
+}
+
+.profession::before {
+    content: '>>> ';
+    color: var(--gold-light);
+}
+
+/* Layout: sidebar background fixed on right - MEJORADO */
+.cv-body {
+    position: relative;
+    min-height: calc(297mm - 0px);
+    background: var(--bg-wealth);
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.cv-sidebar-bg {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 30%;
+    height: 100%;
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #e5e7eb 100%);
+    border: none; /* REMOVIDO */
+    border-left: 1px solid #cbd5e1; /* Solo borde izquierdo delgado */
+    border-radius: 0; /* REMOVIDO */
+    z-index: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    box-shadow: inset 2px 0 8px rgba(30, 58, 138, 0.03); /* Sombra muy sutil */
+}
+
+.cv-sidebar {
+    position: relative;
+    float: right;
+    width: 30%;
+    background: transparent;
+    padding: 20px 18px;
+    color: var(--gray-dark);
+    page-break-inside: avoid;
+    max-height: calc(297mm - 40mm);
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* Main content - LÍNEA DIVISORA MEJORADA */
+.cv-main { 
+    margin-right: 31%; 
+    padding: 20px 25px; 
+    background: var(--bg-wealth); 
+    min-height: calc(297mm - 40mm); 
+    border-right: none; /* REMOVIDO - el sidebar-bg ya tiene su borde */
+    box-shadow: none; /* REMOVIDO */
+}
+
+/* Visual content cards and sections - LÍNEAS SEPARADORAS MEJORADAS */
+.main-section { 
+    margin-bottom: 25px; 
+    position: relative; 
+}
+
+/* Línea separadora entre secciones - MEJORADA */
+.main-section:not(:first-of-type)::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--gray-light) 5%, 
+        var(--navy-blue) 50%, 
+        var(--gray-light) 95%, 
+        transparent 100%
+    );
+    opacity: 0.4;
+}
+
+.main-section .section-content {
+    position: relative;
+    padding-left: 0; /* REMOVIDO padding */
+}
+
+/* REMOVIDA la línea vertical del lado izquierdo */
+.main-section .section-content::before {
+    display: none; /* REMOVIDO completamente */
+}
+
+.section-header { 
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--navy-blue); /* Borde inferior limpio */
+}
+
+.section-title { 
+    font-family: 'Courier New', 'Courier', monospace;
+    font-size: 14pt; 
+    font-weight: 900; 
+    color: var(--navy-blue); 
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.section-title::before {
+    content: '$ ';
+    color: var(--gold-elegant);
+    font-weight: 900;
+}
+
+.section-icon {
+    display: inline-block;
+    margin-right: 8px;
+}
+
+/* Cards - BORDES MEJORADOS */
+.experience-card, 
+.education-card, 
+.award-card, 
+.product-card, 
+.garage-card { 
+    page-break-inside: avoid; 
+    -webkit-column-break-inside: avoid; 
+    break-inside: avoid; 
+    background: #ffffff; /* Fondo blanco limpio */
+    border: 1px solid #e5e7eb; /* Borde gris claro */
+    border-left: 3px solid var(--navy-blue); /* Acento azul a la izquierda */
+    border-radius: 6px; /* Esquinas redondeadas suaves */
+    padding: 16px; 
+    margin-bottom: 14px; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06); /* Sombra muy sutil */
+    -webkit-print-color-adjust: exact; 
+    print-color-adjust: exact;
+    color: var(--gray-dark);
+}
+
+/* Timeline markers - MEJORADOS */
+.timeline-block {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 10px;
+    height: 10px;
+    background: var(--gold-elegant);
+    border-radius: 50%;
+    border: 2px solid var(--bg-wealth);
+    box-shadow: 0 0 0 2px var(--gold-light); /* Ring effect elegante */
+}
+
+.company-name {
+    font-family: 'Courier New', 'Courier', monospace;
+    font-size: 12pt;
+    font-weight: 900;
+    color: var(--navy-dark);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.company-name::before {
+    content: '> ';
+    color: var(--gold-elegant);
+    font-weight: 900;
+}
+
+.card-header {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.position-title,
+.course-title,
+.product-title {
+    font-family: 'Courier New', 'Courier', monospace;
+    font-size: 11pt;
+    font-weight: 900;
+    color: var(--navy-blue);
+    display: block;
+    margin-bottom: 6px;
+}
+
+.position-title::before,
+.course-title::before {
+    content: '[+] ';
+    color: var(--gold-elegant);
+    font-weight: 700;
+}
+
+.date-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(30, 58, 138, 0.08);
+    color: var(--navy-blue);
+    font-family: 'Courier New', monospace;
+    font-size: 8pt;
+    font-weight: 600;
+    border-radius: 12px;
+    border: 1px solid rgba(30, 58, 138, 0.2);
+    margin-bottom: 6px;
+}
+
+.location-tag {
+    font-size: 9pt;
+    color: var(--gray-medium);
+    margin-bottom: 6px;
+    font-family: 'Courier New', monospace;
+}
+
+.description-text { 
+    font-size: 10pt; 
+    line-height: 1.4; 
+    color: var(--gray-dark);
+    font-family: 'Courier New', monospace;
+    margin-top: 8px;
+}
+
+.institution-name {
+    font-size: 10pt;
+    color: var(--gray-medium);
+    margin-bottom: 6px;
+    font-family: 'Courier New', monospace;
+}
+
+.hours-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(184, 134, 11, 0.08);
+    color: var(--gold-dark);
+    font-size: 8pt;
+    border-radius: 12px;
+    border: 1px solid rgba(184, 134, 11, 0.3);
+    font-family: 'Courier New', monospace;
+}
+
+.award-type {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(30, 58, 138, 0.1);
+    color: var(--navy-dark);
+    font-size: 8pt;
+    font-weight: 700;
+    border-radius: 4px;
+    margin-bottom: 6px;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+}
+
+.award-title {
+    font-size: 11pt;
+    font-weight: 900;
+    color: var(--navy-blue);
+    margin-bottom: 6px;
+    font-family: 'Courier New', monospace;
+}
+
+.award-meta {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.award-entity {
+    font-size: 9pt;
+    color: var(--gray-medium);
+    font-family: 'Courier New', monospace;
+}
+
+.award-date {
+    font-size: 9pt;
+    color: var(--gray-light);
+    font-style: italic;
+}
+
+.product-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(59, 130, 246, 0.08);
+    color: var(--navy-light);
+    font-size: 8pt;
+    border-radius: 12px;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    margin-bottom: 6px;
+    font-family: 'Courier New', monospace;
+}
+
+.product-date {
+    font-size: 9pt;
+    color: var(--gray-light);
+}
+
+.garage-meta {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(30, 58, 138, 0.08);
+    color: var(--navy-blue);
+    font-size: 8pt;
+    border-radius: 12px;
+    border: 1px solid rgba(30, 58, 138, 0.2);
+    margin-right: 8px;
+    font-family: 'Courier New', monospace;
+}
+
+.price-tag {
+    display: inline-block;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, var(--gold-elegant), var(--gold-dark));
+    color: white;
+    font-size: 11pt;
+    font-weight: 900;
+    border-radius: 12px;
+    font-family: 'Courier New', monospace;
+}
+
+/* Remove interactive visuals and heavy shadows for PDF */
+.btn, .btn-admin, .btn-cert, .btn-action, .action-buttons, .cert-actions, .no-print { display: none !important; }
+
+/* Contact grid - BORDES MEJORADOS */
+.contact-grid {
+    display: block;
+    margin-top: 8px; /* reducir separación vertical para que suba un poco */
+    background: #ffffff;
+    border-radius: 6px;
+    padding: 10px; /* menos padding para evitar salto de página */
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    page-break-inside: avoid; /* evitar que el bloque de contactos se parta en PDF */
+}
+
+.contact-item {
+    display: block;
+    margin-bottom: 4px; /* más compacto verticalmente */
+    font-family: 'Courier New', monospace;
+}
+
+.contact-icon {
+    margin-right: 6px;
+}
+
+.contact-text,
+.contact-link {
+    color: var(--gray-medium);
+    font-size: 8pt; /* texto más pequeño para que no empuje a la siguiente página */
+}
+
+.contact-grid.compact {
+    display: block;
+}
+
+/* Sidebar content */
+.first-page-only { page-break-inside: avoid; page-break-after: avoid; }
+
+.photo-container { 
+    text-align: center; 
+    margin-bottom: 18px; 
+    position: relative; 
+}
+
+.profile-photo { 
+    width: 140px; 
+    height: 140px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+    border: 3px solid var(--gold-elegant); /* Borde más delgado */
+    box-shadow: 0 4px 12px rgba(184, 134, 11, 0.2);
+}
+
+.profile-photo.placeholder {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--navy-blue), var(--navy-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36pt;
+    font-weight: 900;
+    color: white;
+    border: 3px solid var(--gold-elegant);
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+}
+
+.sidebar-section { margin-bottom: 18px; }
+
+/* Sidebar titles - MEJORADOS */
+.sidebar-title { 
+    font-family: 'Courier New', 'Courier', monospace;
+    font-size: 11pt; 
+    font-weight: 900; 
+    color: var(--navy-blue); 
+    margin-bottom: 12px; 
+    border-bottom: 2px solid var(--navy-blue); /* Borde sólido limpio */
+    padding-bottom: 8px; 
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.sidebar-title::before {
+    content: '// ';
+    color: var(--navy-light);
+}
+
+.sidebar-title::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: var(--gold-elegant); /* Pequeño acento dorado */
+}
+
+.info-item { 
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f3f4f6; /* Línea separadora muy sutil */
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label { 
+    font-family: 'Courier New', monospace;
+    font-size: 8pt; 
+    color: var(--navy-blue); 
+    display: block; 
+    margin-bottom: 4px; 
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.9;
+}
+
+.info-value { 
+    font-family: 'Courier New', monospace;
+    font-size: 9pt; 
+    font-weight: 600; 
+    color: var(--gray-dark); 
+}
+
+.info-link {
+    color: var(--navy-light);
+    text-decoration: none;
+}
+
+.info-item.icon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.icon-label {
+    font-size: 12pt;
+}
+
+/* Certificate page styles */
+.certificate-page { 
+    page-break-before: always; 
+    page-break-after: always; 
+    width: 100%; 
+    height: calc(297mm - 30mm); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 15mm; 
+    background: var(--bg-wealth);
+}
+
+.certificate-wrapper { width: 100%; text-align: center; }
+
+.certificate-title { 
+    font-family: 'Courier New', monospace;
+    font-size: 20pt; 
+    font-weight: 900; 
+    color: var(--navy-blue); 
+    margin-bottom: 22px; 
+    text-transform: uppercase;
+}
+
+.certificate-frame { 
+    width: 100%; 
+    max-width: 180mm; 
+    margin: 0 auto; 
+    border: 2px solid var(--navy-blue); /* Borde más delgado */
+    border-radius: 8px; /* Menos redondeado */
+    overflow: hidden; 
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+}
+
+.certificate-image { width: 100%; height: auto; display: block; }
+
+/* Marco general - SIMPLIFICADO */
+.cv-page {
+  border: none; /* REMOVIDO */
+  border-radius: 0; /* REMOVIDO */
+  padding: 0;
+  background: #ffffff;
+  box-shadow: none; /* REMOVIDO */
+  margin: 0;
+}
+
+/* Ensure headings do not become widows/orphans */
+h1, h2, h3, h4 { widows: 2; orphans: 2; }
+.section-title { page-break-after: avoid; }
+
+/* Print-specific adjustments */
+@media print {
+    body { background: var(--bg-wealth); padding: 0; }
+    .cv-page { margin: 0; page-break-after: always; box-shadow: none; border-radius: 0; }
+    .cv-sidebar-bg { position: fixed; }
+}
+
+/* Safety: force small font sizes not to overflow */
+.hidden-for-pdf { display: none !important; }
+
+/* End of PDF stylesheet */
