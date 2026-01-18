@@ -1509,4 +1509,48 @@ section[id] {
     .whatsapp-float {
         display: none !important;
     }
+ /* 🔴 SOLUCIÓN PRINCIPAL */
+    .cv-page {
+        min-height: auto !important;
+        height: auto !important;
+        page-break-after: auto !important;
+    }
+
+    .cv-header {
+        height: auto !important;
+        min-height: auto !important;
+        padding-bottom: 20px;
+        page-break-after: avoid !important;
+    }
+
+    .cv-body {
+        page-break-before: avoid !important;
+    }
+
+    /* Evitar cortes feos */
+    .cv-header,
+    .cv-body,
+    .cv-sidebar,
+    .cv-main,
+    .main-section {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+    }
+
+    /* FOTO: evitar que rompa la primera hoja */
+    .photo-container {
+        position: static !important;
+        margin: 15px auto 20px auto;
+        text-align: center;
+    }
+
+    .profile-photo {
+        margin: 0 auto;
+        display: block;
+    }
+
+    /* Ajuste general de fondo */
+    body {
+        background: white !important;
+    }
 }
