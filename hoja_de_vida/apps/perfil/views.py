@@ -466,7 +466,7 @@ def descargar_cv_pdf(request):
                     )
                     merger.append(BytesIO(cert_pdf))
                 else:
-                    # For PDFs, create a title page and prepend it before the certificate pages.
+                    # For PDFs, try to overlay the title on the first certificate page.
                     try:
                         title_html = render_to_string('perfil/pdf/certificado_wrapper.html', {
                             'titulo': titulo or '',
@@ -482,16 +482,28 @@ def descargar_cv_pdf(request):
                         if len(cert_reader.pages) == 0:
                             return
 
-                        # Build a new PDF where the title pages come first, then the certificate pages
-                        writer = PdfWriter()
-                        for p in title_reader.pages:
-                            writer.add_page(p)
-                        for p in cert_reader.pages:
-                            writer.add_page(p)
-
-                        buf = BytesIO()
-                        writer.write(buf)
-                        merger.append(BytesIO(buf.getvalue()))
+                        # Attempt to merge overlay onto the certificate's first page
+                        try:
+                            first = cert_reader.pages[0]
+                            if len(title_reader.pages) > 0:
+                                first.merge_page(title_reader.pages[0])
+                            writer = PdfWriter()
+                            writer.add_page(first)
+                            for p in cert_reader.pages[1:]:
+                                writer.add_page(p)
+                            buf = BytesIO()
+                            writer.write(buf)
+                            merger.append(BytesIO(buf.getvalue()))
+                        except Exception:
+                            # Fallback: prepend title pages then certificate pages
+                            writer = PdfWriter()
+                            for p in title_reader.pages:
+                                writer.add_page(p)
+                            for p in cert_reader.pages:
+                                writer.add_page(p)
+                            buf = BytesIO()
+                            writer.write(buf)
+                            merger.append(BytesIO(buf.getvalue()))
                     except Exception:
                         # fallback: append original bytes
                         merger.append(BytesIO(cert_bytes))
@@ -787,13 +799,24 @@ def descargar_cv_completo_pdf(request):
                             if len(cert_reader.pages) == 0:
                                 continue
 
-                            # Prepend title pages (if available) before certificate pages for reliable rendering
-                            if title_reader and len(title_reader.pages) > 0:
-                                for p in title_reader.pages:
+                            # Try overlaying the title onto the first certificate page
+                            try:
+                                if title_reader and len(title_reader.pages) > 0:
+                                    cert_first = cert_reader.pages[0]
+                                    cert_first.merge_page(title_reader.pages[0])
+                                    writer.add_page(cert_first)
+                                    for p in cert_reader.pages[1:]:
+                                        writer.add_page(p)
+                                else:
+                                    for p in cert_reader.pages:
+                                        writer.add_page(p)
+                            except Exception:
+                                # Fallback: append title pages first, then certificate pages
+                                if title_reader and len(title_reader.pages) > 0:
+                                    for p in title_reader.pages:
+                                        writer.add_page(p)
+                                for p in cert_reader.pages:
                                     writer.add_page(p)
-
-                            for p in cert_reader.pages:
-                                writer.add_page(p)
                         except Exception:
                             pass
             except Exception:
