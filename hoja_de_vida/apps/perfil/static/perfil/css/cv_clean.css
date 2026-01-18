@@ -129,12 +129,14 @@ html, body {
 
 .full-name {
     font-family: 'Orbitron', 'Fira Code', monospace;
-    font-size: 42pt;
+    font-size: 32pt;
     font-weight: 900;
     color: var(--gold);
     margin-bottom: 12px;
     text-transform: uppercase;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
+    line-height: 1.1;
+
     text-shadow: 
         0 0 5px rgba(234, 179, 8, 0.4),
         0 0 10px rgba(234, 179, 8, 0.3),
