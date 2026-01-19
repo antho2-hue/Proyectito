@@ -87,6 +87,6 @@ class DatosPersonalesAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 # Global admin branding
-admin.site.site_header = "CYBERADMIN — Panel"
-admin.site.site_title = "CYBERADMIN"
+admin.site.site_header = "📄 HOJA DE VIDA MODERNA — Panel"
+admin.site.site_title = "HOJA DE VIDA MODERNA"
 admin.site.index_title = "Dashboard"

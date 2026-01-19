@@ -1,22 +1,24 @@
-/* admin_hacker.css — Cyberpunk / Hacker theme for Django Admin */
+/* admin_hacker.css — Vaporwave Dragon Ball theme for Django Admin */
 :root{
-  --bg-900: #010510;
-  --bg-800: #071028;
-  --neon-green: #00ff9c;
-  --neon-cyan: #00eaff;
-  --neon-purple: #7c3aed;
+  --bg-900: #0A0E27;
+  --bg-800: #1a1a3e;
+  --neon-green: #FF71CE;
+  --neon-cyan: #00D9FF;
+  --neon-purple: #9D4EDD;
   --muted: #94a3b8;
   --glass: rgba(255,255,255,0.04);
+  --goku-orange: #FF8C00;
+  --kamehameha-blue: #4169E1;
 }
 
 /* Global admin background */
 html, body, .dashboard, #content-main, #container { background: linear-gradient(180deg, var(--bg-900) 0%, rgba(6,12,28,1) 100%); color: #cbd5e1; }
 
 /* Branding */
-.cyber-brand { display:flex; align-items:center; gap:12px; padding:6px 0; }
-.brand-logo { color: var(--neon-cyan); font-weight:900; font-size:20px; text-shadow: 0 0 8px rgba(0,234,255,0.25); }
-.site-title { color: var(--neon-green); margin:0; font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Courier New', monospace; letter-spacing:1px; font-size:18px; }
-.site-tag { color: var(--muted); margin:0; font-size:10px; }
+.cyber-brand { display:flex; align-items:center; justify-content:center; flex-direction:column; gap:4px; padding:6px 0; text-align:center; }
+.brand-logo { color: #00D9FF; font-weight:900; font-size:8px; text-shadow: 0 0 8px rgba(0, 217, 255, 0.4); }
+.site-title { color: #FF71CE; margin:0; font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Courier New', monospace; letter-spacing:1px; font-size:18px; text-shadow: 0 0 12px rgba(255, 113, 206, 0.3); }
+.site-tag { color: #00D9FF; margin:0; font-size:10px; text-shadow: 0 0 8px rgba(0, 217, 255, 0.2); }
 
 /* Sidebar */
 #nav-sidebar { background: linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.25)); border-right: 1px solid rgba(255,255,255,0.03); width:220px; }
@@ -60,8 +62,8 @@ input:focus, select:focus, textarea:focus { outline: none; box-shadow: 0 0 12px 
 .cyber-grid { position:absolute; inset:0; background-image: radial-gradient(rgba(0,234,255,0.02) 1px, transparent 1px); background-size: 20px 20px; opacity:0.9; filter: blur(6px) saturate(1.2); }
 .login-card { width:420px; max-width:92%; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; padding:22px; box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 40px rgba(124,58,237,0.04); border: 1px solid rgba(255,255,255,0.03); position:relative; z-index:2; }
 .login-brand{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
-.login-brand .brand-logo{ color:var(--neon-cyan); font-size:28px; text-shadow: 0 0 12px rgba(0,234,255,0.18); }
-.login-brand h1{ margin:0; color:var(--neon-green); font-family: 'JetBrains Mono', monospace; font-size:20px; }
+.login-brand .brand-logo{ color:#00D9FF; font-size:10px; text-shadow: 0 0 12px rgba(0, 217, 255, 0.5); }
+.login-brand h1{ margin:0; color:#FF71CE; font-family: 'JetBrains Mono', monospace; font-size:20px; text-shadow: 0 0 12px rgba(255, 113, 206, 0.3); }
 .login-brand .brand-sub{ color:var(--muted); font-size:11px; }
 
 .login-card label { display:block; font-size:11px; color:var(--muted); margin-bottom:6px; }

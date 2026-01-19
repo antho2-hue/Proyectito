@@ -180,6 +180,7 @@
         box-shadow: 0 0 20px rgba(0,255,156,0.2);
         transition: all 0.3s ease;
         z-index: 100;
+        display: none;
       `;
 
       toggleBtn.addEventListener('mouseenter', () => {

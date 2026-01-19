@@ -1,25 +1,132 @@
-{% extends "admin/index.html" %}
-{% load static %}
-
-{% block content %}
-  <div class="dashboard-grid">
-    <div class="module"> <!-- Quick stats card -->
-      <h2 class="card-title">Sistema</h2>
-      <p class="muted">Usuarios activos · Última sincronización · Estado</p>
-      <div class="cyber-stats">
-        <div class="stat glow">USERS<br><strong>128</strong></div>
-        <div class="stat glow">CERTS<br><strong>32</strong></div>
-        <div class="stat glow">UPTIME<br><strong>99.99%</strong></div>
-      </div>
-    </div>
-    <div class="module">
-      <h2 class="card-title">Acciones</h2>
-      <p><a class="addlink" href="{{ add_url }}">Crear nuevo registro</a></p>
-    </div>
-  </div>
-  {{ block.super }}
-{% endblock %}
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
 
 {% block extrastyle %}
-  <link rel="stylesheet" href="{% static 'admin/css/admin_hacker.css' %}">
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/vaporwave_admin.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Efectos de fondo -->
+<div class="retro-grid"></div>
+<div class="vaporwave-sun"></div>
+<div class="scanlines"></div>
+
+<!-- Decoraciones -->
+<div class="floating-decorations">
+    <div class="dragon-ball-deco" data-stars="★★★★★★★" style="top: 10%; right: 5%; animation-delay: 1s;"></div>
+    <div class="dragon-ball-deco" data-stars="★★★★★★" style="top: 30%; left: 5%; animation-delay: 2s;"></div>
+    <div class="kinton-cloud" style="top: 60%; animation-duration: 25s;"></div>
+</div>
+
+<div id="content-main">
+    <!-- Header principal -->
+    <div class="retro-window" style="max-width: 100%; margin-bottom: 30px;">
+        <div class="window-titlebar">
+            <div class="window-title">
+                <span>�</span>
+                <span>PANEL DE CONTROL - HOJA DE VIDA MODERNA v1.0</span>
+            </div>
+            <div class="window-controls">
+                <div class="window-btn minimize"></div>
+                <div class="window-btn maximize"></div>
+                <div class="window-btn close"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid de módulos -->
+    <div class="dashboard-grid">
+        {% for app in app_list %}
+        <div class="dashboard-card">
+            <div class="window-titlebar">
+                <div class="window-title">{{ app.name }}</div>
+                <div class="window-controls">
+                    <div class="window-btn minimize"></div>
+                    <div class="window-btn maximize"></div>
+                    <div class="window-btn close"></div>
+                </div>
+            </div>
+            
+            <div class="window-content">
+                {% for model in app.models %}
+                <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dotted #999;">
+                    {% if model.admin_url %}
+                    <a href="{{ model.admin_url }}" class="icon-folder" style="font-weight: bold; color: #000;">{{ model.name }}</a>
+                    {% else %}
+                    <span class="icon-folder" style="font-weight: bold; color: #666;">{{ model.name }}</span>
+                    {% endif %}
+                    <div style="margin-top: 5px; font-size: 10px;">
+                        {% if model.add_url %}
+                        <a href="{{ model.add_url }}" class="icon-add">Agregar</a>
+                        {% endif %}
+                        {% if model.admin_url %}
+                        <a href="{{ model.admin_url }}" class="icon-edit">Modificar</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="retro-window">
+            <div class="window-content">
+                <p>❌ {% trans "No tienes permisos para ver o editar nada." %}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Acciones recientes -->
+    {% if recent_actions %}
+    <div class="retro-window" style="max-width: 100%; margin-top: 30px;">
+        <div class="window-titlebar">
+            <div class="window-title">📜 ACCIONES RECIENTES</div>
+            <div class="window-controls">
+                <div class="window-btn minimize"></div>
+                <div class="window-btn maximize"></div>
+                <div class="window-btn close"></div>
+            </div>
+        </div>
+        
+        <div class="window-content">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Acción</th>
+                        <th>Objeto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in recent_actions %}
+                    <tr>
+                        <td>{{ entry.action_time|date:"d/m/Y H:i" }}</td>
+                        <td>{{ entry.get_action_flag_display }}</td>
+                        <td>{{ entry.object_repr }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+// Animación de aparición de ventanas
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.dashboard-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.8) translateY(50px)';
+        
+        setTimeout(() => {
+            card.style.transition = 'all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+            card.style.opacity = '1';
+            card.style.transform = 'scale(1) translateY(0)';
+        }, index * 150);
+    });
+});
+</script>
 {% endblock %}

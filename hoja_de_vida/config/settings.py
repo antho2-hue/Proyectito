@@ -155,3 +155,10 @@ AZURE_STORAGE_CONTAINER = os.environ.get("AZURE_STORAGE_CONTAINER", "certificado
 # =========================================================
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+# =========================================================
+# DJANGO ADMIN CUSTOMIZATION - VAPORWAVE THEME
+# =========================================================
+
+ADMIN_SITE_HEADER = "📄 HOJA DE VIDA MODERNA"
+ADMIN_SITE_TITLE = "HDV - Administrador"
+ADMIN_INDEX_TITLE = "Centro de Control - Perfil Profesional"

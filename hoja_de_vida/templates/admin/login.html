@@ -1,101 +1,101 @@
 {% extends "admin/base_site.html" %}
 {% load i18n static %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="/static/admin/css/cyber_login.css" />{% endblock %}
-
-{% block bodyclass %}{{ block.super }}{% endblock %}
-
-{% block usertools %}{% endblock %}
-
-{% block nav-global %}{% endblock %}
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/vaporwave_admin.css' %}">
+{% endblock %}
 
 {% block content %}
-<div id="content-main">
-  <div class="cyber-login-container">
-    <div class="cyber-header">
-      <div class="terminal-header">
-        <span class="terminal-title">SYSTEM ACCESS TERMINAL</span>
-        <span class="terminal-status">[SECURE CONNECTION ESTABLISHED]</span>
-      </div>
-      <div class="glitch-line"></div>
-    </div>
+<!-- Grid retro de fondo -->
+<div class="retro-grid"></div>
 
-    <div class="login-form-wrapper">
-      <form action="{{ app_path }}" method="post" id="login-form">{% csrf_token %}
+<!-- Sol vaporwave -->
+<div class="vaporwave-sun"></div>
 
-        {% if form.errors and not form.non_field_errors %}
-        <div class="error-container">
-          <div class="error-message">
-            <span class="error-icon">⚠</span>
-            {% if form.errors.items|length == 1 %}{% trans "Please correct the error below." %}{% else %}{% trans "Please correct the errors below." %}{% endif %}
-          </div>
-        </div>
-        {% endif %}
+<!-- Scanlines effect -->
+<div class="scanlines"></div>
 
-        {% if form.non_field_errors %}
-        {% for error in form.non_field_errors %}
-        <div class="error-container">
-          <div class="error-message">
-            <span class="error-icon">⚠</span>
-            {{ error }}
-          </div>
-        </div>
-        {% endfor %}
-        {% endif %}
-
-        <div class="form-group">
-          <label for="id_username" class="cyber-label">
-            <span class="label-text">USER ID:</span>
-          </label>
-          <div class="input-container">
-            <span class="input-prefix">></span>
-            {{ form.username }}
-          </div>
-          {% if form.username.errors %}
-          <div class="field-error">
-            {% for error in form.username.errors %}
-            <span class="error-icon">✗</span> {{ error }}
-            {% endfor %}
-          </div>
-          {% endif %}
-        </div>
-
-        <div class="form-group">
-          <label for="id_password" class="cyber-label">
-            <span class="label-text">ACCESS CODE:</span>
-          </label>
-          <div class="input-container">
-            <span class="input-prefix">></span>
-            {{ form.password }}
-          </div>
-          {% if form.password.errors %}
-          <div class="field-error">
-            {% for error in form.password.errors %}
-            <span class="error-icon">✗</span> {{ error }}
-            {% endfor %}
-          </div>
-          {% endif %}
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" class="cyber-button">
-            <span class="button-text">INITIALIZE ACCESS</span>
-            <span class="button-glow"></span>
-          </button>
-        </div>
-
-        <input type="hidden" name="next" value="{{ next }}" />
-      </form>
-    </div>
-
-    <div class="cyber-footer">
-      <div class="system-info">
-        <span class="info-line">[ADMIN PANEL v2.0.7]</span>
-        <span class="info-line">[ENCRYPTION: AES-256]</span>
-        <span class="info-line">[SECURITY LEVEL: MAXIMUM]</span>
-      </div>
-      <div class="scan-line"></div>
-    </div>
-  </div>
+<!-- Decoraciones Dragon Ball -->
+<div class="floating-decorations">
+    <div class="dragon-ball-deco" data-stars="★" style="top: 15%; left: 10%;"></div>
+    <div class="dragon-ball-deco" data-stars="★★" style="top: 25%; right: 15%;"></div>
+    <div class="dragon-ball-deco" data-stars="★★★" style="bottom: 20%; left: 20%;"></div>
+    <div class="dragon-ball-deco" data-stars="★★★★" style="bottom: 30%; right: 25%;"></div>
+    <div class="kinton-cloud" style="top: 40%;"></div>
 </div>
+
+<!-- Ventana de Login -->
+<div class="retro-window">
+    <div class="window-titlebar">
+        <div class="window-title">
+            <span>�</span>
+            <span>HOJA DE VIDA MODERNA - LOGIN.EXE</span>
+        </div>
+        <div class="window-controls">
+            <div class="window-btn minimize"></div>
+            <div class="window-btn maximize"></div>
+            <div class="window-btn close"></div>
+        </div>
+    </div>
+    
+    <div class="window-content">
+        <div class="login-container">
+            <!-- Logo Dragon Ball -->
+            <div class="login-logo">
+                <div class="dragon-ball"></div>
+            </div>
+            
+            <!-- Título -->
+            <h1 class="login-title">{% trans 'SISTEMA DE ADMINISTRACIÓN' %}</h1>
+            
+            <!-- Mensajes de error -->
+            {% if form.errors %}
+            <ul class="messagelist">
+                <li class="error">
+                    {% if form.errors.items|length == 1 %}
+                        ⚠️ {% trans "Por favor corrige el error." %}
+                    {% else %}
+                        ⚠️ {% trans "Por favor corrige los errores." %}
+                    {% endif %}
+                </li>
+            </ul>
+            {% endif %}
+            
+            <!-- Formulario -->
+            <form action="{{ app_path }}" method="post" id="login-form">
+                {% csrf_token %}
+                
+                <div class="form-row">
+                    <label for="id_username">{{ form.username.label }}:</label>
+                    {{ form.username }}
+                </div>
+                
+                <div class="form-row">
+                    <label for="id_password">{{ form.password.label }}:</label>
+                    {{ form.password }}
+                </div>
+                
+                <input type="hidden" name="next" value="{{ next }}">
+                
+                <div class="submit-row">
+                    <input type="submit" value="🔥 {% trans 'KAMEHAMEHA LOGIN' %}">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Efecto de glitch en el título
+document.addEventListener('DOMContentLoaded', function() {
+    const title = document.querySelector('.login-title');
+    setInterval(() => {
+        title.style.textShadow = `
+            ${Math.random() * 5 - 2}px ${Math.random() * 5 - 2}px 0 var(--neon-pink),
+            ${Math.random() * 5 - 2}px ${Math.random() * 5 - 2}px 0 var(--cyber-blue)
+        `;
+    }, 100);
+});
+</script>
 {% endblock %}
