@@ -439,7 +439,7 @@
             <h1 class="header-name">{{ perfil.nombres|upper }} {{ perfil.apellidos|upper }}</h1>
             <p class="header-title">{{ perfil.descripcionperfil }}</p>
 
-            {% if experiencias_qs %}
+            {% if experiencias_qs.exists %}
             <div class="section">
                 <h2>EXPERIENCIA PROFESIONAL</h2>
                 {% for exp in experiencias_qs %}
@@ -466,24 +466,7 @@
             </div>
             {% endif %}
 
-            {% if productos_academicos %}
-            <div class="section">
-                <h2>EDUCACIÓN</h2>
-                {% for prod in productos_academicos %}
-                <div class="entry">
-                    <div class="entry-title">{{ prod.nombrerecurso|upper }}</div>
-                    {% if prod.clasificador %}
-                    <div class="entry-subtitle">{{ prod.clasificador }}</div>
-                    {% endif %}
-                    {% if prod.descripcion %}
-                    <div class="entry-desc">{{ prod.descripcion }}</div>
-                    {% endif %}
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
-
-            {% if cursos %}
+            {% if cursos.exists.exists %}
             <div class="section">
                 <h2>CERTIFICACIONES Y CURSOS</h2>
                 {% for curso in cursos %}
@@ -517,7 +500,7 @@
             </div>
             {% endif %}
 
-            {% if reconocimientos %}
+            {% if reconocimientos.exists %}
             <div class="section">
                 <h2>RECONOCIMIENTOS</h2>
                 {% for rec in reconocimientos %}
@@ -543,7 +526,7 @@
             </div>
             {% endif %}
 
-            {% if productos_academicos %}
+            {% if productos_academicos.exists %}
             <div class="section">
                 <h2>PRODUCTOS ACADÉMICOS</h2>
                 {% for prod in productos_academicos %}
@@ -560,7 +543,7 @@
             </div>
             {% endif %}
 
-            {% if productos_laborales %}
+            {% if productos_laborales.exists %}
             <div class="section">
                 <h2>PRODUCTOS LABORALES</h2>
                 {% for prod in productos_laborales %}
