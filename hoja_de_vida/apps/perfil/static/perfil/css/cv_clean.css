@@ -9,6 +9,28 @@
     padding: 0; 
 }
 
+/* ============ HIDE SCROLLBARS - smooth scroll experience ============ */
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+}
+
+/* Chrome, Safari, Edge */
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 4px;
+}
+
 @page { 
     size: A4; 
     margin: 0;
@@ -44,6 +66,12 @@ html, body {
     background-image: 
         radial-gradient(circle at 1px 1px, rgba(0, 255, 0, 0.15) 1px, transparent 0);
     background-size: 20px 20px;
+    /* ============ UNIFIED SCROLL LAYOUT ============ */
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: block;
 }
 
 /* ==========================================
@@ -51,8 +79,10 @@ html, body {
    ========================================== */
 
 .cv-page {
-    width: 210mm;
-    min-height: 297mm;
+    width: 100%;
+    max-width: 1380px;      /* ← Balance visual óptimo */
+    min-height: 100vh;      /* ✔ crece con contenido */
+    height: auto;           /* ✔ NO fija */
     background: var(--bg-wealth);
     margin: 0 auto;
     position: relative;
@@ -61,7 +91,11 @@ html, body {
         0 0 20px rgba(255, 215, 0, 0.5),
         0 0 40px rgba(0, 255, 0, 0.3),
         inset 0 0 40px rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    overflow: visible;      /* ✔ deja fluir */
 }
+
 
 /* ==========================================
    HEADER HERO CON DIAGONAL (Estilo Gridsby)
@@ -80,6 +114,8 @@ html, body {
     box-shadow: 
         0 4px 20px rgba(255, 215, 0, 0.6),
         inset 0 -3px 10px rgba(0, 255, 0, 0.2);
+    /* ============ LAYOUT: header remains fixed when content scrolls ============ */
+    flex-shrink: 0;
 }
 
 /* Efecto de scanlines hacker */
@@ -124,7 +160,19 @@ html, body {
     position: relative;
     z-index: 2;
     padding: 40px 50px;
-    max-width: 75%;  /* ← Aumentado de 60% a 75% */
+    max-width: 85%;  /* ← Ligeramente más ancho para mejor balance */
+    animation: fade-in-header 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s both;
+}
+
+@keyframes fade-in-header {
+    from {
+        opacity: 0.9;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .full-name {
@@ -209,6 +257,8 @@ html, body {
     background: white;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+    /* ============ LAYOUT: nav menu remains fixed when content scrolls ============ */
+    flex-shrink: 0;
 }
 
 .nav-item {
@@ -228,12 +278,25 @@ html, body {
     gap: 5px;
     border: none;
     cursor: pointer;
-    transition: all 0.3s ease;
+    /* ============ EXPANDING CARDS ANIMATION ============ */
+    transition: flex-grow 0.4s cubic-bezier(0.4, 0.0, 0.2, 1),
+                transform 0.4s cubic-bezier(0.4, 0.0, 0.2, 1),
+                filter 0.4s cubic-bezier(0.4, 0.0, 0.2, 1),
+                box-shadow 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+    flex-grow: 1;
+    position: relative;
 }
 
-.nav-item:hover {
-    transform: translateY(-3px);
-    filter: brightness(1.1);
+/* Al hover/focus: el botón se expande (controlado por JS) */
+.nav-item:hover,
+.nav-item:focus {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.5),
+        0 0 15px rgba(0, 0, 0, 0.2);
+    filter: brightness(1.2);
+    animation: nav-glow 0.6s ease-in-out;
+    z-index: 10;
 }
 
 .nav-icon {
@@ -280,18 +343,93 @@ html, body {
     font-family: 'Orbitron', monospace;
 }
 
-.nav-item:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 
-        0 8px 25px rgba(0, 0, 0, 0.5),
-        0 0 15px rgba(0, 0, 0, 0.2);
-    filter: brightness(1.2);
-    animation: nav-glow 0.6s ease-in-out;
-}
-
 @keyframes nav-glow {
     0%, 100% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 0, 0, 0.2); }
     50% { box-shadow: 0 8px 35px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.3); }
+}
+
+/* ==========================================
+   BARRA DE NAVEGACIÓN POR SECCIONES
+   ========================================== */
+
+.sections-nav {
+    display: flex;
+    background: var(--bg-terminal);
+    border-bottom: 2px solid var(--gold);
+    padding: 0;
+    margin: 0;
+    flex-shrink: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+.section-btn {
+    flex: 1;
+    padding: 16px 20px;
+    background: var(--bg-terminal);
+    border: none;
+    color: var(--hacker-cyan);
+    font-family: 'Fira Code', monospace;
+    font-weight: 600;
+    font-size: 11pt;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    position: relative;
+    border-right: 1px solid rgba(234, 179, 8, 0.2);
+}
+
+.section-btn:last-child {
+    border-right: none;
+}
+
+.section-btn:hover {
+    background: rgba(234, 179, 8, 0.1);
+    color: var(--gold);
+    text-shadow: 0 0 10px rgba(234, 179, 8, 0.3);
+    transform: translateY(-2px);
+}
+
+.section-btn-active {
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.2) 0%, rgba(74, 222, 128, 0.1) 100%);
+    color: var(--gold);
+    border-bottom: 3px solid var(--gold);
+    text-shadow: 
+        0 0 5px rgba(234, 179, 8, 0.4),
+        0 0 10px rgba(234, 179, 8, 0.3);
+    box-shadow: 0 0 15px rgba(234, 179, 8, 0.2);
+}
+
+.section-btn-active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    animation: section-glow 2s ease-in-out infinite;
+}
+
+@keyframes section-glow {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(234, 179, 8, 0.3);
+        opacity: 0.6;
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(234, 179, 8, 0.5);
+        opacity: 1;
+    }
+}
+
+.section-icon {
+    font-size: 16px;
+    display: inline-block;
 }
 
 /* ==========================================
@@ -301,7 +439,11 @@ html, body {
 .cv-body {
     display: flex;
     position: relative;
-    min-height: calc(297mm - 200px);
+    /* ============ UNIFIED SCROLL: single global scroll for both columns ============ */
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
 }
 
 /* FOTO DE PERFIL - Superpuesta en la esquina */
@@ -344,10 +486,14 @@ html, body {
 .cv-sidebar {
     width: 35%;
     background: var(--bg-terminal);
-    padding: 40px 35px;
+    padding: 40px 32px;
     border-right: 2px solid var(--gold);
-    box-shadow: inset -5px 0 20px rgba(255, 215, 0, 0.1);
     position: relative;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    height: auto;          /* ✔ */
+    overflow: visible;     /* ✔ */
 }
 
 .cv-sidebar::before {
@@ -373,9 +519,17 @@ html, body {
 }
 
 .sidebar-section {
-    margin-bottom: 30px;
-    margin-top: 35px;
+    margin-bottom: 32px;
+    margin-top: 32px;
     page-break-inside: avoid;
+    /* ============ VISIBILITY: content fully visible ============ */
+    min-height: auto;
+    height: auto;
+    /* ============ ANIMATION: smooth reveal ============ */
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .sidebar-title {
@@ -394,6 +548,7 @@ html, body {
         0 0 5px rgba(234, 179, 8, 0.3),
         0 0 10px rgba(234, 179, 8, 0.2);
     box-shadow: 0 2px 5px rgba(234, 179, 8, 0.1);
+    transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .sidebar-title::before {
@@ -409,9 +564,10 @@ html, body {
 }
 
 .info-item {
-    margin-bottom: 18px;
-    padding-bottom: 15px;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
     border-bottom: 1px solid #f3f4f6;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .info-item:last-child {
@@ -456,10 +612,12 @@ html, body {
 .cv-main {
     width: 65%;
     background: var(--bg-terminal);
-    padding: 40px 45px;
+    padding: 36px 40px;
     position: relative;
     border-left: 2px solid var(--hacker-green);
-    box-shadow: inset 5px 0 20px rgba(0, 255, 0, 0.1);
+    flex-shrink: 0;
+    height: auto;          /* ✔ */
+    overflow: visible;     /* ✔ */
 }
 
 /* ==========================================
@@ -467,8 +625,17 @@ html, body {
    ========================================== */
 
 .main-section {
-    margin-bottom: 35px;
+    margin-bottom: 32px;
+    margin-top: 0;
     page-break-inside: avoid;
+    /* ============ VISIBILITY: content fully visible ============ */
+    min-height: auto;
+    height: auto;
+    /* ============ ANIMATION: smooth reveal ============ */
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s, 
+                transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s;
 }
 
 .section-header {
@@ -489,6 +656,7 @@ html, body {
         0 0 5px rgba(234, 179, 8, 0.3),
         0 0 10px rgba(234, 179, 8, 0.2);
     position: relative;
+    transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .section-title::before {
@@ -541,7 +709,10 @@ html, body {
         inset 0 0 10px rgba(0, 0, 0, 0.8);
     position: relative;
     color: #e0e0e0;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    /* ============ ANIMATION: cards start visible, animate on scroll ============ */
+    opacity: 1;
+    transform: translateX(0) translateY(0);
 }
 
 .experience-card:hover,
@@ -645,6 +816,38 @@ html, body {
     margin-top: 10px;
     font-family: 'Fira Code', monospace;
     text-shadow: 0 0 3px rgba(34, 211, 238, 0.2);
+}
+
+/* ==========================================
+   BOTÓN VER MÁS +
+   ========================================== */
+
+.btn-ver-mas {
+    display: inline-block;
+    padding: 12px 28px;
+    background: linear-gradient(135deg, var(--primary-gold) 0%, var(--accent-blue) 100%);
+    color: var(--rich-black);
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 11pt;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(218, 165, 32, 0.3);
+    border: 2px solid transparent;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.btn-ver-mas:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(218, 165, 32, 0.5);
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--primary-gold) 100%);
+}
+
+.btn-ver-mas:active {
+    transform: translateY(-1px);
 }
 
 /* ==========================================
@@ -795,6 +998,37 @@ html, body {
 }
 
 /* ==========================================
+   ANIMACIONES - Web Only (no impresión)
+   ========================================== */
+
+/* Estados iniciales y transiciones suaves */
+.section-animate {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.card-animate {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.05s, 
+                transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.05s,
+                box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.05s;
+}
+
+/* Reveal al aparecer en viewport */
+.section-in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.card-in-view {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* ==========================================
    IMPRESIÓN
    ========================================== */
 
@@ -808,6 +1042,15 @@ html, body {
         margin: 0;
         page-break-after: always;
         box-shadow: none;
+    }
+
+    /* Ocultar controles de navegación en PDF */
+    .sections-nav {
+        display: none !important;
+    }
+
+    .section-content-block {
+        display: block !important;
     }
 
     * {
@@ -1462,6 +1705,19 @@ section[id] {
 }
 
 /* ==========================================
+   ANIMACIÓN PULSE GENERAL
+   ========================================== */
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+/* ==========================================
    BOTÓN DE DESCARGA (Check)
    ========================================== */
 
@@ -1549,6 +1805,17 @@ section[id] {
     .profile-photo {
         margin: 0 auto;
         display: block;
+    }
+
+    /* Animaciones para web view */
+    .card-revealed {
+        opacity: 1 !important;
+        transform: translateX(0) !important;
+    }
+
+    .fade-in-complete {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
     }
 
     /* Ajuste general de fondo */

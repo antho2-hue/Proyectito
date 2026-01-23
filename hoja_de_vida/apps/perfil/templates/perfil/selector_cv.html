@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selector de Secciones - CV de {{ perfil.nombres }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            overflow: hidden;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            height: 100vh;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ==========================================
+           HEADER Y TÍTULO
+           ========================================== */
+        .header {
+            text-align: center;
+            color: white;
+            padding: 1.5rem 2rem;
+            animation: slideDown 0.6s ease-out;
+            flex-shrink: 0;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        /* ==========================================
+           MAIN CONTENT (FLEXIBLE)
+           ========================================== */
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            flex: 1;
+            overflow: auto;
+            min-height: 0;
+            padding: 2rem;
+            padding-bottom: 0;
+        }
+
+        /* ==========================================
+           SIDEBAR - FOTO Y INFO PRINCIPAL
+           ========================================== */
+        .sidebar {
+            position: sticky;
+            top: 0;
+            height: fit-content;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .profile-photo {
+            width: 100%;
+            height: 200px;
+            border-radius: 15px;
+            object-fit: cover;
+            margin-bottom: 1.5rem;
+            border: 3px solid #667eea;
+        }
+
+        .profile-info h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #667eea;
+        }
+
+        .profile-info p {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        /* ==========================================
+           SECCIONES PRINCIPALES
+           ========================================== */
+        .sections-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            overflow-y: auto;
+            padding-right: 1rem;
+        }
+
+        /* Scrollbar styling para secciones */
+        .sections-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sections-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .sections-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .sections-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .section-card:nth-child(1) { animation-delay: 0.1s; }
+        .section-card:nth-child(2) { animation-delay: 0.2s; }
+        .section-card:nth-child(3) { animation-delay: 0.3s; }
+        .section-card:nth-child(4) { animation-delay: 0.4s; }
+        .section-card:nth-child(5) { animation-delay: 0.5s; }
+        .section-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 1rem;
+        }
+
+        .section-icon {
+            font-size: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f8f9ff;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper:hover {
+            background: #f0f2ff;
+        }
+
+        .checkbox-wrapper.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .checkbox-wrapper.disabled:hover {
+            background: #f8f9ff;
+        }
+
+        .checkbox-input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .checkbox-input:disabled {
+            cursor: not-allowed;
+        }
+
+        .checkbox-label {
+            flex: 1;
+            font-weight: 500;
+            color: #333;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checkbox-wrapper.disabled .checkbox-label {
+            color: #999;
+        }
+
+        .item-count {
+            background: #667eea;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .no-data {
+            color: #999;
+            font-size: 0.9rem;
+            font-style: italic;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        /* ==========================================
+           SECCIÓN ESPECIAL - FOTO (SIEMPRE INCLUIDA)
+           ========================================== */
+        .section-card.always-included {
+            border: 2px solid #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        }
+
+        .always-included-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.35rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-left: 0.5rem;
+        }
+
+        /* ==========================================
+           BOTONES Y ACCIONES (FLEX SHRINK)
+           ========================================== */
+        .actions {
+            display: flex;
+            gap: 1rem;
+            padding: 2rem;
+            padding-top: 1rem;
+            flex-wrap: wrap;
+            animation: slideUp 0.6s ease-out 0.7s both;
+            flex-shrink: 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #f8f9ff;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ==========================================
+           ANIMACIONES
+           ========================================== */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ==========================================
+           RESPONSIVE (MOBILE)
+           ========================================== */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .sidebar {
+                position: static;
+            }
+
+            .header {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .sections-container {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .btn {
+                min-width: auto;
+            }
+        }
+
+        /* ==========================================
+           FOOTER
+           ========================================== */
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            animation: fadeInUp 0.8s ease-out 0.9s both;
+            flex-shrink: 0;
+            display: none;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>🎨 Personaliza tu CV</h1>
+            <p>Selecciona qué secciones deseas incluir en tu descarga</p>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- SIDEBAR -->
+            <aside class="sidebar">
+                <div class="profile-card">
+                    {% if perfil.foto_perfil_url %}
+                        <img src="{{ foto_perfil_proxy_url|default:perfil.foto_perfil_url }}" alt="{{ perfil.nombres }}" class="profile-photo">
+                    {% else %}
+                        <div class="profile-photo" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem; font-weight: bold;">
+                            {{ perfil.nombres|first }}{{ perfil.apellidos|first }}
+                        </div>
+                    {% endif %}
+
+                    <div class="profile-info">
+                        <h2>{{ perfil.nombres }} {{ perfil.apellidos }}</h2>
+                        {% if perfil.descripcionperfil %}
+                            <p>{{ perfil.descripcionperfil }}</p>
+                        {% endif %}
+                        <p style="font-size: 0.8rem; color: #999; margin-top: 1rem;">
+                            📧 {{ perfil.sitioweb|default:"Tu sitio web" }}
+                        </p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- SECCIONES -->
+            <div class="sections-container" id="sectionsContainer">
+                <!-- SECCIÓN: DATOS PERSONALES -->
+                <div class="section-card always-included">
+                    <div class="section-header">
+                        <span class="section-icon">👤</span>
+                        <h3 class="section-title">
+                            Foto de Perfil
+                            <span class="always-included-badge">Siempre incluida</span>
+                        </h3>
+                    </div>
+                    <div class="checkbox-wrapper disabled">
+                        <input type="checkbox" id="foto" name="foto" class="checkbox-input" checked disabled>
+                        <label for="foto" class="checkbox-label">Tu foto siempre aparecerá en el CV</label>
+                    </div>
+                    <p class="no-data" style="color: #667eea; margin-top: 0.5rem;">
+                        ✓ Esta sección no se puede desmarcar
+                    </p>
+                </div>
+
+                <!-- SECCIÓN: DATOS PERSONALES -->
+                {% if perfil %}
+                <div class="section-card">
+                    <div class="section-header">
+                        <span class="section-icon">📋</span>
+                        <h3 class="section-title">Datos Personales</h3>
+                    </div>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="datos_personales" name="datos_personales" value="on" class="checkbox-input section-checkbox" checked>
+                        <label for="datos_personales" class="checkbox-label">Incluir información personal</label>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #666; line-height: 1.6; margin-top: 0.5rem;">
+                        Nacionalidad, lugar de nacimiento, cédula, estado civil y otros datos personales.
+                    </p>
+                </div>
+                {% endif %}
+
+                <!-- SECCIÓN: EXPERIENCIA LABORAL -->
+                {% if tiene_experiencias %}
+                <div class="section-card">
+                    <div class="section-header">
+                        <span class="section-icon">💼</span>
+                        <h3 class="section-title">Experiencia Laboral</h3>
+                        <span class="item-count">{{ experiencias_qs|length }}</span>
+                    </div>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="experiencias_laborales" name="experiencias_laborales" value="on" class="checkbox-input section-checkbox" checked>
+                        <label for="experiencias_laborales" class="checkbox-label">Incluir experiencias</label>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #666; line-height: 1.6; margin-top: 0.5rem;">
+                        Todas tus experiencias laborales, cargos desempeñados y empresas donde has trabajado.
+                    </p>
+                </div>
+                {% endif %}
+
+                <!-- SECCIÓN: CURSOS REALIZADOS -->
+                {% if tiene_cursos %}
+                <div class="section-card">
+                    <div class="section-header">
+                        <span class="section-icon">📚</span>
+                        <h3 class="section-title">Cursos Realizados</h3>
+                        <span class="item-count">{{ cursos|length }}</span>
+                    </div>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="cursos" name="cursos" value="on" class="checkbox-input section-checkbox" checked>
+                        <label for="cursos" class="checkbox-label">Incluir cursos</label>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #666; line-height: 1.6; margin-top: 0.5rem;">
+                        Todos los cursos, certificaciones y capacitaciones que has completado.
+                    </p>
+                </div>
+                {% endif %}
+
+                <!-- SECCIÓN: RECONOCIMIENTOS -->
+                {% if tiene_reconocimientos %}
+                <div class="section-card">
+                    <div class="section-header">
+                        <span class="section-icon">🏆</span>
+                        <h3 class="section-title">Reconocimientos</h3>
+                        <span class="item-count">{{ reconocimientos|length }}</span>
+                    </div>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="reconocimientos" name="reconocimientos" value="on" class="checkbox-input section-checkbox" checked>
+                        <label for="reconocimientos" class="checkbox-label">Incluir reconocimientos</label>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #666; line-height: 1.6; margin-top: 0.5rem;">
+                        Premios, distinciones y reconocimientos académicos o profesionales recibidos.
+                    </p>
+                </div>
+                {% endif %}
+
+                <!-- SECCIÓN: PRODUCTOS ACADÉMICOS -->
+                {% if tiene_productos_academicos %}
+                <div class="section-card">
+                    <div class="section-header">
+                        <span class="section-icon">🎓</span>
+                        <h3 class="section-title">Productos Académicos</h3>
+                        <span class="item-count">{{ productos_academicos|length }}</span>
+                    </div>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="productos_academicos" name="productos_academicos" value="on" class="checkbox-input section-checkbox" checked>
+                        <label for="productos_academicos" class="checkbox-label">Incluir productos académicos</label>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #666; line-height: 1.6; margin-top: 0.5rem;">
+                        Proyectos, artículos, investigaciones y otros productos académicos.
+                    </p>
+                </div>
+                {% endif %}
+
+                <!-- SECCIÓN: PRODUCTOS LABORALES -->
+                {% if tiene_productos_laborales %}
+                <div class="section-card">
+                    <div class="section-header">
+                        <span class="section-icon">💻</span>
+                        <h3 class="section-title">Productos Laborales</h3>
+                        <span class="item-count">{{ productos_laborales|length }}</span>
+                    </div>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="productos_laborales" name="productos_laborales" value="on" class="checkbox-input section-checkbox" checked>
+                        <label for="productos_laborales" class="checkbox-label">Incluir productos laborales</label>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #666; line-height: 1.6; margin-top: 0.5rem;">
+                        Proyectos, aplicaciones, sistemas y otros productos desarrollados profesionalmente.
+                    </p>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+        <!-- ACCIONES -->
+        <div class="actions">
+            <a href="{% url 'hoja_vida_publica' %}" class="btn btn-secondary">
+                ← Volver al CV
+            </a>
+            <button type="button" class="btn btn-primary" id="downloadBtn" onclick="descargarCV('professional')">
+                ⬇️ Descargar Professional
+            </button>
+            <button type="button" class="btn btn-primary" id="downloadBtnModern" onclick="descargarCV('modern')" style="background: linear-gradient(135deg, #00a8d8 0%, #0f2137 100%);">
+                ⬇️ Descargar Modern
+            </button>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p>💡 Tip: La foto de perfil siempre se incluirá en tu CV</p>
+        </div>
+    </div>
+
+    <script>
+        // Función para descargar el CV con las secciones seleccionadas
+        function descargarCV(plantilla = 'professional') {
+            const checkboxes = document.querySelectorAll('.section-checkbox');
+            const params = new URLSearchParams();
+
+            // Agregar plantilla
+            params.append('plantilla', plantilla);
+
+            // Agregar parámetros para cada sección marcada
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    params.append(checkbox.name, checkbox.value);
+                }
+            });
+
+            // Redirigir a la vista de descarga con los parámetros
+            window.location.href = `{% url 'descargar_cv_personalizado_plantilla' %}?${params.toString()}`;
+        }
+
+        // Validar que al menos una sección esté marcada
+        function validarSeleccion() {
+            const checkboxes = document.querySelectorAll('.section-checkbox');
+            const algunaMarcada = Array.from(checkboxes).some(cb => cb.checked);
+            
+            const downloadBtn = document.getElementById('downloadBtn');
+            const downloadBtnModern = document.getElementById('downloadBtnModern');
+            downloadBtn.disabled = !algunaMarcada;
+            downloadBtnModern.disabled = !algunaMarcada;
+        }
+
+        // Escuchar cambios en los checkboxes
+        document.querySelectorAll('.section-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', validarSeleccion);
+        });
+
+        // Validar al cargar
+        window.addEventListener('load', validarSeleccion);
+    </script>
+</body>
+</html>

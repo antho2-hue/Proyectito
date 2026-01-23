@@ -331,31 +331,6 @@
         {% endfor %}
       </div>
     {% endif %}
-
-    <!-- Venta Garage -->
-    {% if ventas_garage %}
-      <div class="section">
-        <h2 class="section-title">Proyectos Personales</h2>
-        {% for venta in ventas_garage %}
-          <div class="item">
-            <div class="item-title">{{ venta.nombreproducto }}</div>
-            <div class="item-subtitle">Estado: {{ venta.estadoproducto|default:"Sin especificar" }}</div>
-            {% if venta.descripcion %}
-              <p>{{ venta.descripcion }}</p>
-            {% endif %}
-            {% if venta.valordelbien %}
-              <div class="item-meta">
-                <div class="item-meta-row">
-                  <div class="item-meta-item">
-                    <strong>Valor estimado:</strong> ${{ venta.valordelbien }}
-                  </div>
-                </div>
-              </div>
-            {% endif %}
-          </div>
-        {% endfor %}
-      </div>
-    {% endif %}
   </div>
 </body>
 </html>

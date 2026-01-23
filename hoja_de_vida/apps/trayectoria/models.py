@@ -1,6 +1,14 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+from datetime import date
 from apps.perfil.models import DatosPersonales
 
+
+def validar_fecha_maxima(valor):
+    """Validador que asegura que la fecha no sea posterior a enero 31, 2026"""
+    fecha_maxima = date(2026, 1, 31)
+    if valor > fecha_maxima:
+        raise ValidationError('La fecha no puede ser posterior a 2026')
 
 class ExperienciaLaboral(models.Model):
     idexperiencilaboral = models.AutoField(primary_key=True, db_column='idexperiencilaboral')
@@ -12,8 +20,18 @@ class ExperienciaLaboral(models.Model):
     sitiowebempresa = models.CharField(max_length=100, db_column='sitiowebempresa', null=True, blank=True)
     nombrecontactoempresarial = models.CharField(max_length=100, db_column='nombrecontactoempresarial', null=True, blank=True)
     telefonocontactoempresarial = models.CharField(max_length=60, db_column='telefonocontactoempresarial', null=True, blank=True)
-    fechainiciogestion = models.DateField(db_column='fechainiciogestion', null=True, blank=True)
-    fechafingestion = models.DateField(db_column='fechafingestion', null=True, blank=True)
+    fechainiciogestion = models.DateField(
+        db_column='fechainiciogestion',
+        null=True,
+        blank=True,
+        validators=[validar_fecha_maxima]
+    )
+    fechafingestion = models.DateField(
+        db_column='fechafingestion',
+        null=True,
+        blank=True,
+        validators=[validar_fecha_maxima]
+    )
     descripcionfunciones = models.CharField(max_length=100, db_column='descripcionfunciones', null=True, blank=True)
     activarparaqueseveaenfront = models.BooleanField(default=True, db_column='activarparaqueseveaenfront')
     rutacertificado = models.CharField(max_length=100, db_column='rutacertificado', null=True, blank=True)
@@ -32,7 +50,12 @@ class Reconocimiento(models.Model):
         ('Privado', 'Privado'),
     ]
     tiporeconocimiento = models.CharField(max_length=100, choices=TIPORECONOCIMIENTO_CHOICES, db_column='tiporeconocimiento', null=True, blank=True)
-    fechareconocimiento = models.DateField(db_column='fechareconocimiento', null=True, blank=True)
+    fechareconocimiento = models.DateField(
+        db_column='fechareconocimiento',
+        null=True,
+        blank=True,
+        validators=[validar_fecha_maxima]
+    )
     descripcionreconocimiento = models.CharField(max_length=100, db_column='descripcionreconocimiento', null=True, blank=True)
     entidadpatrocinadora = models.CharField(max_length=100, db_column='entidadpatrocinadora', null=True, blank=True)
     nombrecontactoauspicia = models.CharField(max_length=100, db_column='nombrecontactoauspicia', null=True, blank=True)
@@ -48,8 +71,18 @@ class CursoRealizado(models.Model):
     idcursorealizado = models.AutoField(primary_key=True, db_column='idcursorealizado')
     idperfilconqueestaactivo = models.ForeignKey(DatosPersonales, on_delete=models.CASCADE, db_column='idperfilconqueestaactivo')
     nombrecurso = models.CharField(max_length=100, db_column='nombrecurso', null=True, blank=True)
-    fechainicio = models.DateField(db_column='fechainicio', null=True, blank=True)
-    fechafin = models.DateField(db_column='fechafin', null=True, blank=True)
+    fechainicio = models.DateField(
+        db_column='fechainicio',
+        null=True,
+        blank=True,
+        validators=[validar_fecha_maxima]
+    )
+    fechafin = models.DateField(
+        db_column='fechafin',
+        null=True,
+        blank=True,
+        validators=[validar_fecha_maxima]
+    )
     totalhoras = models.IntegerField(db_column='totalhoras', null=True, blank=True)
     descripcioncurso = models.CharField(max_length=100, db_column='descripcioncurso', null=True, blank=True)
     entidadpatrocinadora = models.CharField(max_length=100, db_column='entidadpatrocinadora', null=True, blank=True)
@@ -79,7 +112,12 @@ class ProductoLaboral(models.Model):
     idproductoslaborales = models.AutoField(primary_key=True, db_column='idproductoslaborales')
     idperfilconqueestaactivo = models.ForeignKey(DatosPersonales, on_delete=models.CASCADE, db_column='idperfilconqueestaactivo')
     nombreproducto = models.CharField(max_length=100, db_column='nombreproducto', null=True, blank=True)
-    fechaproducto = models.DateField(db_column='fechaproducto', null=True, blank=True)
+    fechaproducto = models.DateField(
+        db_column='fechaproducto',
+        null=True,
+        blank=True,
+        validators=[validar_fecha_maxima]
+    )
     descripcion = models.CharField(max_length=100, db_column='descripcion', null=True, blank=True)
     activarparaqueseveaenfront = models.BooleanField(default=True, db_column='activarparaqueseveaenfront')
 
@@ -100,6 +138,24 @@ class VentaGarage(models.Model):
     descripcion = models.CharField(max_length=100, db_column='descripcion', null=True, blank=True)
     valordelbien = models.DecimalField(max_digits=5, decimal_places=2, db_column='valordelbien', null=True, blank=True)
     activarparaqueseveaenfront = models.BooleanField(default=True, db_column='activarparaqueseveaenfront')
+    
+    # NUEVA: Campo para almacenar imagen del producto
+    rutaimagen = models.CharField(max_length=200, db_column='rutaimagen', null=True, blank=True, help_text='URL o ruta de la imagen PNG/JPG del producto')
+    
+    # NUEVA: Campo para control de disponibilidad (Disponible/Vendido)
+    ESTADO_DISPONIBILIDAD_CHOICES = [
+        ('Disponible', 'Disponible'),
+        ('Vendido', 'Vendido'),
+    ]
+    estado_disponibilidad = models.CharField(max_length=20, choices=ESTADO_DISPONIBILIDAD_CHOICES, default='Disponible', db_column='estado_disponibilidad', help_text='Estado de disponibilidad del producto')
+    
+    # NUEVA: Campo para fecha de publicación del producto
+    fecha_publicacion = models.DateField(
+        db_column='fecha_publicacion',
+        null=True,
+        blank=True,
+        validators=[validar_fecha_maxima]
+    )
 
     class Meta:
         db_table = 'VENTAGARAGE'

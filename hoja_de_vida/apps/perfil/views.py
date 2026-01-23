@@ -109,11 +109,13 @@ def hoja_vida_publica(request):
             sitioweb="https://example.com"
         )
 
-    # Obtain active experiences for the profile and group them by company.
+    # Obtain active experiences for the profile and group them by company (respetando control de visibilidad)
+    visibilidad = getattr(perfil, 'visibilidad_cv', None)
+    mostrar_experiencias = visibilidad.mostrar_experiencias if visibilidad else True
     experiencias_qs = ExperienciaLaboral.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True,
-    )
+    ) if mostrar_experiencias else ExperienciaLaboral.objects.none()
 
     # Order each company's experiences by start date desc and order companies
     # by the most recent experience date (desc).
@@ -138,28 +140,22 @@ def hoja_vida_publica(request):
     cursos = CursoRealizado.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True,
-    ).order_by('-fechainicio')
+    ).order_by('-fechainicio') if visibilidad and visibilidad.mostrar_cursos else CursoRealizado.objects.none()
 
     reconocimientos = Reconocimiento.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True,
-    ).order_by('-fechareconocimiento')
+    ).order_by('-fechareconocimiento') if visibilidad and visibilidad.mostrar_reconocimientos else Reconocimiento.objects.none()
 
     productos_academicos = ProductoAcademico.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True,
-    )
+    ) if visibilidad and visibilidad.mostrar_productos_academicos else ProductoAcademico.objects.none()
 
     productos_laborales = ProductoLaboral.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True,
-    ).order_by('-fechaproducto')
-
-    # Venta Garage: visible records ordered by product name (ascending)
-    ventas_garage = VentaGarage.objects.filter(
-        idperfilconqueestaactivo=perfil,
-        activarparaqueseveaenfront=True,
-    ).order_by('nombreproducto')
+    ).order_by('-fechaproducto') if visibilidad and visibilidad.mostrar_productos_laborales else ProductoLaboral.objects.none()
 
     # Convert profile photo to base64 for PDF embedding
     foto_base64 = None
@@ -187,6 +183,7 @@ def hoja_vida_publica(request):
 
     context = {
         'perfil': perfil,
+        'visibilidad': visibilidad,
         'datos_personales': perfil,
         'experiencias': experiencias,
         'experiencias_qs': experiencias_qs,
@@ -194,7 +191,6 @@ def hoja_vida_publica(request):
         'reconocimientos': reconocimientos,
         'productos_academicos': productos_academicos,
         'productos_laborales': productos_laborales,
-        'ventas_garage': ventas_garage,
         'foto_perfil_proxy_url': foto_perfil_proxy_url,
     }
 
@@ -255,11 +251,6 @@ def cv_hacker_neon(request):
         activarparaqueseveaenfront=True,
     ).order_by('-fechaproducto')
 
-    ventas_garage = VentaGarage.objects.filter(
-        idperfilconqueestaactivo=perfil,
-        activarparaqueseveaenfront=True,
-    ).order_by('nombreproducto')
-
     # Get skills and interests
     habilidades = perfil.habilidades.split(',') if perfil.habilidades else []
     intereses = perfil.intereses if perfil.intereses else None
@@ -272,7 +263,6 @@ def cv_hacker_neon(request):
         'reconocimientos': reconocimientos,
         'productos_academicos': productos_academicos,
         'productos_laborales': productos_laborales,
-        'ventas_garage': ventas_garage,
         'habilidades': habilidades,
         'intereses': intereses,
     }
@@ -327,10 +317,11 @@ def descargar_cv_pdf(request):
         except Exception as e:
             return HttpResponse(f'Error creando perfil: {str(e)}', status=500)
 
+    # Respeta controles de visibilidad del admin
     experiencias_qs = ExperienciaLaboral.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True,
-    )
+    ) if visibilidad.mostrar_experiencias else ExperienciaLaboral.objects.none()
 
     from django.db.models import Max
 
@@ -358,22 +349,17 @@ def descargar_cv_pdf(request):
     reconocimientos = Reconocimiento.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True,
-    ).order_by('-fechareconocimiento')
+    ).order_by('-fechareconocimiento') if visibilidad and visibilidad.mostrar_reconocimientos else Reconocimiento.objects.none()
 
     productos_academicos = ProductoAcademico.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True,
-    )
+    ) if visibilidad and visibilidad.mostrar_productos_academicos else ProductoAcademico.objects.none()
 
     productos_laborales = ProductoLaboral.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True,
-    ).order_by('-fechaproducto')
-
-    ventas_garage = VentaGarage.objects.filter(
-        idperfilconqueestaactivo=perfil,
-        activarparaqueseveaenfront=True,
-    ).order_by('nombreproducto')
+    ).order_by('-fechaproducto') if visibilidad and visibilidad.mostrar_productos_laborales else ProductoLaboral.objects.none()
 
     # Convert profile photo to base64 for PDF embedding
     foto_perfil_proxy_url = None
@@ -397,6 +383,11 @@ def descargar_cv_pdf(request):
             foto_perfil_proxy_url = f"{request.scheme}://{request.get_host()}/foto-perfil/"
             print(f"Error converting photo to base64: {e}")
 
+    # Preparar intereses
+    intereses_list = []
+    if getattr(perfil, 'intereses', None):
+        intereses_list = [i.strip() for i in perfil.intereses.split(',') if i.strip()]
+
     context = {
         'perfil': perfil,
         'datos_personales': perfil,
@@ -406,34 +397,36 @@ def descargar_cv_pdf(request):
         'reconocimientos': reconocimientos,
         'productos_academicos': productos_academicos,
         'productos_laborales': productos_laborales,
-        'ventas_garage': ventas_garage,
         'foto_perfil_proxy_url': foto_perfil_proxy_url,
         'certificates': [],
+        'intereses_list': intereses_list,
     }
 
-    # Render the PDF-specific template
-    html = render_to_string('perfil/pdf/cv_template_web.html', context, request=request)
-    html = _prepare_html_for_pdf(html, request)
+    # Seleccionar template según plantilla
+    if plantilla == 'modern':
+        template_name = 'perfil/pdf/cv_modern_clean.html'
+        html = render_to_string(template_name, context, request=request)
+        # No aplicar _prepare_html_for_pdf para mantener estilos inline
+        pdf_bytes = HTML(string=html, base_url=request.build_absolute_uri('/')).write_pdf()
+    else:
+        # Template professional por defecto
+        template_name = 'perfil/pdf/cv_template_web.html'
+        html = render_to_string(template_name, context, request=request)
+        html = _prepare_html_for_pdf(html, request)
 
-    try:
-        # Seleccionar CSS según plantilla
-        if plantilla == 'modern':
-            css_file = 'cv_modern_clean.css'
-        else:  # professional por defecto
-            css_file = 'cv_template_web.css'
+        try:
+            # Leer el CSS
+            base_dir = os.path.dirname(__file__)
+            css_path = os.path.join(base_dir, 'static', 'perfil', 'css', 'pdf', 'cv_template_web.css')
 
-        # Leer el CSS
-        base_dir = os.path.dirname(__file__)
-        css_path = os.path.join(base_dir, 'static', 'perfil', 'css', 'pdf', css_file)
+            with open(css_path, 'r', encoding='utf-8') as f:
+                css_text = f.read()
 
-        with open(css_path, 'r', encoding='utf-8') as f:
-            css_text = f.read()
-
-        pdf_bytes = HTML(string=html, base_url=request.build_absolute_uri('/')).write_pdf(
-            stylesheets=[CSS(string=css_text)]
-        )
-    except Exception as e:
-        return HttpResponse(f'Error generating PDF: {str(e)}', status=500)
+            pdf_bytes = HTML(string=html, base_url=request.build_absolute_uri('/')).write_pdf(
+                stylesheets=[CSS(string=css_text)]
+            )
+        except Exception as e:
+            return HttpResponse(f'Error generating PDF: {str(e)}', status=500)
 
     # After generating the CV PDF, append any uploaded certificates (courses, experiences, recognitions)
     try:
@@ -582,10 +575,11 @@ def descargar_cv_completo_pdf(request):
         except Exception as e:
             return HttpResponse(f'Error creando perfil: {str(e)}', status=500)
 
+    # Respeta controles de visibilidad del admin
     experiencias_qs = ExperienciaLaboral.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True,
-    )
+    ) if visibilidad.mostrar_experiencias else ExperienciaLaboral.objects.none()
 
     from django.db.models import Max
 
@@ -608,22 +602,22 @@ def descargar_cv_completo_pdf(request):
     cursos = CursoRealizado.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True,
-    ).order_by('-fechainicio')
+    ).order_by('-fechainicio') if visibilidad and visibilidad.mostrar_cursos else CursoRealizado.objects.none()
 
     reconocimientos = Reconocimiento.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True,
-    ).order_by('-fechareconocimiento')
+    ).order_by('-fechareconocimiento') if visibilidad and visibilidad.mostrar_reconocimientos else Reconocimiento.objects.none()
 
     productos_academicos = ProductoAcademico.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True,
-    )
+    ) if visibilidad and visibilidad.mostrar_productos_academicos else ProductoAcademico.objects.none()
 
     productos_laborales = ProductoLaboral.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True,
-    ).order_by('-fechaproducto')
+    ).order_by('-fechaproducto') if visibilidad and visibilidad.mostrar_productos_laborales else ProductoLaboral.objects.none()
 
     ventas_garage = VentaGarage.objects.filter(
         idperfilconqueestaactivo=perfil,
@@ -950,4 +944,407 @@ def fondo_modern(request):
     resp = HttpResponse(data, content_type=mime)
     resp['Content-Disposition'] = f'inline; filename="{filename}"'
     return resp
+
+
+# ========================================
+# NUEVA FUNCIONALIDAD: SELECTOR DE CV
+# ========================================
+
+def selector_cv(request):
+    """
+    Vista para seleccionar qué secciones incluir en el CV personalizado.
+    Muestra un formulario interactivo con checkboxes para cada sección.
+    """
+    perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
+    if not perfil:
+        from datetime import date
+        perfil = DatosPersonales.objects.create(
+            nombres="Perfil",
+            apellidos="Predeterminado",
+            descripcionperfil="Perfil por defecto",
+            perfilactivo=1,
+            nacionalidad="Colombia",
+            lugarnacimiento="Bogotá",
+            fechanacimiento=date.today(),
+            numerocedula="1234567890",
+            sexo="H",
+            estadocivil="Soltero",
+            licenciaconducir="B1",
+            telefonoconvencional="3001234567",
+            telefonofijo="6012345678",
+            direcciontrabajo="Calle 123",
+            direcciondomiciliaria="Carrera 456",
+            sitioweb="https://example.com"
+        )
+
+    # Obtener controles de visibilidad
+    visibilidad = getattr(perfil, 'visibilidad_cv', None)
+
+    # Obtener todas las secciones de datos (respeta controles de admin)
+    experiencias_qs = ExperienciaLaboral.objects.filter(
+        idperfilconqueestaactivo=perfil,
+        activarparaqueseveaenfront=True,
+    ) if visibilidad and visibilidad.mostrar_experiencias else ExperienciaLaboral.objects.none()
+
+    from django.db.models import Max
+
+    companies = (
+        experiencias_qs
+        .values('nombrempresa')
+        .annotate(latest=Max('fechainiciogestion'))
+        .order_by('-latest')
+    )
+
+    experiencias = []
+    for c in companies:
+        company_name = c['nombrempresa']
+        company_experiences = (
+            experiencias_qs.filter(nombrempresa=company_name)
+            .order_by('-fechainiciogestion')
+        )
+        experiencias.append({'empresa': company_name, 'experiencias': company_experiences})
+
+    cursos = CursoRealizado.objects.filter(
+        idperfilconqueestaactivo=perfil,
+        activarparaqueseveaenfront=True,
+    ).order_by('-fechainicio') if visibilidad and visibilidad.mostrar_cursos else CursoRealizado.objects.none()
+
+    reconocimientos = Reconocimiento.objects.filter(
+        idperfilconqueestaactivo=perfil,
+        activarparaqueseveaenfront=True,
+    ).order_by('-fechareconocimiento') if visibilidad and visibilidad.mostrar_reconocimientos else Reconocimiento.objects.none()
+
+    productos_academicos = ProductoAcademico.objects.filter(
+        idperfilconqueestaactivo=perfil,
+        activarparaqueseveaenfront=True,
+    ) if visibilidad and visibilidad.mostrar_productos_academicos else ProductoAcademico.objects.none()
+
+    productos_laborales = ProductoLaboral.objects.filter(
+        idperfilconqueestaactivo=perfil,
+        activarparaqueseveaenfront=True,
+    ).order_by('-fechaproducto') if visibilidad and visibilidad.mostrar_productos_laborales else ProductoLaboral.objects.none()
+
+    # Preparar foto para mostrar
+    foto_perfil_proxy_url = None
+    if getattr(perfil, 'foto_perfil_url', None):
+        foto_perfil_proxy_url = f"{request.scheme}://{request.get_host()}/foto-perfil/"
+
+    context = {
+        'perfil': perfil,
+        'foto_perfil_proxy_url': foto_perfil_proxy_url,
+        'experiencias': experiencias,
+        'experiencias_qs': experiencias_qs,
+        'cursos': cursos,
+        'reconocimientos': reconocimientos,
+        'productos_academicos': productos_academicos,
+        'productos_laborales': productos_laborales,
+        # Información sobre qué secciones tienen datos
+        'tiene_experiencias': len(experiencias) > 0,
+        'tiene_cursos': len(cursos) > 0,
+        'tiene_reconocimientos': len(reconocimientos) > 0,
+        'tiene_productos_academicos': len(productos_academicos) > 0,
+        'tiene_productos_laborales': len(productos_laborales) > 0,
+    }
+
+    return render(request, 'perfil/selector_cv.html', context)
+
+
+def descargar_cv_personalizado(request):
+    """
+    Genera un PDF del CV con solo las secciones seleccionadas.
+    Las secciones se envían como parámetros GET en el formato:
+    - datos_personales=on
+    - experiencias_laborales=on
+    - cursos=on
+    - reconocimientos=on
+    - productos_academicos=on
+    - productos_laborales=on
+    
+    (Esta función es para compatibilidad hacia atrás - usa Professional por defecto)
+    """
+    perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
+    if not perfil:
+        from datetime import date
+        perfil = DatosPersonales.objects.create(
+            nombres="Perfil",
+            apellidos="Predeterminado",
+            descripcionperfil="Perfil por defecto",
+            perfilactivo=1,
+            nacionalidad="Colombia",
+            lugarnacimiento="Bogotá",
+            fechanacimiento=date.today(),
+            numerocedula="1234567890",
+            sexo="H",
+            estadocivil="Soltero",
+            licenciaconducir="B1",
+            telefonoconvencional="3001234567",
+            telefonofijo="6012345678",
+            direcciontrabajo="Calle 123",
+            direcciondomiciliaria="Carrera 456",
+            sitioweb="https://example.com"
+        )
+
+    # Obtener secciones seleccionadas desde GET
+    incluir_datos_personales = request.GET.get('datos_personales') == 'on'
+    incluir_experiencias = request.GET.get('experiencias_laborales') == 'on'
+    incluir_cursos = request.GET.get('cursos') == 'on'
+    incluir_reconocimientos = request.GET.get('reconocimientos') == 'on'
+    incluir_productos_academicos = request.GET.get('productos_academicos') == 'on'
+    incluir_productos_laborales = request.GET.get('productos_laborales') == 'on'
+
+    # Obtener todas las secciones
+    experiencias_qs = ExperienciaLaboral.objects.filter(
+        idperfilconqueestaactivo=perfil,
+        activarparaqueseveaenfront=True,
+    ) if incluir_experiencias else ExperienciaLaboral.objects.none()
+
+    from django.db.models import Max
+
+    companies = (
+        experiencias_qs
+        .values('nombrempresa')
+        .annotate(latest=Max('fechainiciogestion'))
+        .order_by('-latest')
+    )
+
+    experiencias = []
+    for c in companies:
+        company_name = c['nombrempresa']
+        company_experiences = (
+            experiencias_qs.filter(nombrempresa=company_name)
+            .order_by('-fechainiciogestion')
+        )
+        experiencias.append({'empresa': company_name, 'experiencias': company_experiences})
+
+    cursos = CursoRealizado.objects.filter(
+        idperfilconqueestaactivo=perfil,
+        activarparaqueseveaenfront=True,
+    ).order_by('-fechainicio') if incluir_cursos else CursoRealizado.objects.none()
+
+    reconocimientos = Reconocimiento.objects.filter(
+        idperfilconqueestaactivo=perfil,
+        activarparaqueseveaenfront=True,
+    ).order_by('-fechareconocimiento') if incluir_reconocimientos else Reconocimiento.objects.none()
+
+    productos_academicos = ProductoAcademico.objects.filter(
+        idperfilconqueestaactivo=perfil,
+        activarparaqueseveaenfront=True,
+    ) if incluir_productos_academicos else ProductoAcademico.objects.none()
+
+    productos_laborales = ProductoLaboral.objects.filter(
+        idperfilconqueestaactivo=perfil,
+        activarparaqueseveaenfront=True,
+    ).order_by('-fechaproducto') if incluir_productos_laborales else ProductoLaboral.objects.none()
+
+    # Preparar foto
+    foto_perfil_proxy_url = None
+    if getattr(perfil, 'foto_perfil_url', None):
+        try:
+            data, filename = _download_blob_from_url(perfil.foto_perfil_url)
+            foto_base64 = base64.b64encode(data).decode('utf-8')
+            mime, _ = mimetypes.guess_type(filename or 'photo.jpg')
+            if not mime:
+                mime = 'image/jpeg'
+            foto_perfil_proxy_url = f"data:{mime};base64,{foto_base64}"
+        except Exception:
+            foto_perfil_proxy_url = f"{request.scheme}://{request.get_host()}/foto-perfil/"
+
+    context = {
+        'perfil': perfil,
+        'datos_personales': perfil if incluir_datos_personales else None,
+        'experiencias': experiencias,
+        'experiencias_qs': experiencias_qs,
+        'cursos': cursos,
+        'reconocimientos': reconocimientos,
+        'productos_academicos': productos_academicos,
+        'productos_laborales': productos_laborales,
+        'foto_perfil_proxy_url': foto_perfil_proxy_url,
+    }
+
+    # Usar template PDF existente
+    html = render_to_string('perfil/pdf/cv_template_web.html', context, request=request)
+    html = _prepare_html_for_pdf(html, request)
+
+    try:
+        base_dir = os.path.dirname(__file__)
+        css_path = os.path.join(base_dir, 'static', 'perfil', 'css', 'pdf', 'cv_template_web.css')
+
+        with open(css_path, 'r', encoding='utf-8') as f:
+            css_text = f.read()
+
+        pdf_bytes = HTML(string=html, base_url=request.build_absolute_uri('/')).write_pdf(
+            stylesheets=[CSS(string=css_text)]
+        )
+    except Exception as e:
+        return HttpResponse(f'Error generating PDF: {str(e)}', status=500)
+
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="cv_personalizado.pdf"'
+    return response
+
+
+def descargar_cv_personalizado_plantilla(request):
+    """
+    Genera un PDF del CV personalizado con las secciones seleccionadas.
+    Permite elegir entre 'professional' y 'modern' plantillas.
+    
+    Las secciones se envían como parámetros GET:
+    - plantilla=professional|modern
+    - datos_personales=on
+    - experiencias_laborales=on
+    - cursos=on
+    - reconocimientos=on
+    - productos_academicos=on
+    - productos_laborales=on
+    """
+    plantilla = request.GET.get('plantilla', 'professional')
+    
+    perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
+    if not perfil:
+        from datetime import date
+        perfil = DatosPersonales.objects.create(
+            nombres="Perfil",
+            apellidos="Predeterminado",
+            descripcionperfil="Perfil por defecto",
+            perfilactivo=1,
+            nacionalidad="Colombia",
+            lugarnacimiento="Bogotá",
+            fechanacimiento=date.today(),
+            numerocedula="1234567890",
+            sexo="H",
+            estadocivil="Soltero",
+            licenciaconducir="B1",
+            telefonoconvencional="3001234567",
+            telefonofijo="6012345678",
+            direcciontrabajo="Calle 123",
+            direcciondomiciliaria="Carrera 456",
+            sitioweb="https://example.com"
+        )
+
+    # Obtener secciones seleccionadas desde GET
+    incluir_datos_personales = request.GET.get('datos_personales') == 'on'
+    incluir_experiencias = request.GET.get('experiencias_laborales') == 'on'
+    incluir_cursos = request.GET.get('cursos') == 'on'
+    incluir_reconocimientos = request.GET.get('reconocimientos') == 'on'
+    incluir_productos_academicos = request.GET.get('productos_academicos') == 'on'
+    incluir_productos_laborales = request.GET.get('productos_laborales') == 'on'
+
+    # Combina las selecciones del usuario con los controles del admin
+    # Solo muestra si AMBOS lo permiten
+    incluir_experiencias = incluir_experiencias and visibilidad.mostrar_experiencias
+    incluir_cursos = incluir_cursos and visibilidad.mostrar_cursos
+    incluir_reconocimientos = incluir_reconocimientos and visibilidad.mostrar_reconocimientos
+    incluir_productos_academicos = incluir_productos_academicos and visibilidad.mostrar_productos_academicos
+    incluir_productos_laborales = incluir_productos_laborales and visibilidad.mostrar_productos_laborales
+    incluir_datos_personales = incluir_datos_personales and visibilidad.mostrar_datos_personales
+
+    # Obtener todas las secciones basadas en las selecciones
+    experiencias_qs = ExperienciaLaboral.objects.filter(
+        idperfilconqueestaactivo=perfil,
+        activarparaqueseveaenfront=True,
+    ) if incluir_experiencias else ExperienciaLaboral.objects.none()
+
+    from django.db.models import Max
+
+    companies = (
+        experiencias_qs
+        .values('nombrempresa')
+        .annotate(latest=Max('fechainiciogestion'))
+        .order_by('-latest')
+    )
+
+    experiencias = []
+    for c in companies:
+        company_name = c['nombrempresa']
+        company_experiences = (
+            experiencias_qs.filter(nombrempresa=company_name)
+            .order_by('-fechainiciogestion')
+        )
+        experiencias.append({'empresa': company_name, 'experiencias': company_experiences})
+
+    cursos = CursoRealizado.objects.filter(
+        idperfilconqueestaactivo=perfil,
+        activarparaqueseveaenfront=True,
+    ).order_by('-fechainicio') if incluir_cursos else CursoRealizado.objects.none()
+
+    reconocimientos = Reconocimiento.objects.filter(
+        idperfilconqueestaactivo=perfil,
+        activarparaqueseveaenfront=True,
+    ).order_by('-fechareconocimiento') if incluir_reconocimientos else Reconocimiento.objects.none()
+
+    productos_academicos = ProductoAcademico.objects.filter(
+        idperfilconqueestaactivo=perfil,
+        activarparaqueseveaenfront=True,
+    ) if incluir_productos_academicos else ProductoAcademico.objects.none()
+
+    productos_laborales = ProductoLaboral.objects.filter(
+        idperfilconqueestaactivo=perfil,
+        activarparaqueseveaenfront=True,
+    ).order_by('-fechaproducto') if incluir_productos_laborales else ProductoLaboral.objects.none()
+
+    # Preparar foto
+    foto_perfil_proxy_url = None
+    if getattr(perfil, 'foto_perfil_url', None):
+        try:
+            data, filename = _download_blob_from_url(perfil.foto_perfil_url)
+            foto_base64 = base64.b64encode(data).decode('utf-8')
+            mime, _ = mimetypes.guess_type(filename or 'photo.jpg')
+            if not mime:
+                mime = 'image/jpeg'
+            foto_perfil_proxy_url = f"data:{mime};base64,{foto_base64}"
+        except Exception:
+            foto_perfil_proxy_url = f"{request.scheme}://{request.get_host()}/foto-perfil/"
+
+    # Preparar intereses
+    intereses_list = []
+    if getattr(perfil, 'intereses', None):
+        intereses_list = [i.strip() for i in perfil.intereses.split(',') if i.strip()]
+
+    context = {
+        'perfil': perfil,
+        'datos_personales': perfil if incluir_datos_personales else None,
+        'experiencias': experiencias,
+        'experiencias_qs': experiencias_qs,
+        'cursos': cursos,
+        'reconocimientos': reconocimientos,
+        'productos_academicos': productos_academicos,
+        'productos_laborales': productos_laborales,
+        'foto_perfil_proxy_url': foto_perfil_proxy_url,
+        'certificates': [],
+        'intereses_list': intereses_list,
+    }
+
+    # Seleccionar template según plantilla
+    if plantilla == 'modern':
+        template_name = 'perfil/pdf/cv_modern_clean.html'
+        html = render_to_string(template_name, context, request=request)
+        # No aplicar _prepare_html_for_pdf para mantener estilos inline
+        pdf_bytes = HTML(string=html, base_url=request.build_absolute_uri('/')).write_pdf()
+        filename = 'cv_modern_personalizado.pdf'
+    else:
+        # Template professional por defecto
+        template_name = 'perfil/pdf/cv_template_web.html'
+        html = render_to_string(template_name, context, request=request)
+        html = _prepare_html_for_pdf(html, request)
+
+        try:
+            base_dir = os.path.dirname(__file__)
+            css_path = os.path.join(base_dir, 'static', 'perfil', 'css', 'pdf', 'cv_template_web.css')
+
+            with open(css_path, 'r', encoding='utf-8') as f:
+                css_text = f.read()
+
+            pdf_bytes = HTML(string=html, base_url=request.build_absolute_uri('/')).write_pdf(
+                stylesheets=[CSS(string=css_text)]
+            )
+        except Exception as e:
+            return HttpResponse(f'Error generating PDF: {str(e)}', status=500)
+        
+        filename = 'cv_professional_personalizado.pdf'
+
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
+
+
 

@@ -47,18 +47,48 @@
         <nav class="nav-menu">
             <a href="#home" class="nav-item nav-home">HOME</a>
             <a href="#resume" class="nav-item nav-resume">RESUME</a>
-            <a href="#" onclick="window.print(); return false;" class="nav-item nav-portfolio">
+            <a href="#" onclick="window.print(); return false;" class="nav-item nav-portfolio" style="display: none;">
                 <span class="nav-icon">📄</span>
                 IMPRIMIR PDF IGUAL
+            </a>
+            <a href="{% url 'selector_cv' %}" class="nav-item nav-feedback" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                <span class="nav-icon">🎨</span>
+                PERSONALIZAR CV
             </a>
             <a href="{% url 'seleccionar_plantilla' %}" class="nav-item nav-feedback download-btn">
                 <span class="nav-icon">✓</span>
                 DESCARGAR CV COMPLETO
             </a>
+            <a href="{% url 'venta_garage' %}" class="nav-item nav-feedback" style="background: #f39c12; color: white; border: none;" target="_blank">
+                <span class="nav-icon">🛒</span>
+                VENTA GARAGE
+            </a>
             <a href="{% url 'admin:index' %}" class="nav-item nav-blog">
                 <span class="nav-icon">⚙️</span>
                 ADMIN
             </a>
+        </nav>
+
+        <!-- ==========================================
+             BARRA DE NAVEGACIÓN POR SECCIONES
+             ========================================== -->
+        <nav class="sections-nav">
+            <button class="section-btn section-btn-active" data-section="experiencia">
+                <span class="section-icon">💼</span>
+                EXPERIENCIA
+            </button>
+            <button class="section-btn" data-section="cursos">
+                <span class="section-icon">🎓</span>
+                CURSOS
+            </button>
+            <button class="section-btn" data-section="reconocimientos">
+                <span class="section-icon">🏆</span>
+                RECONOCIMIENTOS
+            </button>
+            <button class="section-btn" data-section="productos">
+                <span class="section-icon">📚</span>
+                PRODUCTOS
+            </button>
         </nav>
 
         <!-- ==========================================
@@ -192,7 +222,7 @@
                  ========================================== -->
             <main class="cv-main">
                 <!-- EXPERIENCIA LABORAL -->
-                <section class="main-section">
+                <section class="main-section section-content-block" data-section-id="experiencia">
                     <div class="section-header">
                         <h2 class="section-title">Experiencia Laboral</h2>
                     </div>
@@ -254,7 +284,7 @@
                 </section>
 
                 <!-- CURSOS REALIZADOS -->
-                <section class="main-section">
+                <section class="main-section section-content-block" data-section-id="cursos" style="display: none;">
                     <div class="section-header">
                         <h2 class="section-title">Cursos Realizados</h2>
                     </div>
@@ -308,7 +338,7 @@
                 </section>
 
                 <!-- RECONOCIMIENTOS -->
-                <section class="main-section">
+                <section class="main-section section-content-block" data-section-id="reconocimientos" style="display: none;">
                     <div class="section-header">
                         <h2 class="section-title">Reconocimientos</h2>
                     </div>
@@ -338,13 +368,13 @@
                 </section>
 
                 <!-- PRODUCTOS ACADÉMICOS -->
-                <section class="main-section">
+                <section class="main-section section-content-block" data-section-id="productos" style="display: none;">
                     <div class="section-header">
                         <h2 class="section-title">Productos Académicos</h2>
                     </div>
                     <div class="section-content">
                         {% if productos_academicos.exists %}
-                            {% for p in productos_academicos %}
+                            {% for p in productos_academicos|slice:":2" %}
                                 <div class="product-card">
                                     <strong>{{ p.nombrerecurso }}</strong>
                                     {% if p.clasificador %}
@@ -359,16 +389,23 @@
                             <p class="empty-message">No hay productos académicos visibles.</p>
                         {% endif %}
                     </div>
-                </section>
 
-                <!-- PRODUCTOS LABORALES -->
-                <section class="main-section">
-                    <div class="section-header">
+                    <!-- BOTÓN VER MÁS PARA ACADÉMICOS -->
+                    {% if productos_academicos.count > 2 %}
+                    <div style="text-align: center; padding: 1.5rem 0;">
+                        <a href="/todos-los-productos/" class="btn-ver-mas">
+                            Ver más + ({{ productos_academicos.count|add:"-2" }} más)
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    <!-- PRODUCTOS LABORALES -->
+                    <div class="section-header" style="margin-top: 28px;">
                         <h2 class="section-title">Productos Laborales</h2>
                     </div>
                     <div class="section-content">
                         {% if productos_laborales.exists %}
-                            {% for pl in productos_laborales %}
+                            {% for pl in productos_laborales|slice:":2" %}
                                 <div class="product-card">
                                     <strong>{{ pl.nombreproducto }}</strong>
                                     {% if pl.fechaproducto %}
@@ -383,10 +420,19 @@
                             <p class="empty-message">No hay productos laborales visibles.</p>
                         {% endif %}
                     </div>
+
+                    <!-- BOTÓN VER MÁS PARA LABORALES -->
+                    {% if productos_laborales.count > 2 %}
+                    <div style="text-align: center; padding: 1.5rem 0;">
+                        <a href="/todos-los-productos/" class="btn-ver-mas">
+                            Ver más + ({{ productos_laborales.count|add:"-2" }} más)
+                        </a>
+                    </div>
+                    {% endif %}
                 </section>
 
                 <!-- VENTAS GARAGE -->
-                <section class="main-section">
+                <section class="main-section" style="display: none;">
                     <div class="section-header">
                         <h2 class="section-title">Ventas Garage</h2>
                     </div>
@@ -417,5 +463,7 @@
 
     <!-- JavaScript con todas las interacciones -->
     <script src="{% static 'perfil/js/gridsby_interactions.js' %}"></script>
+    <script src="{% static 'perfil/js/sections_navigator.js' %}"></script>
+    <script src="{% static 'perfil/js/expanding_menu.js' %}"></script>
 </body>
 </html>

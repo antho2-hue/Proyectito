@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import DatosPersonales
+from .models import DatosPersonales, VisibilidadCV
 
 from apps.documentos.services.azure_storage import upload_profile_image, upload_template_image
 
@@ -50,6 +50,22 @@ class DatosPersonalesAdmin(admin.ModelAdmin):
     form = DatosPersonalesAdminForm
     list_display = ('apellidos', 'nombres', 'numerocedula', 'perfilactivo')
 
+    fieldsets = (
+        ('Información Personal', {
+            'fields': ('nombres', 'apellidos', 'numerocedula', 'descripcionperfil', 'perfilactivo')
+        }),
+        ('Datos de Contacto', {
+            'fields': ('telefonoconvencional', 'telefonofijo', 'sitioweb', 'direcciondomiciliaria', 'direcciontrabajo')
+        }),
+        ('Información Demográfica', {
+            'fields': ('nacionalidad', 'lugarnacimiento', 'fechanacimiento', 'sexo', 'estadocivil', 'licenciaconducir')
+        }),
+        ('Medios Multimedia', {
+            'fields': ('foto_perfil_file', 'foto_perfil_url', 'fondo_professional_file', 'fondo_professional_url', 'fondo_modern_file', 'fondo_modern_url'),
+            'description': 'Sube tus imágenes aquí. Se almacenarán automáticamente en Azure.'
+        }),
+    )
+
     class Media:
         css = {
             'all': ('perfil/css/cyberadmin.css',)
@@ -85,6 +101,22 @@ class DatosPersonalesAdmin(admin.ModelAdmin):
                 raise ValidationError(f'Error subiendo fondo Modern a Azure: {exc}')
 
         super().save_model(request, obj, form, change)
+
+
+@admin.register(VisibilidadCV)
+class VisibilidadCVAdmin(admin.ModelAdmin):
+    list_display = ('perfil', 'mostrar_datos_personales', 'mostrar_experiencias', 'mostrar_cursos')
+    
+    def has_add_permission(self, request):
+        return False
+    
+    fieldsets = (
+        ('🔐 CONTROL DE VISIBILIDAD DEL CV PÚBLICO', {
+            'fields': ('perfil', 'mostrar_datos_personales', 'mostrar_experiencias', 'mostrar_cursos', 'mostrar_reconocimientos', 'mostrar_productos_academicos', 'mostrar_productos_laborales'),
+            'description': '⚠️ IMPORTANTE: Marca qué secciones deseas mostrar en tu CV público. Desmarcar una sección la ocultará completamente del CV que compartes con empresas.',
+            'classes': ('wide', 'extrapretty')
+        }),
+    )
 
 # Global admin branding
 admin.site.site_header = "📄 HOJA DE VIDA MODERNA — Panel"

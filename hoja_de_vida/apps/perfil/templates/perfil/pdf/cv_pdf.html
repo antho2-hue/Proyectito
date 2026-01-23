@@ -258,36 +258,6 @@
                         </div>
                     </section>
                 {% endif %}
-
-                <!-- VENTA GARAGE -->
-                {% if ventas_garage.exists %}
-                    <section class="main-section">
-                        <div class="section-header">
-                            <div class="section-icon">🏪</div>
-                            <h2 class="section-title">Venta Garage</h2>
-                        </div>
-                        <div class="section-content">
-                            {% for venta in ventas_garage %}
-                                <div class="garage-card">
-                                    {% if venta.nombreproducto %}
-                                        <h4 class="product-title">{{ venta.nombreproducto }}</h4>
-                                    {% endif %}
-                                    <div class="garage-meta">
-                                        {% if venta.estadoproducto %}
-                                            <span class="status-badge">{{ venta.estadoproducto }}</span>
-                                        {% endif %}
-                                        {% if venta.valorbien %}
-                                            <span class="price-tag">${{ venta.valorbien }}</span>
-                                        {% endif %}
-                                    </div>
-                                    {% if venta.descripcion %}
-                                        <p class="description-text">{{ venta.descripcion }}</p>
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </section>
-                {% endif %}
             </div>
 
             <!-- RIGHT COLUMN (SIDEBAR VERDE - 32%) -->

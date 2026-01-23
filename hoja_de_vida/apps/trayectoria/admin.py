@@ -8,13 +8,22 @@ from .models import (
     ProductoLaboral,
     VentaGarage,
 )
-from .forms_admin import CursoRealizadoAdminForm, ReconocimientoAdminForm
+from .forms_admin import CursoRealizadoAdminForm, ReconocimientoAdminForm, VentaGarageAdminForm, ExperienciaLaboralAdminForm
 from .services.azure_storage import upload_pdf
 
 
 @admin.register(ExperienciaLaboral)
 class ExperienciaLaboralAdmin(admin.ModelAdmin):
+    form = ExperienciaLaboralAdminForm
     list_display = ('cargodesempenado', 'activarparaqueseveaenfront')
+
+    def save_model(self, request, obj, form, change):
+        # If a file was uploaded, send to Azure and save URL
+        uploaded = form.cleaned_data.get('certificado_subir')
+        if uploaded:
+            url = upload_pdf(uploaded, filename=uploaded.name)
+            obj.rutacertificado = url
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(Reconocimiento)
@@ -59,5 +68,39 @@ class ProductoLaboralAdmin(admin.ModelAdmin):
 
 @admin.register(VentaGarage)
 class VentaGarageAdmin(admin.ModelAdmin):
-    list_display = ('nombreproducto', 'activarparaqueseveaenfront')
-    # No custom forms or inline configurations yet.
+    """Admin para VentaGarage con soporte para imágenes PNG/JPG."""
+    form = VentaGarageAdminForm
+    list_display = ('nombreproducto', 'estado_disponibilidad', 'activarparaqueseveaenfront')
+    list_filter = ('estado_disponibilidad', 'activarparaqueseveaenfront')
+    fieldsets = (
+        ('Información del Producto', {
+            'fields': ('nombreproducto', 'descripcion', 'estadoproducto', 'valordelbien')
+        }),
+        ('Imagen', {
+            'fields': ('imagen_subir',),
+            'description': 'Sube una imagen PNG o JPG del producto. Máximo 10MB.'
+        }),
+        ('Fecha de Publicación', {
+            'fields': ('fecha_publicacion',)
+        }),
+        ('Control de Disponibilidad', {
+            'fields': ('estado_disponibilidad',),
+            'description': 'Solo administradores pueden cambiar este estado. Vendido = producto no disponible pero visible.'
+        }),
+        ('Visibilidad en Frontend', {
+            'fields': ('activarparaqueseveaenfront',)
+        }),
+    )
+    
+    def save_model(self, request, obj, form, change):
+        """Procesa la imagen subida y la guarda en Azure."""
+        uploaded = form.cleaned_data.get('imagen_subir')
+        if uploaded:
+            try:
+                # Usar servicios de Azure para subir imagen
+                url = upload_pdf(uploaded, filename=uploaded.name)  # Este servicio acepta cualquier archivo
+                obj.rutaimagen = url
+                messages.success(request, 'Imagen subida correctamente a Azure')
+            except Exception as exc:
+                messages.error(request, f'Error al subir imagen a Azure: {exc}')
+        super().save_model(request, obj, form, change)

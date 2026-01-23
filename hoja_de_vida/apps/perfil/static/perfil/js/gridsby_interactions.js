@@ -91,18 +91,18 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // ==========================================
-    // 3. ANIMACIÓN DE ENTRADA - Fade in al scroll
+    // 3. ANIMACIÓN DE ENTRADA - Fade in al scroll (MEJORADO)
     // ==========================================
     const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -100px 0px'
+        threshold: 0.08,
+        rootMargin: '0px 0px -80px 0px'
     };
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
+                entry.target.classList.add('section-in-view');
+                observer.unobserve(entry.target); // Solo animar una vez
             }
         });
     }, observerOptions);
@@ -110,9 +110,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Aplicar a las secciones principales
     const sections = document.querySelectorAll('.main-section, .sidebar-section');
     sections.forEach(section => {
-        section.style.opacity = '0';
-        section.style.transform = 'translateY(30px)';
-        section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        // ============ VISIBILITY FIX: start visible, subtle animation on scroll ============
+        section.classList.add('section-animate');
         observer.observe(section);
     });
 
@@ -135,22 +134,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ==========================================
-    // 5. PARALLAX SUAVE EN HEADER
+    // 5. PARALLAX SUAVE EN HEADER - Muy leve
     // ==========================================
     let lastScrollTop = 0;
     const header = document.querySelector('.cv-header');
     
     window.addEventListener('scroll', () => {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const scrollPercent = scrollTop / 300;
+        const scrollPercent = scrollTop / 500;  // Más lento (aumentado de 300)
         
-        if (header && scrollTop < 400) {
-            header.style.transform = `translateY(${scrollTop * 0.3}px)`;
-            header.style.opacity = 1 - scrollPercent;
+        if (header && scrollTop < 500) {
+            header.style.transform = `translateY(${scrollTop * 0.15}px)`;  // Más leve (reducido de 0.3)
+            header.style.opacity = Math.max(1 - scrollPercent * 0.3, 0.7);  // Más sutil (reducido de 1)
         }
         
         lastScrollTop = scrollTop;
-    });
+    }, { passive: true });
 
     // ==========================================
     // 6. INFO ITEMS - Efecto de resaltado
@@ -174,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // ==========================================
-    // 7. TÍTULOS DE SECCIÓN - Animación al scroll
+    // 7. TÍTULOS DE SECCIÓN - Animación al scroll (sutil)
     // ==========================================
     const sectionTitles = document.querySelectorAll('.section-title, .sidebar-title');
     
@@ -189,16 +188,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (header) {
                     setTimeout(() => {
                         header.style.setProperty('--line-width', '100%');
-                    }, 300);
+                    }, 200);
                 }
+                titleObserver.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.5 });
+    }, { threshold: 0.6, rootMargin: '0px' });
 
     sectionTitles.forEach(title => {
-        title.style.opacity = '0';
-        title.style.transform = 'translateX(-20px)';
-        title.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        title.style.opacity = '0.8';
+        title.style.transform = 'translateX(-10px)';
+        title.style.transition = 'opacity 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)';
         titleObserver.observe(title);
     });
 
@@ -216,6 +216,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         });
+    });
+
+    // ==========================================
+    // 8B. ANIMACIONES SUAVES EN CARDS - Reveal progresivo
+    // ==========================================
+    const cardAnimationObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                // Stagger animation muy suave: cada card con pequeño delay
+                const delay = index * 40; // 40ms de delay entre cards (menos que antes)
+                entry.target.style.transitionDelay = `${delay}ms`;
+                entry.target.classList.add('card-in-view');
+                cardAnimationObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.experience-card, .education-card, .award-card, .product-card, .garage-card').forEach(card => {
+        // ============ VISIBILITY FIX: start visible, subtle animation on scroll ============
+        card.classList.add('card-animate');
+        cardAnimationObserver.observe(card);
     });
 
     // ==========================================
@@ -311,9 +332,9 @@ document.addEventListener('DOMContentLoaded', function() {
         .ripple {
             position: absolute;
             border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.4);
+            background-color: rgba(255, 255, 255, 0.3);
             transform: scale(0);
-            animation: ripple-animation 0.6s ease-out;
+            animation: ripple-animation 0.7s ease-out;
             pointer-events: none;
         }
 
@@ -330,24 +351,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
         .section-header::after {
             width: var(--line-width);
-            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* Media query para deshabilitar animaciones en impresión */
+        @media print {
+            .section-animate,
+            .card-animate,
+            .section-in-view,
+            .card-in-view {
+                opacity: 1 !important;
+                transform: none !important;
+                transition: none !important;
+            }
         }
     `;
     document.head.appendChild(style);
 
     // ==========================================
-    // 12. INDICADOR DE SCROLL
+    // 12. INDICADOR DE SCROLL - Más sutil
     // ==========================================
     const progressBar = document.createElement('div');
     progressBar.style.cssText = `
         position: fixed;
         top: 0;
         left: 0;
-        height: 3px;
-        background: linear-gradient(90deg, #1abc9c, #3498db, #9b59b6);
+        height: 2px;
+        background: linear-gradient(90deg, #4ade80, #22d3ee, #eab308);
         width: 0%;
         z-index: 9999;
-        transition: width 0.1s ease;
+        transition: width 0.15s ease;
+        opacity: 0.8;
     `;
     document.body.appendChild(progressBar);
 
@@ -356,7 +390,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
         const scrolled = (winScroll / height) * 100;
         progressBar.style.width = scrolled + '%';
-    });
+    }, { passive: true });
 
     console.log('🎨 Gridsby CV: Todas las interacciones cargadas exitosamente!');
 });

@@ -16,14 +16,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from apps.perfil.views import hoja_vida_publica, cv_hacker_neon, descargar_cv_pdf, descargar_cv_completo_pdf, ver_foto_perfil, seleccionar_plantilla, fondo_professional, fondo_modern
-from apps.trayectoria.views import ver_certificado_curso, ver_certificado_reconocimiento, ver_certificado_experiencia
+from apps.perfil.views import hoja_vida_publica, cv_hacker_neon, descargar_cv_pdf, descargar_cv_completo_pdf, ver_foto_perfil, seleccionar_plantilla, fondo_professional, fondo_modern, selector_cv, descargar_cv_personalizado, descargar_cv_personalizado_plantilla
+from apps.trayectoria.views import ver_certificado_curso, ver_certificado_reconocimiento, ver_certificado_experiencia, venta_garage, ver_imagen_producto, descargar_imagen_producto, ver_todos_los_productos
 
 urlpatterns = [
     path('', hoja_vida_publica, name='hoja_vida_publica'),
     path('hacker-neon/', cv_hacker_neon, name='cv_hacker_neon'),
     path('descargar-cv/', descargar_cv_pdf, name='descargar_cv_pdf'),
     path('descargar-cv-completo/', descargar_cv_completo_pdf, name='descargar_cv_completo_pdf'),
+    path('selector-cv/', selector_cv, name='selector_cv'),
+    path('descargar-cv-personalizado/', descargar_cv_personalizado, name='descargar_cv_personalizado'),
+    path('descargar-cv-personalizado-plantilla/', descargar_cv_personalizado_plantilla, name='descargar_cv_personalizado_plantilla'),
+
+    # Venta de Garaje
+    path('venta-garage/', venta_garage, name='venta_garage'),
+    path('todos-los-productos/', ver_todos_los_productos, name='ver_todos_los_productos'),
+    path('producto/<int:producto_id>/imagen/', ver_imagen_producto, name='ver_imagen_producto'),
+    path('producto/<int:producto_id>/descargar-imagen/', descargar_imagen_producto, name='descargar_imagen_producto'),
 
     # Certificate proxy endpoints
     path('certificados/curso/<int:curso_id>/', ver_certificado_curso, name='ver_certificado_curso'),
