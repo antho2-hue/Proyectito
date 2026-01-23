@@ -317,6 +317,21 @@ def descargar_cv_pdf(request):
         except Exception as e:
             return HttpResponse(f'Error creando perfil: {str(e)}', status=500)
 
+    # Obtener configuración de visibilidad del perfil
+    from apps.perfil.models import VisibilidadCV
+    visibilidad = VisibilidadCV.objects.filter(perfil=perfil).first()
+    if not visibilidad:
+        # Si no existe, crear uno con todos los valores en True
+        visibilidad = VisibilidadCV.objects.create(
+            perfil=perfil,
+            mostrar_datos_personales=True,
+            mostrar_experiencias=True,
+            mostrar_cursos=True,
+            mostrar_reconocimientos=True,
+            mostrar_productos_academicos=True,
+            mostrar_productos_laborales=True,
+        )
+
     # Respeta controles de visibilidad del admin
     experiencias_qs = ExperienciaLaboral.objects.filter(
         idperfilconqueestaactivo=perfil,
