@@ -17,7 +17,6 @@
 
         html, body {
             width: 210mm;
-            min-height: 297mm;
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
@@ -30,7 +29,6 @@
 
         .cv-wrapper {
             width: 210mm;
-            min-height: 297mm;
             display: flex;
             background: white;
             position: relative;
@@ -39,12 +37,12 @@
         /* ===== SIDEBAR - 25% ===== */
         .sidebar {
             width: 52.5mm;
-            min-height: 297mm;
             background: linear-gradient(180deg, #1a3556 0%, #0f2137 50%, #051a2d 100%);
             color: white;
             padding: 25mm 0 0 0;
-            overflow: hidden;
+            overflow: visible;
             position: relative;
+            flex-shrink: 0;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
@@ -181,11 +179,11 @@
         /* ===== MAIN CONTENT - 75% ===== */
         .main {
             width: 157.5mm;
-            min-height: 297mm;
             padding: 20mm 18mm;
             background: linear-gradient(135deg, #ffffff 0%, #fafcfe 100%);
             overflow: visible;
             position: relative;
+            flex: 1;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
