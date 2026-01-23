@@ -181,7 +181,16 @@
                         <li>Diseño limpio y moderno</li>
                         <li>Ideal para empresas corporativas</li>
                     </ul>
-                    <a href="{% url 'descargar_cv_pdf' %}?plantilla=professional" class="btn-download">
+                    
+                    <!-- Checkbox: Usar preferencias guardadas -->
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; padding: 0.75rem; background: #f0f4ff; border-radius: 6px;">
+                        <input type="checkbox" class="use-preferences-checkbox" data-template="professional" style="width: 16px; height: 16px; cursor: pointer;">
+                        <label style="cursor: pointer; font-size: 0.9rem; user-select: none; margin: 0;">
+                            💾 Usar preferencias guardadas
+                        </label>
+                    </div>
+                    
+                    <a href="javascript:void(0);" onclick="descargarCVCompleto('professional')" class="btn-download">
                         Descargar PDF
                     </a>
                 </div>
@@ -203,7 +212,16 @@
                         <li>Sidebar con foto destacada</li>
                         <li>Ideal para creativos y tech</li>
                     </ul>
-                    <a href="{% url 'descargar_cv_pdf' %}?plantilla=modern" class="btn-download">
+                    
+                    <!-- Checkbox: Usar preferencias guardadas -->
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; padding: 0.75rem; background: #f0f4ff; border-radius: 6px;">
+                        <input type="checkbox" class="use-preferences-checkbox" data-template="modern" style="width: 16px; height: 16px; cursor: pointer;">
+                        <label style="cursor: pointer; font-size: 0.9rem; user-select: none; margin: 0;">
+                            💾 Usar preferencias guardadas
+                        </label>
+                    </div>
+                    
+                    <a href="javascript:void(0);" onclick="descargarCVCompleto('modern')" class="btn-download">
                         Descargar PDF
                     </a>
                 </div>
@@ -214,5 +232,75 @@
             <a href="{% url 'hoja_vida_publica' %}" class="back-button">← Volver al CV</a>
         </div>
     </div>
+
+    <script>
+        const STORAGE_KEY = 'cv_preferences';
+
+        // Obtener preferencias guardadas del localStorage
+        function obtenerPreferenciasGuardadas() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    return JSON.parse(stored);
+                } catch (e) {
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        // Descargar CV completo (con todas las secciones) o con preferencias guardadas
+        function descargarCVCompleto(plantilla) {
+            const checkbox = document.querySelector(`.use-preferences-checkbox[data-template="${plantilla}"]`);
+            const usarPreferencias = checkbox ? checkbox.checked : false;
+
+            let url = "{% url 'descargar_cv_pdf' %}?plantilla=" + plantilla;
+
+            if (usarPreferencias) {
+                // Usar preferencias guardadas
+                const preferences = obtenerPreferenciasGuardadas();
+                console.log('🔍 Preferencias para enviar:', preferences);
+                
+                if (preferences) {
+                    // Convertir preferencias a parámetros URL
+                    Object.keys(preferences).forEach(key => {
+                        const value = preferences[key] ? 'true' : 'false';
+                        url += "&" + key + "=" + value;
+                        console.log(`  - ${key}: ${value}`);
+                    });
+                } else {
+                    console.warn('⚠️ No hay preferencias guardadas en localStorage');
+                }
+            } else {
+                console.log('⚠️ "Usar preferencias guardadas" NO está marcado - descargando CV completo');
+            }
+
+            console.log('📥 URL final:', url);
+            
+            // Mostrar alerta para debugging
+            alert('La descarga comenzará. Verifica la consola (F12) para los detalles.');
+            
+            // Redirigir a descarga
+            window.location.href = url;
+        }
+
+        // Inicializar checkboxes al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            const preferences = obtenerPreferenciasGuardadas();
+            
+            console.log('📦 localStorage preferences on page load:', preferences);
+            
+            if (preferences) {
+                // Si hay preferencias guardadas, mostrar un indicador
+                document.querySelectorAll('.use-preferences-checkbox').forEach(checkbox => {
+                    // Marcar por defecto que se usen las preferencias si existen
+                    checkbox.checked = true;
+                });
+                console.log('✓ Checkboxes marcados - se usarán preferencias guardadas');
+            } else {
+                console.log('ℹ️ No hay preferencias guardadas');
+            }
+        });
+    </script>
 </body>
 </html>

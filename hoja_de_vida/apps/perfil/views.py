@@ -332,7 +332,36 @@ def descargar_cv_pdf(request):
             mostrar_productos_laborales=True,
         )
 
-    # Respeta controles de visibilidad del admin
+    # Mapeo de parámetros URL (nombres de checkboxes en selector_cv.html) a campos del modelo
+    param_to_field = {
+        'datos_personales': 'mostrar_datos_personales',
+        'experiencias_laborales': 'mostrar_experiencias',
+        'cursos': 'mostrar_cursos',
+        'reconocimientos': 'mostrar_reconocimientos',
+        'productos_academicos': 'mostrar_productos_academicos',
+        'productos_laborales': 'mostrar_productos_laborales',
+    }
+
+    # Verificar si hay parámetros de preferencias en la URL
+    has_preferences_params = any(key in request.GET for key in param_to_field.keys())
+    
+    if has_preferences_params:
+        print(f"\n{'='*60}")
+        print(f"🔍 PARÁMETROS RECIBIDOS EN URL:")
+        print(f"URL query string: {request.GET.urlencode()}")
+        print(f"{'='*60}\n")
+        
+        # Si hay parámetros en la URL, usarlos para sobrescribir visibilidad
+        for param, field in param_to_field.items():
+            param_value = request.GET.get(param, 'false').lower() == 'true'
+            setattr(visibilidad, field, param_value)
+            print(f"  - {param} ({field}): {param_value}")
+    else:
+        print(f"\n{'='*60}")
+        print(f"ℹ️ NO hay parámetros de preferencias - usando VisibilidadCV default")
+        print(f"{'='*60}\n")
+
+    # Respeta controles de visibilidad del admin (o parámetros de URL si existen)
     experiencias_qs = ExperienciaLaboral.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True,
@@ -359,22 +388,22 @@ def descargar_cv_pdf(request):
     cursos = CursoRealizado.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True,
-    ).order_by('-fechainicio')
+    ).order_by('-fechainicio') if visibilidad.mostrar_cursos else CursoRealizado.objects.none()
 
     reconocimientos = Reconocimiento.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True,
-    ).order_by('-fechareconocimiento') if visibilidad and visibilidad.mostrar_reconocimientos else Reconocimiento.objects.none()
+    ).order_by('-fechareconocimiento') if visibilidad.mostrar_reconocimientos else Reconocimiento.objects.none()
 
     productos_academicos = ProductoAcademico.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True,
-    ) if visibilidad and visibilidad.mostrar_productos_academicos else ProductoAcademico.objects.none()
+    ) if visibilidad.mostrar_productos_academicos else ProductoAcademico.objects.none()
 
     productos_laborales = ProductoLaboral.objects.filter(
         idperfilconqueestaactivo=perfil,
         activarparaqueseveaenfront=True,
-    ).order_by('-fechaproducto') if visibilidad and visibilidad.mostrar_productos_laborales else ProductoLaboral.objects.none()
+    ).order_by('-fechaproducto') if visibilidad.mostrar_productos_laborales else ProductoLaboral.objects.none()
 
     # Convert profile photo to base64 for PDF embedding
     foto_perfil_proxy_url = None
