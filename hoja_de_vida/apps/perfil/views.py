@@ -1221,6 +1221,21 @@ def descargar_cv_personalizado_plantilla(request):
             sitioweb="https://example.com"
         )
 
+    # Obtener configuración de visibilidad del perfil
+    from apps.perfil.models import VisibilidadCV
+    visibilidad = VisibilidadCV.objects.filter(perfil=perfil).first()
+    if not visibilidad:
+        # Si no existe, crear uno con todos los valores en True
+        visibilidad = VisibilidadCV.objects.create(
+            perfil=perfil,
+            mostrar_datos_personales=True,
+            mostrar_experiencias=True,
+            mostrar_cursos=True,
+            mostrar_reconocimientos=True,
+            mostrar_productos_academicos=True,
+            mostrar_productos_laborales=True,
+        )
+
     # Obtener secciones seleccionadas desde GET
     incluir_datos_personales = request.GET.get('datos_personales') == 'on'
     incluir_experiencias = request.GET.get('experiencias_laborales') == 'on'
