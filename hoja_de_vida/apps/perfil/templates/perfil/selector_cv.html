@@ -588,6 +588,30 @@
             </div>
         </div>
 
+        <!-- SECCIÓN: DESCARGAR CV COMPLETO CON PREFERENCIAS GUARDADAS -->
+        <div class="actions-section" style="background: white; padding: 1.5rem; border-radius: 10px; margin-bottom: 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);">
+            <h3 style="font-size: 1.1rem; color: #333; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                💾 Descargar CV Completo
+            </h3>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">
+                Marca esta opción para descargar con las preferencias que guardaste en "Personalizar tu CV"
+            </p>
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                <input type="checkbox" id="usePreferences" style="width: 18px; height: 18px; cursor: pointer;">
+                <label for="usePreferences" style="cursor: pointer; font-weight: 500; user-select: none;">
+                    ✓ Conservar cambios (usar preferencias guardadas)
+                </label>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <button type="button" class="btn btn-primary" onclick="descargarPDFCompleto('professional')" style="flex: 1;">
+                    📄 Professional
+                </button>
+                <button type="button" class="btn btn-primary" onclick="descargarPDFCompleto('modern')" style="flex: 1; background: linear-gradient(135deg, #00a8d8 0%, #0f2137 100%);">
+                    📄 Modern
+                </button>
+            </div>
+        </div>
+
         <!-- ACCIONES -->
         <div class="actions">
             <a href="{% url 'hoja_vida_publica' %}" class="btn btn-secondary">
@@ -608,6 +632,57 @@
     </div>
 
     <script>
+        // ===== GESTIÓN DE PERSISTENCIA DE PREFERENCIAS =====
+        const STORAGE_KEY = 'cv_preferences';
+
+        // Guardar preferencias en localStorage cada vez que cambia un checkbox
+        function guardarPreferencias() {
+            const checkboxes = document.querySelectorAll('.section-checkbox');
+            const preferences = {};
+            
+            checkboxes.forEach(checkbox => {
+                preferences[checkbox.name] = checkbox.checked;
+            });
+            
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
+            console.log('✓ Preferencias guardadas:', preferences);
+        }
+
+        // Cargar preferencias guardadas de localStorage
+        function cargarPreferencias() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    const preferences = JSON.parse(stored);
+                    const checkboxes = document.querySelectorAll('.section-checkbox');
+                    
+                    checkboxes.forEach(checkbox => {
+                        if (preferences.hasOwnProperty(checkbox.name)) {
+                            checkbox.checked = preferences[checkbox.name];
+                        }
+                    });
+                    
+                    console.log('✓ Preferencias cargadas:', preferences);
+                } catch (e) {
+                    console.error('Error al cargar preferencias:', e);
+                }
+            }
+        }
+
+        // Obtener preferencias guardadas para descargar
+        function obtenerPreferenciasGuardadas() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    return JSON.parse(stored);
+                } catch (e) {
+                    console.error('Error al obtener preferencias:', e);
+                    return null;
+                }
+            }
+            return null;
+        }
+
         // Función para descargar el CV con las secciones seleccionadas
         function descargarCV(plantilla = 'professional') {
             const checkboxes = document.querySelectorAll('.section-checkbox');
@@ -627,6 +702,51 @@
             window.location.href = `{% url 'descargar_cv_personalizado_plantilla' %}?${params.toString()}`;
         }
 
+        // Función para descargar con preferencias guardadas
+        function descargarCVConPreferencias(plantilla = 'professional') {
+            const preferences = obtenerPreferenciasGuardadas();
+            
+            if (!preferences) {
+                alert('No hay preferencias guardadas. Por favor, personaliza tu CV primero.');
+                return;
+            }
+
+            const params = new URLSearchParams();
+            params.append('plantilla', plantilla);
+
+            // Agregar cada preferencia guardada
+            Object.entries(preferences).forEach(([key, value]) => {
+                if (value) {
+                    params.append(key, 'on');
+                }
+            });
+
+            window.location.href = `{% url 'descargar_cv_personalizado_plantilla' %}?${params.toString()}`;
+        }
+
+        // Función para descargar CV completo (usa preferencias si está marcado el checkbox)
+        function descargarPDFCompleto(plantilla = 'professional') {
+            const usePreferences = document.getElementById('usePreferences').checked;
+            
+            if (usePreferences) {
+                descargarCVConPreferencias(plantilla);
+            } else {
+                // Si no usa preferencias, descargar con TODO incluido (CV completo)
+                const params = new URLSearchParams();
+                params.append('plantilla', plantilla);
+                
+                // Incluir todas las secciones posibles
+                params.append('datos_personales', 'on');
+                params.append('experiencias_laborales', 'on');
+                params.append('cursos', 'on');
+                params.append('reconocimientos', 'on');
+                params.append('productos_academicos', 'on');
+                params.append('productos_laborales', 'on');
+                
+                window.location.href = `{% url 'descargar_cv_personalizado_plantilla' %}?${params.toString()}`;
+            }
+        }
+
         // Validar que al menos una sección esté marcada
         function validarSeleccion() {
             const checkboxes = document.querySelectorAll('.section-checkbox');
@@ -638,13 +758,19 @@
             downloadBtnModern.disabled = !algunaMarcada;
         }
 
-        // Escuchar cambios en los checkboxes
+        // Escuchar cambios en los checkboxes y guardar
         document.querySelectorAll('.section-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', validarSeleccion);
+            checkbox.addEventListener('change', () => {
+                guardarPreferencias();
+                validarSeleccion();
+            });
         });
 
-        // Validar al cargar
-        window.addEventListener('load', validarSeleccion);
+        // Cargar preferencias y validar al cargar la página
+        window.addEventListener('load', () => {
+            cargarPreferencias();
+            validarSeleccion();
+        });
     </script>
 </body>
 </html>
