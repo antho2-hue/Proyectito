@@ -106,6 +106,7 @@ class DatosPersonalesAdmin(admin.ModelAdmin):
 @admin.register(VisibilidadCV)
 class VisibilidadCVAdmin(admin.ModelAdmin):
     list_display = ('perfil', 'mostrar_datos_personales', 'mostrar_experiencias', 'mostrar_cursos')
+    readonly_fields = ('perfil', 'mostrar_datos_personales')
     
     def has_add_permission(self, request):
         return False
@@ -113,7 +114,7 @@ class VisibilidadCVAdmin(admin.ModelAdmin):
     fieldsets = (
         ('🔐 CONTROL DE VISIBILIDAD DEL CV PÚBLICO', {
             'fields': ('perfil', 'mostrar_datos_personales', 'mostrar_experiencias', 'mostrar_cursos', 'mostrar_reconocimientos', 'mostrar_productos_academicos', 'mostrar_productos_laborales'),
-            'description': '⚠️ IMPORTANTE: Marca qué secciones deseas mostrar en tu CV público. Desmarcar una sección la ocultará completamente del CV que compartes con empresas.',
+            'description': '⚠️ IMPORTANTE: Marca qué secciones deseas mostrar en tu CV público. Desmarcar una sección la ocultará completamente del CV que compartes con empresas.\n\n📌 NOTA: "Datos Personales" es SIEMPRE obligatorio y no se puede desactivar.',
             'classes': ('wide', 'extrapretty')
         }),
     )

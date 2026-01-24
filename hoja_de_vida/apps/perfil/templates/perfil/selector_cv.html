@@ -477,19 +477,18 @@
                         ✓ Esta sección no se puede desmarcar
                     </p>
                 </div>
-
-                <!-- SECCIÓN: DATOS PERSONALES -->
+                <!-- SECCIÓN: DATOS PERSONALES - OBLIGATORIA (SIN CHECKBOX) -->
                 {% if perfil %}
-                <div class="section-card">
+                <div class="section-card" style="background: linear-gradient(135deg, #f0f7ff 0%, #e6f4ff 100%); border-left: 4px solid #667eea;">
                     <div class="section-header">
                         <span class="section-icon">📋</span>
                         <h3 class="section-title">Datos Personales</h3>
+                        <span class="badge-obligatorio" style="display: inline-block; background: #667eea; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-left: auto;">🔒 SIEMPRE INCLUIDA</span>
                     </div>
-                    <div class="checkbox-wrapper">
-                        <input type="checkbox" id="datos_personales" name="datos_personales" value="on" class="checkbox-input section-checkbox" checked>
-                        <label for="datos_personales" class="checkbox-label">Incluir información personal</label>
-                    </div>
-                    <p style="font-size: 0.85rem; color: #666; line-height: 1.6; margin-top: 0.5rem;">
+                    <p style="font-size: 0.85rem; color: #333; line-height: 1.6; margin-top: 0.5rem; font-weight: 500;">
+                        ✅ Esta sección es obligatoria y siempre se incluirá en tu CV.
+                    </p>
+                    <p style="font-size: 0.8rem; color: #666; line-height: 1.5; margin-top: 0.35rem;">
                         Nacionalidad, lugar de nacimiento, cédula, estado civil y otros datos personales.
                     </p>
                 </div>

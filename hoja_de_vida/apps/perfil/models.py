@@ -124,3 +124,9 @@ class VisibilidadCV(models.Model):
 
     class Meta:
         db_table = 'VISIBILIDAD_CV'
+
+    def save(self, *args, **kwargs):
+        """Forzar que mostrar_datos_personales sea siempre True"""
+        # Datos Personales es obligatorio y nunca puede ocultarse
+        self.mostrar_datos_personales = True
+        super().save(*args, **kwargs)

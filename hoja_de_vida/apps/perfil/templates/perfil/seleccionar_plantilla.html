@@ -271,6 +271,10 @@
                 } else {
                     console.warn('⚠️ No hay preferencias guardadas en localStorage');
                 }
+                
+                // 🔒 FORZAR: Datos Personales SIEMPRE obligatorio
+                url += "&datos_personales=true";
+                console.log('🔒 FORZADO: datos_personales=true (obligatorio)');
             } else {
                 console.log('⚠️ "Usar preferencias guardadas" NO está marcado - descargando CV completo');
             }
