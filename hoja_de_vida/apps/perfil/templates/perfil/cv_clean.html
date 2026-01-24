@@ -73,22 +73,30 @@
              BARRA DE NAVEGACIÓN POR SECCIONES
              ========================================== -->
         <nav class="sections-nav">
+            {% if show_experiencias %}
             <button class="section-btn section-btn-active" data-section="experiencia">
                 <span class="section-icon">💼</span>
                 EXPERIENCIA
             </button>
+            {% endif %}
+            {% if show_cursos %}
             <button class="section-btn" data-section="cursos">
                 <span class="section-icon">🎓</span>
                 CURSOS
             </button>
+            {% endif %}
+            {% if show_reconocimientos %}
             <button class="section-btn" data-section="reconocimientos">
                 <span class="section-icon">🏆</span>
                 RECONOCIMIENTOS
             </button>
+            {% endif %}
+            {% if show_productos_academicos or show_productos_laborales %}
             <button class="section-btn" data-section="productos">
                 <span class="section-icon">📚</span>
                 PRODUCTOS
             </button>
+            {% endif %}
         </nav>
 
         <!-- ==========================================
@@ -222,6 +230,7 @@
                  ========================================== -->
             <main class="cv-main">
                 <!-- EXPERIENCIA LABORAL -->
+                {% if show_experiencias %}
                 <section class="main-section section-content-block" data-section-id="experiencia">
                     <div class="section-header">
                         <h2 class="section-title">Experiencia Laboral</h2>
@@ -277,13 +286,13 @@
                                     </div>
                                 {% endfor %}
                             {% endfor %}
-                        {% else %}
-                            <p class="empty-message">No hay experiencia laboral visible.</p>
                         {% endif %}
                     </div>
                 </section>
+                {% endif %}
 
                 <!-- CURSOS REALIZADOS -->
+                {% if show_cursos %}
                 <section class="main-section section-content-block" data-section-id="cursos" style="display: none;">
                     <div class="section-header">
                         <h2 class="section-title">Cursos Realizados</h2>
@@ -331,13 +340,13 @@
                                     {% endif %}
                                 </div>
                             {% endfor %}
-                        {% else %}
-                            <p class="empty-message">No hay cursos visibles.</p>
                         {% endif %}
                     </div>
                 </section>
+                {% endif %}
 
                 <!-- RECONOCIMIENTOS -->
+                {% if show_reconocimientos %}
                 <section class="main-section section-content-block" data-section-id="reconocimientos" style="display: none;">
                     <div class="section-header">
                         <h2 class="section-title">Reconocimientos</h2>
@@ -361,14 +370,15 @@
                                     {% endif %}
                                 </div>
                             {% endfor %}
-                        {% else %}
-                            <p class="empty-message">No hay reconocimientos visibles.</p>
                         {% endif %}
                     </div>
                 </section>
+                {% endif %}
 
                 <!-- PRODUCTOS ACADÉMICOS -->
+                {% if show_productos_academicos or show_productos_laborales %}
                 <section class="main-section section-content-block" data-section-id="productos" style="display: none;">
+                    {% if show_productos_academicos %}
                     <div class="section-header">
                         <h2 class="section-title">Productos Académicos</h2>
                     </div>
@@ -385,8 +395,6 @@
                                     {% endif %}
                                 </div>
                             {% endfor %}
-                        {% else %}
-                            <p class="empty-message">No hay productos académicos visibles.</p>
                         {% endif %}
                     </div>
 
@@ -398,7 +406,9 @@
                         </a>
                     </div>
                     {% endif %}
+                    {% endif %}
 
+                    {% if show_productos_laborales %}
                     <!-- PRODUCTOS LABORALES -->
                     <div class="section-header" style="margin-top: 28px;">
                         <h2 class="section-title">Productos Laborales</h2>
@@ -416,8 +426,6 @@
                                     {% endif %}
                                 </div>
                             {% endfor %}
-                        {% else %}
-                            <p class="empty-message">No hay productos laborales visibles.</p>
                         {% endif %}
                     </div>
 
@@ -429,7 +437,9 @@
                         </a>
                     </div>
                     {% endif %}
+                    {% endif %}
                 </section>
+                {% endif %}
 
                 <!-- VENTAS GARAGE -->
                 <section class="main-section" style="display: none;">

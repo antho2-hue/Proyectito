@@ -181,6 +181,14 @@ def hoja_vida_publica(request):
             foto_perfil_proxy_url = f"{request.scheme}://{request.get_host()}/foto-perfil/"
             print(f"Error converting photo to base64: {e}")
 
+    # Flags explícitos para visibilidad de secciones
+    show_datos_personales = visibilidad.mostrar_datos_personales if visibilidad else True
+    show_experiencias = visibilidad.mostrar_experiencias if visibilidad else True
+    show_cursos = visibilidad.mostrar_cursos if visibilidad else True
+    show_reconocimientos = visibilidad.mostrar_reconocimientos if visibilidad else True
+    show_productos_academicos = visibilidad.mostrar_productos_academicos if visibilidad else True
+    show_productos_laborales = visibilidad.mostrar_productos_laborales if visibilidad else True
+
     context = {
         'perfil': perfil,
         'visibilidad': visibilidad,
@@ -192,6 +200,13 @@ def hoja_vida_publica(request):
         'productos_academicos': productos_academicos,
         'productos_laborales': productos_laborales,
         'foto_perfil_proxy_url': foto_perfil_proxy_url,
+        # Flags explícitos de visibilidad
+        'show_datos_personales': show_datos_personales,
+        'show_experiencias': show_experiencias,
+        'show_cursos': show_cursos,
+        'show_reconocimientos': show_reconocimientos,
+        'show_productos_academicos': show_productos_academicos,
+        'show_productos_laborales': show_productos_laborales,
     }
 
     # Public render - use new clean template
