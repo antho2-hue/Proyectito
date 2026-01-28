@@ -10,9 +10,23 @@ def validar_fecha_maxima(valor):
         raise ValidationError('La fecha no puede ser posterior a 2026')
 
 
+def validar_rango_fechas(valor):
+    """Validador combinado para fechas: entre 1950 y 2026"""
+    fecha_minima = date(1950, 1, 1)
+    fecha_maxima = date(2026, 1, 31)
+    if valor < fecha_minima or valor > fecha_maxima:
+        raise ValidationError('La fecha debe estar entre 1950 y 2026')
+
+
 def validar_fecha_nacimiento(valor):
-    """Validador para fecha de nacimiento: no futura y mínimo 18 años"""
+    """Validador para fecha de nacimiento: entre 1950-2026, mayor de 18 años, no futura"""
     hoy = date.today()
+    fecha_minima = date(1950, 1, 1)
+    fecha_maxima = date(2026, 1, 31)
+    
+    # Validar rango de fechas
+    if valor < fecha_minima or valor > fecha_maxima:
+        raise ValidationError('La fecha de nacimiento debe estar entre 1950 y 2026')
     
     # No puede ser una fecha futura
     if valor > hoy:
