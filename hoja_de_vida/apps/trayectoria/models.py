@@ -10,6 +10,12 @@ def validar_fecha_maxima(valor):
     if valor > fecha_maxima:
         raise ValidationError('La fecha no puede ser posterior a 2026')
 
+
+def validar_valor_no_negativo(valor):
+    """Validador que asegura que el valor no sea negativo"""
+    if valor is not None and valor < 0:
+        raise ValidationError('El valor no puede ser negativo')
+
 class ExperienciaLaboral(models.Model):
     idexperiencilaboral = models.AutoField(primary_key=True, db_column='idexperiencilaboral')
     idperfilconqueestaactivo = models.ForeignKey(DatosPersonales, on_delete=models.CASCADE, db_column='idperfilconqueestaactivo')
@@ -83,7 +89,13 @@ class CursoRealizado(models.Model):
         blank=True,
         validators=[validar_fecha_maxima]
     )
-    totalhoras = models.IntegerField(db_column='totalhoras', null=True, blank=True)
+    totalhoras = models.IntegerField(
+        db_column='totalhoras',
+        null=True,
+        blank=True,
+        validators=[validar_valor_no_negativo],
+        help_text='Debe ser un valor positivo'
+    )
     descripcioncurso = models.CharField(max_length=100, db_column='descripcioncurso', null=True, blank=True)
     entidadpatrocinadora = models.CharField(max_length=100, db_column='entidadpatrocinadora', null=True, blank=True)
     nombrecontactoauspicia = models.CharField(max_length=100, db_column='nombrecontactoauspicia', null=True, blank=True)
@@ -136,20 +148,25 @@ class VentaGarage(models.Model):
     ]
     estadoproducto = models.CharField(max_length=40, choices=ESTADO_CHOICES, db_column='estadoproducto', null=True, blank=True)
     descripcion = models.CharField(max_length=100, db_column='descripcion', null=True, blank=True)
-    valordelbien = models.DecimalField(max_digits=5, decimal_places=2, db_column='valordelbien', null=True, blank=True)
+    valordelbien = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        db_column='valordelbien',
+        null=True,
+        blank=True,
+        validators=[validar_valor_no_negativo],
+        help_text='Debe ser un valor positivo'
+    )
     activarparaqueseveaenfront = models.BooleanField(default=True, db_column='activarparaqueseveaenfront')
     
-    # NUEVA: Campo para almacenar imagen del producto
     rutaimagen = models.CharField(max_length=200, db_column='rutaimagen', null=True, blank=True, help_text='URL o ruta de la imagen PNG/JPG del producto')
     
-    # NUEVA: Campo para control de disponibilidad (Disponible/Vendido)
     ESTADO_DISPONIBILIDAD_CHOICES = [
         ('Disponible', 'Disponible'),
         ('Vendido', 'Vendido'),
     ]
     estado_disponibilidad = models.CharField(max_length=20, choices=ESTADO_DISPONIBILIDAD_CHOICES, default='Disponible', db_column='estado_disponibilidad', help_text='Estado de disponibilidad del producto')
     
-    # NUEVA: Campo para fecha de publicación del producto
     fecha_publicacion = models.DateField(
         db_column='fecha_publicacion',
         null=True,

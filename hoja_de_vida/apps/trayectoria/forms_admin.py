@@ -27,10 +27,10 @@ class CursoRealizadoAdminForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         
-        # Validar horas >= 1
+        # Validar horas >= 0 (no negativas)
         totalhoras = cleaned_data.get('totalhoras')
-        if totalhoras is not None and totalhoras < 1:
-            raise forms.ValidationError(_('Las horas totales deben ser mayor o igual a 1.'))
+        if totalhoras is not None and totalhoras < 0:
+            raise forms.ValidationError(_('Las horas totales no pueden ser negativas.'))
         
         # Validar que fechainicio <= fechafin
         fechainicio = cleaned_data.get('fechainicio')
@@ -151,3 +151,13 @@ class VentaGarageAdminForm(forms.ModelForm):
             raise forms.ValidationError(_('La imagen no debe superar 10MB'))
         
         return f
+
+    def clean(self):
+        cleaned_data = super().clean()
+        
+        # Validar que valordelbien no sea negativo
+        valordelbien = cleaned_data.get('valordelbien')
+        if valordelbien is not None and valordelbien < 0:
+            raise forms.ValidationError(_('El valor del bien no puede ser negativo.'))
+        
+        return cleaned_data
