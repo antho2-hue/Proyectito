@@ -11,6 +11,21 @@ def validar_fecha_maxima(valor):
         raise ValidationError('La fecha no puede ser posterior a 2026')
 
 
+def validar_fecha_minima(valor):
+    """Validador que asegura que la fecha no sea anterior a 1950"""
+    fecha_minima = date(1950, 1, 1)
+    if valor < fecha_minima:
+        raise ValidationError('La fecha no puede ser anterior a 1950')
+
+
+def validar_rango_fechas(valor):
+    """Validador combinado para fechas: entre 1950 y 2026"""
+    fecha_minima = date(1950, 1, 1)
+    fecha_maxima = date(2026, 1, 31)
+    if valor < fecha_minima or valor > fecha_maxima:
+        raise ValidationError('La fecha debe estar entre 1950 y 2026')
+
+
 def validar_valor_no_negativo(valor):
     """Validador que asegura que el valor no sea negativo"""
     if valor is not None and valor < 0:
@@ -30,13 +45,13 @@ class ExperienciaLaboral(models.Model):
         db_column='fechainiciogestion',
         null=True,
         blank=True,
-        validators=[validar_fecha_maxima]
+        validators=[validar_rango_fechas]
     )
     fechafingestion = models.DateField(
         db_column='fechafingestion',
         null=True,
         blank=True,
-        validators=[validar_fecha_maxima]
+        validators=[validar_rango_fechas]
     )
     descripcionfunciones = models.CharField(max_length=100, db_column='descripcionfunciones', null=True, blank=True)
     activarparaqueseveaenfront = models.BooleanField(default=True, db_column='activarparaqueseveaenfront')
@@ -60,7 +75,7 @@ class Reconocimiento(models.Model):
         db_column='fechareconocimiento',
         null=True,
         blank=True,
-        validators=[validar_fecha_maxima]
+        validators=[validar_rango_fechas]
     )
     descripcionreconocimiento = models.CharField(max_length=100, db_column='descripcionreconocimiento', null=True, blank=True)
     entidadpatrocinadora = models.CharField(max_length=100, db_column='entidadpatrocinadora', null=True, blank=True)
@@ -81,13 +96,13 @@ class CursoRealizado(models.Model):
         db_column='fechainicio',
         null=True,
         blank=True,
-        validators=[validar_fecha_maxima]
+        validators=[validar_rango_fechas]
     )
     fechafin = models.DateField(
         db_column='fechafin',
         null=True,
         blank=True,
-        validators=[validar_fecha_maxima]
+        validators=[validar_rango_fechas]
     )
     totalhoras = models.IntegerField(
         db_column='totalhoras',
@@ -128,7 +143,7 @@ class ProductoLaboral(models.Model):
         db_column='fechaproducto',
         null=True,
         blank=True,
-        validators=[validar_fecha_maxima]
+        validators=[validar_rango_fechas]
     )
     descripcion = models.CharField(max_length=100, db_column='descripcion', null=True, blank=True)
     activarparaqueseveaenfront = models.BooleanField(default=True, db_column='activarparaqueseveaenfront')
@@ -171,7 +186,7 @@ class VentaGarage(models.Model):
         db_column='fecha_publicacion',
         null=True,
         blank=True,
-        validators=[validar_fecha_maxima]
+        validators=[validar_rango_fechas]
     )
 
     class Meta:
