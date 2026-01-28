@@ -112,7 +112,27 @@ class VentaGarageAdminForm(forms.ModelForm):
 
     class Meta:
         model = VentaGarage
-        fields = '__all__'
+        fields = [
+            'nombreproducto',
+            'estadoproducto',
+            'descripcion',
+            'valordelbien',
+            'estado_disponibilidad',
+            'activarparaqueseveaenfront',
+            'fecha_publicacion',
+        ]
+
+    def __init__(self, *args, **kwargs):
+        """Inicializa el formulario e asigna automáticamente el perfil si es una nueva instancia."""
+        super().__init__(*args, **kwargs)
+        
+        # Si es una nueva instancia (no tiene pk), asignar automáticamente el perfil
+        if self.instance.pk is None:
+            from apps.perfil.models import DatosPersonales
+            try:
+                self.instance.idperfilconqueestaactivo = DatosPersonales.objects.first()
+            except:
+                pass
 
     def clean_imagen_subir(self):
         f = self.cleaned_data.get('imagen_subir')

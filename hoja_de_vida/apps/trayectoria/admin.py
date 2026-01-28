@@ -18,6 +18,14 @@ class ExperienciaLaboralAdmin(admin.ModelAdmin):
     list_display = ('cargodesempenado', 'activarparaqueseveaenfront')
 
     def save_model(self, request, obj, form, change):
+        # Asignar automáticamente el perfil del usuario si no existe
+        if not obj.idperfilconqueestaactivo:
+            from apps.perfil.models import DatosPersonales
+            try:
+                obj.idperfilconqueestaactivo = DatosPersonales.objects.first()
+            except:
+                pass
+        
         # If a file was uploaded, send to Azure and save URL
         uploaded = form.cleaned_data.get('certificado_subir')
         if uploaded:
@@ -32,6 +40,14 @@ class ReconocimientoAdmin(admin.ModelAdmin):
     list_display = ('descripcionreconocimiento', 'activarparaqueseveaenfront')
 
     def save_model(self, request, obj, form, change):
+        # Asignar automáticamente el perfil del usuario si no existe
+        if not obj.idperfilconqueestaactivo:
+            from apps.perfil.models import DatosPersonales
+            try:
+                obj.idperfilconqueestaactivo = DatosPersonales.objects.first()
+            except:
+                pass
+        
         # If a file was uploaded, send to Azure and save URL
         uploaded = form.cleaned_data.get('certificado_subir')
         if uploaded:
@@ -46,6 +62,14 @@ class CursoRealizadoAdmin(admin.ModelAdmin):
     list_display = ('nombrecurso', 'activarparaqueseveaenfront')
 
     def save_model(self, request, obj, form, change):
+        # Asignar automáticamente el perfil del usuario si no existe
+        if not obj.idperfilconqueestaactivo:
+            from apps.perfil.models import DatosPersonales
+            try:
+                obj.idperfilconqueestaactivo = DatosPersonales.objects.first()
+            except:
+                pass
+        
         uploaded = form.cleaned_data.get('certificado_subir')
         if uploaded:
             try:
@@ -59,11 +83,31 @@ class CursoRealizadoAdmin(admin.ModelAdmin):
 @admin.register(ProductoAcademico)
 class ProductoAcademicoAdmin(admin.ModelAdmin):
     list_display = ('nombrerecurso', 'activarparaqueseveaenfront')
+    
+    def save_model(self, request, obj, form, change):
+        # Asignar automáticamente el perfil del usuario si no existe
+        if not obj.idperfilconqueestaactivo:
+            from apps.perfil.models import DatosPersonales
+            try:
+                obj.idperfilconqueestaactivo = DatosPersonales.objects.first()
+            except:
+                pass
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(ProductoLaboral)
 class ProductoLaboralAdmin(admin.ModelAdmin):
     list_display = ('nombreproducto', 'activarparaqueseveaenfront')
+    
+    def save_model(self, request, obj, form, change):
+        # Asignar automáticamente el perfil del usuario si no existe
+        if not obj.idperfilconqueestaactivo:
+            from apps.perfil.models import DatosPersonales
+            try:
+                obj.idperfilconqueestaactivo = DatosPersonales.objects.first()
+            except:
+                pass
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(VentaGarage)
@@ -72,28 +116,60 @@ class VentaGarageAdmin(admin.ModelAdmin):
     form = VentaGarageAdminForm
     list_display = ('nombreproducto', 'estado_disponibilidad', 'activarparaqueseveaenfront')
     list_filter = ('estado_disponibilidad', 'activarparaqueseveaenfront')
-    fieldsets = (
-        ('Información del Producto', {
-            'fields': ('nombreproducto', 'descripcion', 'estadoproducto', 'valordelbien')
-        }),
-        ('Imagen', {
-            'fields': ('imagen_subir',),
-            'description': 'Sube una imagen PNG o JPG del producto. Máximo 10MB.'
-        }),
-        ('Fecha de Publicación', {
-            'fields': ('fecha_publicacion',)
-        }),
-        ('Control de Disponibilidad', {
-            'fields': ('estado_disponibilidad',),
-            'description': 'Solo administradores pueden cambiar este estado. Vendido = producto no disponible pero visible.'
-        }),
-        ('Visibilidad en Frontend', {
-            'fields': ('activarparaqueseveaenfront',)
-        }),
-    )
+    
+    def get_fieldsets(self, request, obj=None):
+        """Retorna fieldsets diferentes para crear vs cambiar."""
+        if obj is None:  # Adding
+            return (
+                ('Información del Producto', {
+                    'fields': ('nombreproducto', 'descripcion', 'estadoproducto', 'valordelbien')
+                }),
+                ('Imagen', {
+                    'fields': ('imagen_subir',),
+                    'description': 'Sube una imagen PNG o JPG del producto. Máximo 10MB.'
+                }),
+                ('Fecha de Publicación', {
+                    'fields': ('fecha_publicacion',)
+                }),
+                ('Control de Disponibilidad', {
+                    'fields': ('estado_disponibilidad',),
+                    'description': 'Solo administradores pueden cambiar este estado. Vendido = producto no disponible pero visible.'
+                }),
+                ('Visibilidad en Frontend', {
+                    'fields': ('activarparaqueseveaenfront',)
+                }),
+            )
+        else:  # Changing
+            return (
+                ('Información del Producto', {
+                    'fields': ('nombreproducto', 'descripcion', 'estadoproducto', 'valordelbien')
+                }),
+                ('Imagen', {
+                    'fields': ('imagen_subir',),
+                    'description': 'Sube una imagen PNG o JPG del producto. Máximo 10MB.'
+                }),
+                ('Fecha de Publicación', {
+                    'fields': ('fecha_publicacion',)
+                }),
+                ('Control de Disponibilidad', {
+                    'fields': ('estado_disponibilidad',),
+                    'description': 'Solo administradores pueden cambiar este estado. Vendido = producto no disponible pero visible.'
+                }),
+                ('Visibilidad en Frontend', {
+                    'fields': ('activarparaqueseveaenfront',)
+                }),
+            )
     
     def save_model(self, request, obj, form, change):
         """Procesa la imagen subida y la guarda en Azure."""
+        # Asignar automáticamente el perfil del usuario si no existe
+        if not obj.idperfilconqueestaactivo:
+            from apps.perfil.models import DatosPersonales
+            try:
+                obj.idperfilconqueestaactivo = DatosPersonales.objects.first()
+            except:
+                pass
+        
         uploaded = form.cleaned_data.get('imagen_subir')
         if uploaded:
             try:
